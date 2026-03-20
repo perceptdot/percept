@@ -10,7 +10,8 @@
 - **1단계 ✅ 완료** (2026-03-19): npm 퍼블리시까지 완료
   - @perceptdot/ga4@0.1.0, @perceptdot/vercel@0.1.0 → npmjs.com 라이브
   - Hono 백엔드(api/) + Python SDK(python-sdk/) 기초 완성
-- **2단계 🔄 진행중 (2026-03-20)**: Cloudflare 배포 + GitHub 공개 + 랜딩페이지
+- **2단계 ✅ 완료 (2026-03-20)**: GitHub 공개 + Cloudflare Workers + Landing Pages 배포
+- **3단계 🔄 시작**: 커스텀 도메인 + Stripe + npm 재퍼블리시 + Growth
 
 ## 확정 사항 (2026-03-19)
 

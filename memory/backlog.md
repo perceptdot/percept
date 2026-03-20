@@ -15,8 +15,8 @@
 
 - [ ] **INFRA-03** GitHub repo 생성 + 공개 (`perceptdot/percept`) — 기록/노출 시작
 - [ ] **INFRA-04** Cloudflare Workers 배포 (`api.perceptdot.com`) — ROI 측정 작동
-- [ ] **INFRA-05** perceptdot.com 랜딩 페이지 + Stripe — landing/index.html ✅ 빌드 완료, 배포+Stripe 대기
-- [ ] **INFRA-06** MCP 서버 Claude Code 실제 경유 확인 — 성과 측정 활성화
+- [ ] **INFRA-05** perceptdot.com 랜딩 페이지 + Stripe — Pages 배포 ✅ (perceptdot-landing.pages.dev), 커스텀 도메인+Stripe 대기
+- ✅ **INFRA-06** MCP 서버 빌드 + .mcp.json 경로 업데이트 완료 (2026-03-20)
 
 ---
 
@@ -56,6 +56,8 @@
 - ✅ **BRAND-01** 폴더명 percept→perceptdot 리네임 + 전 문서 브랜드 통일 (2026-03-20)
 - ✅ **INFRA-07** git 초기화 + 초기 커밋 + .gitignore 생성 (2026-03-20)
 - ✅ **INFRA-08** Landing page 빌드 완료 — landing/index.html 24KB (2026-03-20)
+- ✅ **INFRA-09** Cloudflare Pages 배포 완료 — perceptdot-landing.pages.dev (2026-03-20)
+- ✅ **INFRA-10** MCP 서버 dist 빌드 + .mcp.json 경로 업데이트 (2026-03-20)
 
 - ✅ **IDEA-01** 아이디어 정의 + 시장 규모 조사 (2026-03-19)
 - ✅ **SETUP-01** 프로젝트 폴더 구조 + CLAUDE.md + 사업계획서 초안 (2026-03-19)
