@@ -1,0 +1,33 @@
+{
+  "name": "@perceptdot/sentry",
+  "version": "0.1.0",
+  "description": "perceptdot MCP server for Sentry error tracking",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "@perceptdot/sentry": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "sentry",
+    "error-tracking",
+    "roi",
+    "agent",
+    "percept",
+    "observability"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
+  }
+}

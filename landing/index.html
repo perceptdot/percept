@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>perceptdot — Give Your AI Agent Eyes</title>
-  <meta name="description" content="perceptdot gives AI agents real-time visibility into GA4, Vercel, and more — with automatic ROI reports delivered to you." />
+  <meta name="description" content="perceptdot gives AI agents real-time visibility into GA4, Vercel, Sentry, and GitHub — with automatic ROI reports delivered to you." />
   <meta property="og:title" content="perceptdot — Give Your AI Agent Eyes" />
   <meta property="og:description" content="MCP platform that gives AI agents external service visibility and measures ROI automatically." />
   <meta property="og:url" content="https://perceptdot.com" />
@@ -648,7 +648,7 @@
   </div>
   <h1>Give Your AI Agent<br /><span class="highlight">Eyes</span></h1>
   <p class="hero-sub">
-    perceptdot connects Claude Code, Cursor, and Windsurf to your real-world services — GA4, Vercel, and more — so your agent can see what's happening, measure ROI, and report back automatically.
+    perceptdot connects Claude Code, Cursor, and Windsurf to your real-world services — GA4, Vercel, Sentry, GitHub — so your agent can see what's happening, measure ROI, and report back automatically.
   </p>
   <div class="hero-actions">
     <a class="btn btn-primary" href="#install">
@@ -733,14 +733,14 @@
       <p>At the end of each session, get a plain-language summary of what the agent accomplished and what it cost.</p>
     </div>
     <div class="feature-card">
-      <span class="feature-icon">⚡</span>
-      <h3>Zero Config Start</h3>
-      <p>One npm install. One JSON snippet. Works with your existing API keys — no new accounts, no OAuth dance.</p>
+      <span class="feature-icon">🐛</span>
+      <h3>Sentry Error Tracking</h3>
+      <p>Unresolved issues, stack traces, event counts, and 24h/7d/30d stats — your agent catches bugs before you do.</p>
     </div>
     <div class="feature-card">
-      <span class="feature-icon">🔒</span>
-      <h3>Local First</h3>
-      <p>Data flows directly from the service to your agent. perceptdot never stores your API keys or analytics data.</p>
+      <span class="feature-icon">🐙</span>
+      <h3>GitHub Repository Monitoring</h3>
+      <p>Open PRs, review status, CI/CD workflow runs, and issues — full repo visibility without leaving your agent.</p>
     </div>
   </div>
 </section>
@@ -775,7 +775,7 @@
       <div class="price-amount">$19<span>/mo</span></div>
       <div class="price-desc">For developers shipping fast.</div>
       <ul class="price-features">
-        <li>All integrations (GA4, Vercel, +more)</li>
+        <li>All integrations (GA4, Vercel, Sentry, GitHub)</li>
         <li>Unlimited API calls</li>
         <li>Full ROI reports with history</li>
         <li>Priority support</li>
@@ -818,7 +818,7 @@
           <span class="code-header-title">Terminal</span>
           <button class="copy-btn" onclick="copyCode(this, 'cmd-install')">Copy</button>
         </div>
-        <pre><code id="cmd-install">npm install -g @perceptdot/ga4 @perceptdot/vercel</code></pre>
+        <pre><code id="cmd-install">npm install -g @perceptdot/ga4 @perceptdot/vercel @perceptdot/sentry @perceptdot/github</code></pre>
       </div>
     </div>
 
@@ -839,6 +839,14 @@
     <span class="key">"perceptdot-vercel"</span><span class="token">:</span> <span class="token">{</span>
       <span class="key">"command"</span><span class="token">:</span> <span class="string">"npx"</span><span class="token">,</span>
       <span class="key">"args"</span><span class="token">:</span> <span class="token">[</span><span class="string">"@perceptdot/vercel"</span><span class="token">]</span>
+    <span class="token">},</span>
+    <span class="key">"perceptdot-sentry"</span><span class="token">:</span> <span class="token">{</span>
+      <span class="key">"command"</span><span class="token">:</span> <span class="string">"npx"</span><span class="token">,</span>
+      <span class="key">"args"</span><span class="token">:</span> <span class="token">[</span><span class="string">"@perceptdot/sentry"</span><span class="token">]</span>
+    <span class="token">},</span>
+    <span class="key">"perceptdot-github"</span><span class="token">:</span> <span class="token">{</span>
+      <span class="key">"command"</span><span class="token">:</span> <span class="string">"npx"</span><span class="token">,</span>
+      <span class="key">"args"</span><span class="token">:</span> <span class="token">[</span><span class="string">"@perceptdot/github"</span><span class="token">]</span>
     <span class="token">}</span>
   <span class="token">}</span>
 <span class="token">}</span></code></pre>
@@ -857,6 +865,10 @@
 <span class="string">"How many users visited the site today? What pages are they landing on?"</span>
 
 <span class="string">"Did the last Vercel deployment succeed? How long did it take?"</span>
+
+<span class="string">"Any unresolved Sentry errors from the last 24 hours?"</span>
+
+<span class="string">"List open PRs and which ones are approved and ready to merge."</span>
 
 <span class="string">"Give me an ROI summary of what you built this week."</span></code></pre>
       </div>

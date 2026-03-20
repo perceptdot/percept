@@ -1,0 +1,28 @@
+# Smithery configuration — @perceptdot/github
+# AI agent vision for GitHub repository monitoring with ROI measurement
+# https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    properties:
+      githubToken:
+        type: string
+        description: GitHub Personal Access Token
+      owner:
+        type: string
+        description: Repository owner (username or org)
+      repo:
+        type: string
+        description: Repository name
+    required: [githubToken, owner, repo]
+  commandFunction: |-
+    (config) => ({
+      command: "npx",
+      args: ["@perceptdot/github"],
+      env: {
+        GITHUB_TOKEN: config.githubToken,
+        GITHUB_OWNER: config.owner,
+        GITHUB_REPO: config.repo,
+      }
+    })

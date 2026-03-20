@@ -11,7 +11,10 @@
   - @perceptdot/ga4@0.1.0, @perceptdot/vercel@0.1.0 → npmjs.com 라이브
   - Hono 백엔드(api/) + Python SDK(python-sdk/) 기초 완성
 - **2단계 ✅ 완료 (2026-03-20)**: GitHub 공개 + Cloudflare Workers + Landing Pages 배포
-- **3단계 🔄 시작**: 커스텀 도메인 + Stripe + npm 재퍼블리시 + Growth
+- **3단계 🔄 진행 중**: 커스텀 도메인 + Stripe + Growth
+  - ✅ @perceptdot/sentry@0.1.0, @perceptdot/github@0.1.0 npm 라이브 (2026-03-20)
+  - ✅ Landing 4개 통합 카드 완성 + Pages 재배포 (2026-03-20)
+  - npm 패키지 4종: @perceptdot/ga4, vercel, sentry, github
 
 ## 확정 사항 (2026-03-19)
 

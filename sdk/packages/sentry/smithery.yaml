@@ -1,0 +1,24 @@
+startCommand:
+  type: stdio
+  configSchema:
+    properties:
+      sentryAuthToken:
+        type: string
+        description: Sentry Auth Token
+      sentryOrg:
+        type: string
+        description: Sentry organization slug
+      sentryProject:
+        type: string
+        description: Sentry project slug
+    required: [sentryAuthToken, sentryOrg, sentryProject]
+  commandFunction: |-
+    (config) => ({
+      command: "npx",
+      args: ["@perceptdot/sentry"],
+      env: {
+        SENTRY_AUTH_TOKEN: config.sentryAuthToken,
+        SENTRY_ORG: config.sentryOrg,
+        SENTRY_PROJECT: config.sentryProject,
+      }
+    })
