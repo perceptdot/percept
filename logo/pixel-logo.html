@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>perceptdot — Pixel Logo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0a0a0a;
+    --surface:  #111111;
+    --border:   #1e1e1e;
+    --p-dark:   #3d3566;
+    --p-mid:    #7c6dfa;
+    --p-light:  #a78bfa;
+    --p-glow:   #c4b5fd;
+    --text:     #f0f0f0;
+    --muted:    #555;
+    --px: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 64px;
+    padding: 80px 40px;
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  .page-title {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Pixel Icon ── */
+  .icon {
+    --px: 8px;
+    display: grid;
+    grid-template-columns: repeat(8, var(--px));
+    grid-template-rows: repeat(8, var(--px));
+    gap: 1px;
+    image-rendering: pixelated;
+  }
+  .icon.md { --px: 12px; }
+  .icon.lg { --px: 16px; }
+  .icon.xl { --px: 24px; }
+
+  .p { width: var(--px); height: var(--px); background: transparent; }
+  .p1 { background: var(--p-dark); }
+  .p2 { background: var(--p-mid); }
+  .p3 {
+    background: var(--p-glow);
+    box-shadow: 0 0 6px 1px rgba(196,181,253,0.7);
+  }
+
+  /* ── Wordmark ── */
+  .wordmark { color: var(--text); line-height: 1; }
+  .wordmark .dot { color: var(--p-light); }
+
+  /* ── Divider ── */
+  .divider {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+    margin: 0 8px;
+  }
+
+  /* ── Variants ── */
+  .variant { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .label {
+    font-size: 7px;
+    color: var(--muted);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 40px 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Horizontal */
+  .logo-h { display: flex; align-items: center; gap: 18px; }
+
+  /* Stacked */
+  .logo-v { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .tagline {
+    font-size: 6px;
+    color: var(--muted);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* Row of icon sizes */
+  .sizes { display: flex; align-items: flex-end; gap: 32px; }
+
+  /* Light bg preview */
+  .card.light {
+    background: #f0f0f0;
+    border-color: #ddd;
+  }
+  .card.light .p1 { background: #7c6dfa; }
+  .card.light .p2 { background: #6254e0; }
+  .card.light .p3 { background: #4a3fc9; box-shadow: 0 0 6px rgba(74,63,201,0.5); }
+  .card.light .wordmark { color: #1a1a1a; }
+  .card.light .wordmark .dot { color: #6254e0; }
+
+  /* Grid of all variants */
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; }
+</style>
+</head>
+<body>
+
+<p class="page-title">perceptdot · pixel logo concepts</p>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT A — HORIZONTAL (MAIN LOGO)
+     ═══════════════════════════════════════════ -->
+<div class="variant">
+  <p class="label">A — Horizontal</p>
+  <div class="card">
+    <div class="logo-h">
+
+      <!-- Pixel Eye Icon (8×8, 12px/px) -->
+      <div class="icon md">
+        <!-- Row 0 -->
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+        <!-- Row 1 -->
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <!-- Row 2 -->
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <!-- Row 3 -->
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <!-- Row 4 -->
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <!-- Row 5 -->
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <!-- Row 6 -->
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <!-- Row 7 -->
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+      </div>
+
+      <!-- Wordmark -->
+      <div class="wordmark" style="font-size:22px;">percept<span class="dot">.dot</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT B — STACKED
+     ═══════════════════════════════════════════ -->
+<div class="variant">
+  <p class="label">B — Stacked</p>
+  <div class="card">
+    <div class="logo-v">
+      <div class="icon xl">
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+      </div>
+      <div class="wordmark" style="font-size:20px;">percept<span class="dot">.dot</span></div>
+      <div class="tagline">AI agents · perceive · report</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT C — ICON ONLY (sizes)
+     ═══════════════════════════════════════════ -->
+<div class="variant">
+  <p class="label">C — Icon only · all sizes</p>
+  <div class="card">
+    <div class="sizes">
+
+      <!-- 8×8px = 64px (nav) -->
+      <div class="icon" style="--px:8px;">
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+      </div>
+
+      <!-- 12px = 96px (medium) -->
+      <div class="icon" style="--px:12px;">
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+      </div>
+
+      <!-- 20px = 160px (hero) -->
+      <div class="icon" style="--px:20px;">
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT D — LIGHT BG (for docs/readme)
+     ═══════════════════════════════════════════ -->
+<div class="variant">
+  <p class="label">D — Light background</p>
+  <div class="card light">
+    <div class="logo-h">
+      <div class="icon md">
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p3"></div><div class="p3"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div>
+        <div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div>
+        <div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p2"></div><div class="p2"></div><div class="p1"></div><div class="p1"></div><div class="p"></div>
+        <div class="p"></div><div class="p"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p1"></div><div class="p"></div><div class="p"></div>
+      </div>
+      <div class="wordmark" style="font-size:22px;">percept<span class="dot">.dot</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT E — WORDMARK ONLY
+     ═══════════════════════════════════════════ -->
+<div class="variant">
+  <p class="label">E — Wordmark only</p>
+  <div class="card">
+    <div style="display:flex; flex-direction:column; align-items:flex-start; gap:20px;">
+      <div class="wordmark" style="font-size:28px;">percept<span class="dot">.dot</span></div>
+      <div class="wordmark" style="font-size:20px;">percept<span class="dot">.dot</span></div>
+      <div class="wordmark" style="font-size:14px;">percept<span class="dot">.dot</span></div>
+      <div class="wordmark" style="font-size:10px;">percept<span class="dot">.dot</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     COLOR PALETTE
+     ═══════════════════════════════════════════ -->
+<div class="variant">
+  <p class="label">Color Palette</p>
+  <div class="card" style="gap:24px; flex-direction:row;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <div style="width:48px;height:48px;background:#3d3566;border:1px solid #333;"></div>
+      <span style="font-size:6px;color:#555;letter-spacing:1px;">#3d3566</span>
+      <span style="font-size:6px;color:#555;">outer</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <div style="width:48px;height:48px;background:#7c6dfa;border:1px solid #333;"></div>
+      <span style="font-size:6px;color:#555;letter-spacing:1px;">#7c6dfa</span>
+      <span style="font-size:6px;color:#555;">primary</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <div style="width:48px;height:48px;background:#a78bfa;border:1px solid #333;"></div>
+      <span style="font-size:6px;color:#555;letter-spacing:1px;">#a78bfa</span>
+      <span style="font-size:6px;color:#555;">.dot accent</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <div style="width:48px;height:48px;background:#c4b5fd;border:1px solid #333;box-shadow:0 0 12px rgba(196,181,253,0.6);"></div>
+      <span style="font-size:6px;color:#555;letter-spacing:1px;">#c4b5fd</span>
+      <span style="font-size:6px;color:#555;">glow center</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <div style="width:48px;height:48px;background:#f0f0f0;border:1px solid #333;"></div>
+      <span style="font-size:6px;color:#555;letter-spacing:1px;">#f0f0f0</span>
+      <span style="font-size:6px;color:#555;">text</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FONT CREDIT
+     ═══════════════════════════════════════════ -->
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:40px;">
+  <p style="font-size:7px;color:#333;letter-spacing:3px;">Font: Press Start 2P · Google Fonts (free / OFL)</p>
+  <p style="font-size:7px;color:#333;letter-spacing:3px;">Icon: custom pixel eye · 8×8 grid</p>
+</div>
+
+</body>
+</html>
