@@ -446,6 +446,13 @@
       letter-spacing: 0;
     }
 
+    .price-amount #team-price {
+      font-size: 44px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -2px;
+    }
+
     .price-desc {
       font-size: 14px;
       color: var(--muted);
@@ -1375,7 +1382,6 @@
 </script>
 
 <script>
-  // Team seat calculator
   const PRICE_PER_SEAT = 15;
   const MIN_SEATS = 2;
   const MAX_SEATS = 50;
@@ -1391,6 +1397,43 @@
     document.getElementById('seat-minus').disabled = seats <= MIN_SEATS;
     document.getElementById('seat-plus').disabled = seats >= MAX_SEATS;
   }
+
+  document.getElementById('team-cta').addEventListener('click', async function(e) {
+    e.preventDefault();
+    const total = seats * PRICE_PER_SEAT;
+    const btn = this;
+    const original = btn.textContent;
+    btn.textContent = 'Processing...';
+    btn.style.opacity = '0.7';
+    btn.style.pointerEvents = 'none';
+
+    try {
+      const res = await fetch('https://perceptdot-api.perceptdot.workers.dev/v1/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ seats, amount_usd: total })
+      });
+      const data = await res.json();
+      console.log('[perceptdot checkout]', data);
+
+      if (data.ok) {
+        btn.textContent = '✓ Session: ' + data.checkout_id;
+        btn.style.opacity = '1';
+      } else {
+        btn.textContent = '✗ ' + (data.error || 'Error');
+        btn.style.opacity = '1';
+      }
+    } catch (err) {
+      btn.textContent = '✗ Network error';
+      btn.style.opacity = '1';
+      console.error('[perceptdot checkout error]', err);
+    }
+
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.pointerEvents = '';
+    }, 3000);
+  });
 </script>
 
 </body>

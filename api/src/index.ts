@@ -267,6 +267,50 @@ app.post("/v1/report", async (c) => {
   });
 });
 
+/**
+ * POST /v1/checkout
+ * 팀 플랜 체크아웃 세션 생성 (임시: Lemon Squeezy 연동 전 검증 + 세션 ID 발급).
+ * PAY-02 승인 후 checkout_url 추가 예정.
+ */
+app.post("/v1/checkout", async (c) => {
+  let body: { seats: number; amount_usd: number };
+
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+  }
+
+  const { seats, amount_usd } = body;
+
+  if (!seats || seats < 2 || seats > 50) {
+    return c.json({ error: "seats는 2~50 사이여야 합니다." }, 400);
+  }
+
+  const expected = seats * 15;
+  if (amount_usd !== expected) {
+    return c.json(
+      { error: `금액 불일치: expected $${expected}, received $${amount_usd}` },
+      400
+    );
+  }
+
+  const checkout_id = `co_${Date.now()}_${seats}seats`;
+
+  return c.json(
+    {
+      ok: true,
+      checkout_id,
+      seats,
+      amount_usd,
+      price_per_seat: 15,
+      status: "pending_payment_provider",
+      note: "Lemon Squeezy 연동(PAY-02) 후 checkout_url 발급 예정",
+    },
+    201
+  );
+});
+
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────
 
 app.notFound((c) => {
