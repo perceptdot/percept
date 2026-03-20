@@ -110,6 +110,11 @@ percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
 - 백로그는 `memory/backlog.md`에서 관리
 - 배포 의무: 코드 수정 후 배포 여부 반드시 명시
 
+## QA 원칙 (2026-03-21 CEO 확정)
+- **⚠️ 최우선**: QA는 반드시 우리 MCP 서버(@perceptdot/ga4, vercel, sentry, github)를 직접 사용하면서 진행
+- 실제로 써봐야 불편한 점 발견 가능 → 개선 우선순위 결정
+- QA 중 발견된 UX 불편사항은 backlog에 즉시 기록 (BUG 또는 UX 태그)
+
 ## 별도 파일
 - `memory/backlog.md` — 전체 백로그
 - `docs/bizplan.md` — 사업계획서 (확정)
