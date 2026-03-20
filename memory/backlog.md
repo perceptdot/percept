@@ -62,7 +62,9 @@
 - ✅ **LEGAL-02** 이용약관 + 개인정보처리방침 페이지 생성 (terms.html, privacy.html, 2026-03-20)
 - ✅ **LEGAL-03** 한국 SaaS 법적 요건 리서치 완료 (docs/outputs/legal_compliance_report.md, 2026-03-20)
 - [ ] **LEGAL-04** 통신판매업 신고 — THUNOVA 722-60-00889로 정부24 신고 (Stripe 결정 후)
-- [ ] **LEGAL-05** 결제 구조 확정: Paddle or Lemon Squeezy (MoR, 한국 개인사업자 직접 사용 가능, 글로벌 결제) vs 토스페이먼츠 — CEO 결정 필요. Stripe 한국 개인사업자 직접 불가 확인.
+- ✅ **LEGAL-05** 결제 구조 확정: **Lemon Squeezy** (MoR, 2026-03-20 CEO 결정) — K-사주와 동일 계정 통합 관리
+- [ ] **PAY-01** Lemon Squeezy 계정 생성 + Free/Pro $19/Team $49 상품 등록
+- [ ] **PAY-02** Landing Pricing 섹션 Lemon Squeezy 체크아웃 버튼 연동
 - [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 
