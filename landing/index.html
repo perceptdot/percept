@@ -288,6 +288,11 @@
       margin-top: 56px;
     }
 
+    @media (min-width: 769px) {
+      .arrow-connector::after {
+        content: '→';
+      }
+    }
     @media (max-width: 768px) {
       .steps {
         grid-template-columns: 1fr;
@@ -343,9 +348,6 @@
       font-size: 20px;
       padding: 0;
       background: var(--bg2);
-    }
-    .arrow-connector::after {
-      content: '→';
     }
 
     /* FEATURES */
