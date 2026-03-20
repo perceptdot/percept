@@ -268,13 +268,22 @@
     /* HOW IT WORKS */
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: 1fr 48px 1fr 48px 1fr;
       gap: 1px;
       background: var(--border);
       border: 1px solid var(--border);
       border-radius: 16px;
       overflow: hidden;
       margin-top: 56px;
+    }
+
+    @media (max-width: 700px) {
+      .steps {
+        grid-template-columns: 1fr;
+      }
+      .arrow-connector {
+        display: none;
+      }
     }
 
     .step {
@@ -679,18 +688,14 @@
       <h3>Install perceptdot MCP</h3>
       <p>Add perceptdot to your Claude Code or Cursor config in under 60 seconds. No signup required for the free tier.</p>
     </div>
-    <div class="step" style="padding: 36px 8px; display: flex; align-items: center; justify-content: center; max-width: 40px;">
-      <span style="color: #333; font-size: 22px; writing-mode: vertical-rl;">→</span>
-    </div>
+    <div class="arrow-connector">→</div>
     <div class="step">
       <div class="step-num">Step 02</div>
       <span class="step-icon">👁️</span>
       <h3>Agent reads live data</h3>
       <p>Your agent calls perceptdot tools to pull GA4 traffic, Vercel deployment status, and performance metrics in real time.</p>
     </div>
-    <div class="step" style="padding: 36px 8px; display: flex; align-items: center; justify-content: center; max-width: 40px;">
-      <span style="color: #333; font-size: 22px; writing-mode: vertical-rl;">→</span>
-    </div>
+    <div class="arrow-connector">→</div>
     <div class="step">
       <div class="step-num">Step 03</div>
       <span class="step-icon">📊</span>
