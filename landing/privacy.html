@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — perceptdot</title>
+  <meta name="description" content="Privacy Policy for perceptdot — how we collect, use, and protect your data." />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #222222;
+      --text: #f0f0f0;
+      --muted: #888888;
+      --accent: #7c6dfa;
+      --accent2: #a78bfa;
+      --green: #22c55e;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent2);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--accent2);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    /* CONTENT */
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 72px 24px 100px;
+    }
+
+    .page-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent2);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .page-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .page-meta {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-top: 48px;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    h2:first-of-type {
+      margin-top: 0;
+    }
+
+    p {
+      font-size: 15px;
+      color: #c8c8c8;
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    ul {
+      margin: 12px 0 14px 20px;
+    }
+
+    ul li {
+      font-size: 15px;
+      color: #c8c8c8;
+      line-height: 1.75;
+      margin-bottom: 6px;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0 0;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .footer-logo span {
+      color: var(--accent2);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #333;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      nav {
+        padding: 16px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .page-wrap {
+        padding: 48px 20px 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">percept<span>dot</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="mailto:contact@perceptdot.com">Contact</a>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="page-wrap">
+  <p class="page-label">Legal</p>
+  <h1 class="page-title">Privacy Policy</h1>
+  <p class="page-meta">Last updated: March 20, 2026</p>
+
+  <h2>1. Introduction</h2>
+  <p>perceptdot ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, store, and share information when you use the perceptdot platform, including our MCP servers, API, and related services (the "Service").</p>
+  <p>By using the Service, you agree to the collection and use of information as described in this policy. If you do not agree with any part of this policy, please discontinue use of the Service.</p>
+
+  <hr class="section-divider" />
+
+  <h2>2. Information We Collect</h2>
+  <p>We collect the following categories of information:</p>
+  <p><strong style="color: var(--text);">Account Information.</strong> When you create an account, we collect your name, email address, and any other information you provide during registration. For team plans, we also collect organization name and team member email addresses.</p>
+  <p><strong style="color: var(--text);">Usage Data.</strong> We automatically collect data about how you use the Service, including:</p>
+  <ul>
+    <li>API call logs (tool name, timestamp, response time, error codes)</li>
+    <li>MCP server session metadata (session duration, tools invoked)</li>
+    <li>Token savings estimates and ROI metrics generated by the Service</li>
+    <li>IP address and general geographic region (country/region level)</li>
+  </ul>
+  <p><strong style="color: var(--text);">Payment Information.</strong> We do not store your full payment card details. All payment processing is handled by Stripe. We receive and store only transaction identifiers, subscription status, plan tier, and billing history necessary to manage your subscription.</p>
+  <p><strong style="color: var(--text);">Third-Party Service Credentials.</strong> To connect integrations (GA4, Vercel, Sentry, GitHub), you provide API keys or OAuth tokens. These credentials are encrypted at rest and used solely to fetch data on your behalf. We do not share your credentials with any third party.</p>
+
+  <hr class="section-divider" />
+
+  <h2>3. How We Use Information</h2>
+  <p>We use the information we collect for the following purposes:</p>
+  <ul>
+    <li><strong style="color: var(--text);">Service Delivery.</strong> To operate the platform, process API requests, and return data to your AI agent.</li>
+    <li><strong style="color: var(--text);">ROI Measurement.</strong> To calculate and generate token savings and ROI reports for your agent sessions.</li>
+    <li><strong style="color: var(--text);">Payment Processing.</strong> To manage subscriptions, process payments via Stripe, and send billing notifications.</li>
+    <li><strong style="color: var(--text);">Service Improvement.</strong> To analyze aggregate usage patterns, fix bugs, and improve reliability and performance.</li>
+    <li><strong style="color: var(--text);">Communication.</strong> To send you product updates, security notices, and support responses. You may opt out of marketing emails at any time.</li>
+    <li><strong style="color: var(--text);">Legal Compliance.</strong> To comply with applicable laws, regulations, or valid legal processes.</li>
+  </ul>
+  <p>We do not sell your personal data. We do not use your data to train AI models.</p>
+
+  <hr class="section-divider" />
+
+  <h2>4. Data Storage</h2>
+  <p>perceptdot's backend infrastructure runs on Cloudflare Workers (edge computing) and associated Cloudflare services. Data may be stored and processed on servers located in the United States and the Republic of Korea, as well as Cloudflare's global edge network.</p>
+  <p>We apply industry-standard encryption in transit (TLS 1.2+) and at rest (AES-256) for all data we store, including your API keys and account information.</p>
+  <p>By using the Service, you consent to the transfer and processing of your information in these locations, which may have different data protection laws than your country of residence.</p>
+
+  <hr class="section-divider" />
+
+  <h2>5. Third-Party Services</h2>
+  <p>perceptdot integrates with the following third-party services to provide the Service. Each operates under its own privacy policy:</p>
+  <ul>
+    <li><strong style="color: var(--text);">Stripe</strong> — Payment processing. <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a></li>
+    <li><strong style="color: var(--text);">Cloudflare</strong> — Infrastructure, CDN, and edge computing. <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">cloudflare.com/privacypolicy</a></li>
+  </ul>
+  <p>We do not share your personal data with any other third parties except as required by law or as described in this policy.</p>
+  <p>Note: The third-party services you connect to perceptdot (Google Analytics, Vercel, Sentry, GitHub) are accessed using your own credentials. Your use of those services is governed by their respective terms and privacy policies, not ours.</p>
+
+  <hr class="section-divider" />
+
+  <h2>6. Cookies and Local Storage</h2>
+  <p>perceptdot uses <code style="font-family: monospace; font-size: 13px; color: var(--accent2); background: var(--bg3); padding: 2px 6px; border-radius: 4px;">localStorage</code> in your browser only to store your authentication session token and user preferences (such as theme). No data is written to localStorage for tracking or advertising purposes.</p>
+  <p>We do not use third-party tracking cookies. We do not use advertising networks. We do not participate in any cross-site tracking.</p>
+  <p>If you clear your browser's localStorage, you will be logged out and any locally stored preferences will be reset.</p>
+
+  <hr class="section-divider" />
+
+  <h2>7. Data Retention</h2>
+  <p>We retain your account information for as long as your account is active. Usage logs and ROI metrics are retained for up to 12 months on paid plans and 30 days on the free plan, after which they are automatically deleted.</p>
+  <p>When you delete your account, we will delete or anonymize your personal data within 30 days, except where we are required by law to retain certain records (e.g., billing history for tax purposes), which we retain for up to 5 years.</p>
+
+  <hr class="section-divider" />
+
+  <h2>8. Your Rights</h2>
+  <p>Depending on your jurisdiction, you may have the following rights regarding your personal data:</p>
+  <ul>
+    <li><strong style="color: var(--text);">Access.</strong> Request a copy of the personal data we hold about you.</li>
+    <li><strong style="color: var(--text);">Correction.</strong> Request correction of inaccurate or incomplete personal data.</li>
+    <li><strong style="color: var(--text);">Deletion.</strong> Request deletion of your personal data, subject to legal retention obligations.</li>
+    <li><strong style="color: var(--text);">Portability.</strong> Request your data in a machine-readable format.</li>
+    <li><strong style="color: var(--text);">Objection.</strong> Object to certain types of processing, including direct marketing.</li>
+  </ul>
+  <p>To exercise any of these rights, please contact us at <a href="mailto:privacy@perceptdot.com">privacy@perceptdot.com</a>. We will respond to all requests within 30 days. We may need to verify your identity before processing your request.</p>
+
+  <hr class="section-divider" />
+
+  <h2>9. Security</h2>
+  <p>We take the security of your data seriously and implement appropriate technical and organizational measures to protect it, including:</p>
+  <ul>
+    <li>TLS encryption for all data in transit</li>
+    <li>AES-256 encryption for data at rest, including your API credentials</li>
+    <li>Role-based access controls limiting internal access to personal data</li>
+    <li>Regular security reviews of our infrastructure</li>
+  </ul>
+  <p>No method of transmission over the internet or electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your information, we cannot guarantee absolute security. In the event of a data breach affecting your personal data, we will notify you as required by applicable law.</p>
+
+  <hr class="section-divider" />
+
+  <h2>10. Contact</h2>
+  <p>If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data, please reach out to us:</p>
+  <ul>
+    <li>Email: <a href="mailto:privacy@perceptdot.com">privacy@perceptdot.com</a></li>
+    <li>Website: <a href="https://perceptdot.com">perceptdot.com</a></li>
+  </ul>
+  <p>We are committed to working with you to resolve any privacy concerns promptly and transparently.</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">percept<span>dot</span></div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="https://www.npmjs.com/search?q=%40perceptdot" target="_blank" rel="noopener">npm</a>
+      <a href="https://github.com/perceptdot" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:contact@perceptdot.com">Contact</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/privacy.html">Privacy</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 perceptdot by THUNOVA. Built for AI agents, by humans.</p>
+    <p class="footer-copy" style="margin-top:6px; font-size:12px;">사업자등록번호: 722-60-00889 | 통신판매업신고: 신고 진행 중</p>
+  </div>
+</footer>
+
+</body>
+</html>

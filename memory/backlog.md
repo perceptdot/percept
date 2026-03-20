@@ -58,6 +58,12 @@
 - ✅ **DEV-07** @perceptdot/sentry MCP 서버 구현 + npm 퍼블리시 완료 (2026-03-20, 5 tools)
 - ✅ **DEV-08** @perceptdot/github MCP 서버 구현 + npm 퍼블리시 완료 (2026-03-20, 5 tools)
 - ✅ **DEV-09** Landing page Features 섹션 Sentry+GitHub 카드 추가 + Cloudflare Pages 재배포 (2026-03-20)
+- ✅ **LEGAL-01** 쿠키 동의 배너 구현 완료 (landing/index.html, localStorage, 2026-03-20)
+- ✅ **LEGAL-02** 이용약관 + 개인정보처리방침 페이지 생성 (terms.html, privacy.html, 2026-03-20)
+- ✅ **LEGAL-03** 한국 SaaS 법적 요건 리서치 완료 (docs/outputs/legal_compliance_report.md, 2026-03-20)
+- [ ] **LEGAL-04** 통신판매업 신고 — THUNOVA 722-60-00889로 정부24 신고 (Stripe 결정 후)
+- [ ] **LEGAL-05** 결제 구조 확정: 싱가포르 법인+Stripe vs 한국 PG (CEO 결정 필요)
+- [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 
 ---
