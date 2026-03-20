@@ -10,6 +10,9 @@
   <meta property="og:url" content="https://perceptdot.com" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -68,10 +71,14 @@
     }
 
     .nav-logo {
-      font-size: 18px;
-      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      font-weight: normal;
       color: var(--text);
-      letter-spacing: -0.5px;
+      letter-spacing: 0;
     }
 
     .nav-logo span {
@@ -567,11 +574,16 @@
     }
 
     .footer-logo {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      font-weight: normal;
+      letter-spacing: 0;
       margin-bottom: 16px;
       color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .footer-logo span {
