@@ -69,9 +69,14 @@
 - ✅ **PROD-01** AI 최적화 설계 확정: 계정없음·로그인없음·대시보드없음·API키 N개 (2026-03-20)
 - ✅ **PROD-02** Landing FAQ 섹션 추가 + 배포 완료 (10개 항목, 아코디언, 2026-03-20)
 - ⏳ **PAY-02** Lemon Squeezy 승인 대기 (KYC 심사, 24~48시간 예상) → 상품 생성/배포
+- ✅ **PAY-04** Lemon Squeezy Payout 설정 완료 (한국계좌 KRW, W-8BEN 제출, invoice info, 2026-03-20)
 - [ ] **PAY-03** Landing Pricing 섹션 Lemon Squeezy 체크아웃 버튼 연동
 - [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
+- ✅ **UX-01** 모바일 코드블록 최적화 — font-size 11px, -webkit-overflow-scrolling (그록 피드백, 2026-03-20)
+- [ ] **UX-02** Contact form 추가 (Tally 폼 — mailto 대체)
+- [ ] **UX-03** 히어로 섹션 데모 GIF 추가 (그록 피드백 최우선)
+- [ ] **BUG-01** Cloudflare Bot Fight Mode 완화 — 봇(Grok 등) 403 차단 문제
 
 ---
 
