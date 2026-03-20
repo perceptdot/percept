@@ -488,6 +488,67 @@
       color: var(--muted);
     }
 
+    /* TEAM CALCULATOR */
+    .seat-calc {
+      margin: 20px 0 16px;
+    }
+    .seat-calc-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+    }
+    .seat-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      width: fit-content;
+    }
+    .seat-btn {
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .seat-btn:hover { background: var(--border); }
+    .seat-btn:disabled { color: var(--muted); cursor: not-allowed; }
+    .seat-count {
+      min-width: 52px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .team-price-display {
+      margin: 16px 0 4px;
+    }
+    .team-price-display .price-amount {
+      margin-bottom: 0;
+    }
+    .team-price-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
     /* INSTALL */
     #install {
       border-top: 1px solid var(--border);
@@ -914,17 +975,32 @@
     <!-- TEAM -->
     <div class="price-card">
       <div class="price-tier">Team</div>
-      <div class="price-amount">$49<span>/mo</span></div>
-      <div class="price-desc">For teams with multiple agents.</div>
+
+      <!-- Seat calculator -->
+      <div class="seat-calc">
+        <div class="seat-calc-label">Number of seats</div>
+        <div class="seat-stepper">
+          <button class="seat-btn" id="seat-minus" onclick="adjustSeats(-1)" disabled>−</button>
+          <div class="seat-count" id="seat-display">2</div>
+          <button class="seat-btn" id="seat-plus" onclick="adjustSeats(1)">+</button>
+        </div>
+      </div>
+
+      <div class="team-price-display">
+        <div class="price-amount">$<span id="team-price">30</span><span>/mo</span></div>
+        <div class="team-price-note" id="team-price-note">$15 × 2 seats</div>
+      </div>
+
+      <div class="price-desc" style="margin-top:12px;">For teams with multiple agents.</div>
       <ul class="price-features">
         <li>Everything in Pro</li>
-        <li>Up to 5 team members</li>
+        <li>1 API key per seat</li>
         <li>Shared ROI dashboard</li>
         <li>Aggregated agent reports</li>
         <li>Webhook notifications</li>
         <li>Custom integration support</li>
       </ul>
-      <a class="btn btn-outline" href="mailto:hello@perceptdot.com" style="width: 100%; justify-content: center;">Contact Us</a>
+      <a class="btn btn-outline" id="team-cta" href="mailto:hello@perceptdot.com" style="width: 100%; justify-content: center;">Get Started — $30/mo</a>
     </div>
   </div>
 </section>
@@ -1296,6 +1372,25 @@
       banner.style.display = 'none';
     });
   })();
+</script>
+
+<script>
+  // Team seat calculator
+  const PRICE_PER_SEAT = 15;
+  const MIN_SEATS = 2;
+  const MAX_SEATS = 50;
+  let seats = 2;
+
+  function adjustSeats(delta) {
+    seats = Math.min(MAX_SEATS, Math.max(MIN_SEATS, seats + delta));
+    const total = seats * PRICE_PER_SEAT;
+    document.getElementById('seat-display').textContent = seats;
+    document.getElementById('team-price').textContent = total;
+    document.getElementById('team-price-note').textContent = '$' + PRICE_PER_SEAT + ' × ' + seats + ' seat' + (seats > 1 ? 's' : '');
+    document.getElementById('team-cta').textContent = 'Get Started — $' + total + '/mo';
+    document.getElementById('seat-minus').disabled = seats <= MIN_SEATS;
+    document.getElementById('seat-plus').disabled = seats >= MAX_SEATS;
+  }
 </script>
 
 </body>
