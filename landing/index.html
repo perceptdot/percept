@@ -491,6 +491,7 @@
     /* INSTALL */
     #install {
       border-top: 1px solid var(--border);
+      overflow-x: hidden;
     }
 
     .install-block {
@@ -498,6 +499,11 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
+      min-width: 0;
+    }
+
+    .install-block > div {
+      min-width: 0;
     }
 
     .code-block {
@@ -505,6 +511,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
+      max-width: 100%;
     }
 
     .code-header {
@@ -550,11 +557,16 @@
       overflow-x: auto;
       font-size: 13px;
       line-height: 1.7;
+      max-width: 100%;
+      -webkit-overflow-scrolling: touch;
+      word-break: normal;
+      white-space: pre;
     }
 
     code {
       font-family: var(--mono);
       color: var(--text);
+      display: block;
     }
 
     .token { color: #7dd3fc; }
@@ -728,17 +740,31 @@
         grid-template-columns: 1fr;
       }
 
+      .install-block > div[style*="grid-column"] {
+        grid-column: 1 !important;
+      }
+
       section {
         padding: 60px 20px;
+        overflow-x: hidden;
       }
 
       pre {
         font-size: 11px;
-        -webkit-overflow-scrolling: touch;
+        padding: 16px;
       }
 
       .code-block {
         margin: 0;
+        width: 100%;
+      }
+
+      .code-header-title {
+        font-size: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 180px;
       }
     }
   </style>
