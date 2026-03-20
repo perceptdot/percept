@@ -290,7 +290,14 @@
         grid-template-columns: 1fr;
       }
       .arrow-connector {
-        display: none;
+        font-size: 0;
+        height: 36px;
+        padding: 0;
+      }
+      .arrow-connector::after {
+        content: '↓';
+        font-size: 20px;
+        color: var(--muted);
       }
     }
 
