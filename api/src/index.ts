@@ -148,6 +148,16 @@ async function sendApiKeyEmail(
       "command": "npx",
       "args": ["-y", "@perceptdot/vercel"],
       "env": { "PERCEPT_API_KEY": "${apiKey}" }
+    },
+    "@perceptdot/sentry": {
+      "command": "npx",
+      "args": ["-y", "@perceptdot/sentry"],
+      "env": { "PERCEPT_API_KEY": "${apiKey}" }
+    },
+    "@perceptdot/github": {
+      "command": "npx",
+      "args": ["-y", "@perceptdot/github"],
+      "env": { "PERCEPT_API_KEY": "${apiKey}" }
     }
   }
 }`
