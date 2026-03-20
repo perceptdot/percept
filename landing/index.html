@@ -293,14 +293,11 @@
         grid-template-columns: 1fr;
       }
       .arrow-connector {
-        font-size: 0;
         height: 36px;
         padding: 0;
       }
       .arrow-connector::after {
         content: '↓';
-        font-size: 20px;
-        color: var(--muted);
       }
     }
 
@@ -346,6 +343,9 @@
       font-size: 20px;
       padding: 0;
       background: var(--bg2);
+    }
+    .arrow-connector::after {
+      content: '→';
     }
 
     /* FEATURES */
@@ -856,14 +856,14 @@
       <h3>Install perceptdot MCP</h3>
       <p>Add perceptdot to your Claude Code or Cursor config in under 60 seconds. No signup required for the free tier.</p>
     </div>
-    <div class="arrow-connector">→</div>
+    <div class="arrow-connector"></div>
     <div class="step">
       <div class="step-num">Step 02</div>
       <span class="step-icon">👁️</span>
       <h3>Agent reads live data</h3>
       <p>Your agent calls perceptdot tools to pull GA4 traffic, Vercel deployment status, and performance metrics in real time.</p>
     </div>
-    <div class="arrow-connector">→</div>
+    <div class="arrow-connector"></div>
     <div class="step">
       <div class="step-num">Step 03</div>
       <span class="step-icon">📊</span>
