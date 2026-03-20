@@ -54,6 +54,33 @@ percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
 에이전트 세계 입소문 = README 전파
 ```
 
+## 계정 관리 (2026-03-20 기준)
+
+### 기본 원칙
+- **신규 계정**: 모두 `thunova0318@gmail.com` 사용
+- **구 계정**: `soondoobu1111@gmail.com` → `thunova0318@gmail.com` 이전 진행 중
+
+### 서비스별 현황
+
+| 서비스 | 현재 계정 | 목표 | 상태 |
+|---|---|---|---|
+| **Cloudflare** | thunova0318@gmail.com | ✅ 이미 신규 계정 | 완료 |
+| **GitHub** | soondoobu1111@gmail.com (계정: soondoobu1111-star) | thunova0318 계정 추가/이전 | ⏸️ 대기 |
+| **Vercel** | soondoobu1111@gmail.com | thunova0318으로 이전 | ⏸️ 대기 |
+| **AWS** | soondoobu1111@gmail.com | thunova0318으로 이전 | ⏸️ 대기 |
+| **Gitbook** | soondoobu1111@gmail.com | thunova0318으로 이전 | ⏸️ 대기 |
+| **npm** | 확인 필요 | thunova0318으로 통일 | ❓ 미확인 |
+
+### 이전 방법 (서비스별)
+- **GitHub**: soondoobu1111-star Settings → Emails → thunova0318 추가. perceptdot org Owner로 thunova0318 계정 초대
+- **Vercel**: Account Settings → 이메일 변경 OR thunova0318 계정을 팀 Owner로 추가 후 기존 제거
+- **AWS**: 루트 계정 → Account Settings → Contact Information 이메일 변경 (인증 필요)
+- **Gitbook**: Space Settings → Members → thunova0318 Admin으로 초대
+
+### perceptdot 전용 계정
+- Cloudflare: thunova0318@gmail.com ✅
+- GitHub org: perceptdot (soondoobu1111-star 소유 → thunova0318 이전 필요)
+
 ## 사용자 선호 (K-사주에서 이어받음)
 - 보고·커밋 한글, 간결하게
 - 토큰 최소화 + 병렬 최대화

@@ -11,12 +11,20 @@
 
 ---
 
-## CRITICAL — 상용화 MVP 필수 (환경 미구비)
+## CRITICAL — 상용화 MVP 필수
 
-- [ ] **INFRA-03** GitHub repo 생성 + 공개 (`perceptdot/percept`) — 기록/노출 시작
-- [ ] **INFRA-04** Cloudflare Workers 배포 (`api.perceptdot.com`) — ROI 측정 작동
-- [ ] **INFRA-05** perceptdot.com 랜딩 페이지 + Stripe — Pages 배포 ✅ (perceptdot-landing.pages.dev), 커스텀 도메인+Stripe 대기
+- ✅ **INFRA-03** GitHub repo 공개 완료 — github.com/perceptdot/percept (2026-03-20)
+- ✅ **INFRA-04** Cloudflare Workers 배포 완료 — perceptdot-api.perceptdot.workers.dev (2026-03-20)
+- [ ] **INFRA-05** 커스텀 도메인 연결 + Stripe — perceptdot.com → Cloudflare Pages/Workers + 결제
 - ✅ **INFRA-06** MCP 서버 빌드 + .mcp.json 경로 업데이트 완료 (2026-03-20)
+
+## CRITICAL — 계정 이전 (soondoobu1111 → thunova0318)
+
+- [ ] **ACCT-01** GitHub: soondoobu1111-star에 thunova0318 이메일 추가 + perceptdot org Owner 이전
+- [ ] **ACCT-02** Vercel: thunova0318@gmail.com으로 이전 (K-사주 배포 포함)
+- [ ] **ACCT-03** AWS: 루트 계정 이메일 soondoobu1111 → thunova0318 변경
+- [ ] **ACCT-04** Gitbook: thunova0318 Admin 초대
+- [ ] **ACCT-05** npm: 퍼블리시 계정 확인 + thunova0318으로 통일
 
 ---
 
