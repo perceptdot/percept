@@ -285,7 +285,7 @@
       margin-top: 56px;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 768px) {
       .steps {
         grid-template-columns: 1fr;
       }
@@ -703,12 +703,12 @@
     }
 
     /* RESPONSIVE */
-    @media (max-width: 700px) {
+    @media (max-width: 768px) {
       nav {
         padding: 16px 20px;
       }
 
-      .nav-links {
+      .nav-links a:not(.btn-primary) {
         display: none;
       }
 
@@ -717,6 +717,10 @@
       }
 
       .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-grid {
         grid-template-columns: 1fr;
       }
 
@@ -734,7 +738,7 @@
       }
 
       .code-block {
-        margin: 0 -4px;
+        margin: 0;
       }
     }
   </style>
