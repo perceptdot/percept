@@ -976,7 +976,7 @@
         <li>Early access to new integrations</li>
         <li class="muted">Team access</li>
       </ul>
-      <a class="btn btn-primary" href="#install" style="width: 100%; justify-content: center;">Start Pro</a>
+      <a class="btn btn-primary" href="https://thunova.gumroad.com/l/zqxmf" target="_blank" rel="noopener" style="width: 100%; justify-content: center;">Start Pro</a>
     </div>
 
     <!-- TEAM -->
@@ -1007,7 +1007,7 @@
         <li>Webhook notifications</li>
         <li>Custom integration support</li>
       </ul>
-      <a class="btn btn-outline" id="team-cta" href="mailto:hello@perceptdot.com" style="width: 100%; justify-content: center;">Get Started — $30/mo</a>
+      <a class="btn btn-outline" id="team-cta" href="https://thunova.gumroad.com/l/wkwgbw" target="_blank" rel="noopener" style="width: 100%; justify-content: center;">Get Started — $30/mo</a>
     </div>
   </div>
 </section>
@@ -1398,41 +1398,9 @@
     document.getElementById('seat-plus').disabled = seats >= MAX_SEATS;
   }
 
-  document.getElementById('team-cta').addEventListener('click', async function(e) {
+  document.getElementById('team-cta').addEventListener('click', function(e) {
     e.preventDefault();
-    const total = seats * PRICE_PER_SEAT;
-    const btn = this;
-    const original = btn.textContent;
-    btn.textContent = 'Processing...';
-    btn.style.opacity = '0.7';
-    btn.style.pointerEvents = 'none';
-
-    try {
-      const res = await fetch('https://perceptdot-api.perceptdot.workers.dev/v1/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ seats, amount_usd: total })
-      });
-      const data = await res.json();
-      console.log('[perceptdot checkout]', data);
-
-      if (data.ok) {
-        btn.textContent = '✓ Session: ' + data.checkout_id;
-        btn.style.opacity = '1';
-      } else {
-        btn.textContent = '✗ ' + (data.error || 'Error');
-        btn.style.opacity = '1';
-      }
-    } catch (err) {
-      btn.textContent = '✗ Network error';
-      btn.style.opacity = '1';
-      console.error('[perceptdot checkout error]', err);
-    }
-
-    setTimeout(() => {
-      btn.textContent = original;
-      btn.style.pointerEvents = '';
-    }, 3000);
+    window.open('https://thunova.gumroad.com/l/wkwgbw', '_blank', 'noopener');
   });
 </script>
 
