@@ -1,0 +1,9 @@
+name = "perceptdot-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[vars]
+ENVIRONMENT = "production"
+
+# Custom domain: api.perceptdot.com (Cloudflare DNS 등록 후 활성화)
+# routes = [{ pattern = "api.perceptdot.com/*", custom_domain = true }]

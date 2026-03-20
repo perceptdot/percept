@@ -1,0 +1,71 @@
+# percept — 프로젝트 메모리
+
+> 이 프로젝트는 K-사주와 **별개**. K-사주 메모리와 혼동 금지.
+> 최초 생성: 2026-03-19 | 업데이트: 2026-03-20
+
+---
+
+## 현재 Phase
+- **0단계 ✅ 완료** (2026-03-19)
+- **1단계 ✅ 완료** (2026-03-19): npm 퍼블리시까지 완료
+  - @perceptdot/ga4@0.1.0, @perceptdot/vercel@0.1.0 → npmjs.com 라이브
+  - Hono 백엔드(api/) + Python SDK(python-sdk/) 기초 완성
+- **2단계 🔄 진행중 (2026-03-20)**: Cloudflare 배포 + GitHub 공개 + 랜딩페이지
+
+## 확정 사항 (2026-03-19)
+
+| 항목 | 결정 |
+|---|---|
+| 서비스명 | `percept` |
+| 패키지명 | `@perceptdot/{서비스}` (npm, @percept 선점됨) |
+| 기술 스택 | 3레이어: TypeScript(MCP서버) + TypeScript+Hono(백엔드API) + Python(SDK) |
+| 배포 | npm(@perceptdot/*) + Cloudflare Workers + pip(percept-python) |
+| 도메인 | **perceptdot.com** ✅ 확정 (구매 완료) |
+| 수익 모델 | B2A2H / Free · $19 · $49/월 |
+| 타겟 에이전트 | MCP 클라이언트 전체 (Claude Code 1순위) |
+| 핵심 차별점 | ROI 측정 + 에이전트 → 주인 자동 보고 |
+
+## 경쟁사 분석 결론 (2026-03-19 리서치)
+- "에이전트 → 오너 ROI 자동 보고" = 경쟁자 0 (공백 확인)
+- Langfuse/Helicone/Datadog = 개발자 내부용, 오너 레이어 없음
+- Smithery/Composio = MCP 연결만, ROI 없음
+- **포지셔닝: 유일한 "에이전트→오너" 방향 서비스**
+
+## 도메인 확정
+- **perceptdot.com** ✅ (2026-03-19 PO 결정)
+- 이유: "점을 연결해 인사이트를 만든다" = 제품 본질(ROI 보고) 일치
+- percept.dev/ai = 사용 중, perceptmcp.com/getpercept.com = 후보였으나 perceptdot 확정
+
+## 미결 CEO 결정사항
+- 첫 번째 통합 서비스 (GA4 / Vercel / EC2 / Sentry)
+
+## Moltbook 전략 (2026-03-20 CEO 확정)
+- **얼리어답터 = AI 에이전트** (인간 20명 → 방향 전환)
+- Moltbook = AI 에이전트 전용 소셜네트워크 (Reddit 스타일, Meta $220M 인수)
+- percept 홍보 채널 + 에이전트 피드백 수집 채널로 동시 활용
+- B2A2H 마케팅 플로우: Moltbook 포스팅 → 에이전트 발견 → 인간 설치 → 결제
+- 인프라: moltbook-skill (Claude Code), moltbook-mcp-server (MCP) 이미 존재
+- GROWTH-02 담당
+
+## B2A2H 모델 요약
+```
+percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
+에이전트 세계 입소문 = README 전파
+```
+
+## 사용자 선호 (K-사주에서 이어받음)
+- 보고·커밋 한글, 간결하게
+- 토큰 최소화 + 병렬 최대화
+- 속도 우선
+- 백로그는 `memory/backlog.md`에서 관리
+- 배포 의무: 코드 수정 후 배포 여부 반드시 명시
+
+## 별도 파일
+- `memory/backlog.md` — 전체 백로그
+- `docs/bizplan.md` — 사업계획서 (확정)
+- `IDEA.md` — 최초 아이디어 기록
+
+## 시장 수치 (리서치 완료 2026-03-19)
+- TAM: $183B (2033), CAGR 49.6%
+- 직접 경쟁사: Composio ($29M 시리즈A) — ROI 측정 없음
+- Claude Code 점유율: 46% (개발자 설문 1위)

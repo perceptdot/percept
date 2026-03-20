@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "percept-python"
+version = "0.1.0"
+description = "AI agent ROI measurement for Python agents — perceptdot.com"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "percept", email = "hello@perceptdot.com" }]
+keywords = ["ai", "agent", "roi", "langchain", "crewai", "autogen", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = ["httpx>=0.24.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-asyncio>=0.21", "httpx>=0.24.0"]
+
+[project.urls]
+Homepage = "https://perceptdot.com"
+Repository = "https://github.com/perceptdot/percept-python"
+Documentation = "https://perceptdot.com/docs/python"
+"Bug Tracker" = "https://github.com/perceptdot/percept-python/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["percept"]

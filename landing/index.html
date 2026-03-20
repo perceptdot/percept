@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>perceptdot — Give Your AI Agent Eyes</title>
+  <meta name="description" content="perceptdot gives AI agents real-time visibility into GA4, Vercel, and more — with automatic ROI reports delivered to you." />
+  <meta property="og:title" content="perceptdot — Give Your AI Agent Eyes" />
+  <meta property="og:description" content="MCP platform that gives AI agents external service visibility and measures ROI automatically." />
+  <meta property="og:url" content="https://perceptdot.com" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #222222;
+      --text: #f0f0f0;
+      --muted: #888888;
+      --accent: #7c6dfa;
+      --accent2: #a78bfa;
+      --green: #22c55e;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent2);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .nav-logo span {
+      color: var(--accent2);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      text-decoration: none;
+    }
+
+    /* HERO */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 100px 24px 80px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-actions .btn {
+      padding: 13px 26px;
+      font-size: 15px;
+    }
+
+    /* LOGOS */
+    .works-with {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .works-with p {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .logo-row {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo-chip {
+      font-size: 14px;
+      font-weight: 600;
+      color: #444;
+      letter-spacing: -0.3px;
+    }
+
+    /* SECTIONS */
+    section {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent2);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* HOW IT WORKS */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 56px;
+    }
+
+    .step {
+      background: var(--bg2);
+      padding: 36px 32px;
+      position: relative;
+    }
+
+    .step-num {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent2);
+      margin-bottom: 16px;
+    }
+
+    .step-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .step h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .arrow-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 20px;
+      padding: 0;
+      background: var(--bg2);
+    }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* PRICING */
+    #pricing {
+      border-top: 1px solid var(--border);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+
+    .price-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .price-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, #0f0d1f 0%, #111111 100%);
+      position: relative;
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .price-tier {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .price-amount {
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .price-amount span {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+
+    .price-desc {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+      flex: 1;
+    }
+
+    .price-features li {
+      font-size: 14px;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .price-features li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .price-features li.muted {
+      color: var(--muted);
+    }
+
+    .price-features li.muted::before {
+      content: '–';
+      color: var(--muted);
+    }
+
+    /* INSTALL */
+    #install {
+      border-top: 1px solid var(--border);
+    }
+
+    .install-block {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .code-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+
+    .code-header-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.15s;
+    }
+
+    .copy-btn:hover {
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
+    .copy-btn.copied {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    pre {
+      padding: 20px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: var(--mono);
+      color: var(--text);
+    }
+
+    .token { color: #7dd3fc; }
+    .string { color: #86efac; }
+    .key { color: #fca5a5; }
+    .comment { color: var(--muted); font-style: italic; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .footer-logo span {
+      color: var(--accent2);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #333;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      nav {
+        padding: 16px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 64px 20px 56px;
+      }
+
+      .install-block {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 60px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">percept<span>dot</span></div>
+  <div class="nav-links">
+    <a href="#how-it-works">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#install">Install</a>
+    <a class="btn btn-primary" href="#install">Get Started Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">
+    <span class="badge-dot"></span>
+    MCP Platform · Now Available
+  </div>
+  <h1>Give Your AI Agent<br /><span class="highlight">Eyes</span></h1>
+  <p class="hero-sub">
+    perceptdot connects Claude Code, Cursor, and Windsurf to your real-world services — GA4, Vercel, and more — so your agent can see what's happening, measure ROI, and report back automatically.
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#install">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12l10 10 10-10"/></svg>
+      Install from npm
+    </a>
+    <a class="btn btn-outline" href="#how-it-works">See how it works</a>
+  </div>
+</div>
+
+<!-- WORKS WITH -->
+<div class="works-with">
+  <p>Works with any MCP client</p>
+  <div class="logo-row">
+    <span class="logo-chip">Claude Code</span>
+    <span class="logo-chip">·</span>
+    <span class="logo-chip">Cursor</span>
+    <span class="logo-chip">·</span>
+    <span class="logo-chip">Windsurf</span>
+    <span class="logo-chip">·</span>
+    <span class="logo-chip">Cline</span>
+    <span class="logo-chip">·</span>
+    <span class="logo-chip">Continue</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <p class="section-label">How it works</p>
+  <h2 class="section-title">Your agent does the work.<br />You get the report.</h2>
+  <p class="section-sub">perceptdot sits between your AI agent and your external services. No dashboards to check. No manual analysis. Just answers.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">Step 01</div>
+      <span class="step-icon">🔌</span>
+      <h3>Install perceptdot MCP</h3>
+      <p>Add perceptdot to your Claude Code or Cursor config in under 60 seconds. No signup required for the free tier.</p>
+    </div>
+    <div class="step" style="padding: 36px 8px; display: flex; align-items: center; justify-content: center; max-width: 40px;">
+      <span style="color: #333; font-size: 22px; writing-mode: vertical-rl;">→</span>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 02</div>
+      <span class="step-icon">👁️</span>
+      <h3>Agent reads live data</h3>
+      <p>Your agent calls perceptdot tools to pull GA4 traffic, Vercel deployment status, and performance metrics in real time.</p>
+    </div>
+    <div class="step" style="padding: 36px 8px; display: flex; align-items: center; justify-content: center; max-width: 40px;">
+      <span style="color: #333; font-size: 22px; writing-mode: vertical-rl;">→</span>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 03</div>
+      <span class="step-icon">📊</span>
+      <h3>ROI report delivered</h3>
+      <p>perceptdot calculates what the agent's work actually saved — time, cost, tokens — and delivers a clear summary to you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="border-top: 1px solid var(--border);">
+  <p class="section-label">Features</p>
+  <h2 class="section-title">Everything your agent needs<br />to see the full picture</h2>
+  <p class="section-sub">Built as lightweight MCP servers. Each integration is independent — install only what you need.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">📈</span>
+      <h3>GA4 Integration</h3>
+      <p>Real-time pageviews, sessions, conversion rates, and top pages — queryable directly from your AI agent.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🚀</span>
+      <h3>Vercel Deployment Tracking</h3>
+      <p>Monitor deployment status, build times, edge function errors, and rollbacks without leaving your editor.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🪙</span>
+      <h3>Token Savings Tracking</h3>
+      <p>perceptdot measures how much context it saved your agent by providing structured data instead of raw HTML scraping.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📋</span>
+      <h3>Automatic ROI Reports</h3>
+      <p>At the end of each session, get a plain-language summary of what the agent accomplished and what it cost.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <h3>Zero Config Start</h3>
+      <p>One npm install. One JSON snippet. Works with your existing API keys — no new accounts, no OAuth dance.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔒</span>
+      <h3>Local First</h3>
+      <p>Data flows directly from the service to your agent. perceptdot never stores your API keys or analytics data.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <p class="section-label">Pricing</p>
+  <h2 class="section-title">Start free. Scale when you need it.</h2>
+  <p class="section-sub">No credit card required for the free plan. Upgrade only when your agent outgrows it.</p>
+
+  <div class="pricing-grid">
+    <!-- FREE -->
+    <div class="price-card">
+      <div class="price-tier">Free</div>
+      <div class="price-amount">$0</div>
+      <div class="price-desc">Forever free. No card required.</div>
+      <ul class="price-features">
+        <li>1 integration (GA4 or Vercel)</li>
+        <li>100 API calls / day</li>
+        <li>Basic ROI summary</li>
+        <li class="muted">Multiple integrations</li>
+        <li class="muted">Unlimited calls</li>
+        <li class="muted">Team access</li>
+      </ul>
+      <a class="btn btn-outline" href="#install" style="width: 100%; justify-content: center;">Get Started Free</a>
+    </div>
+
+    <!-- PRO -->
+    <div class="price-card featured">
+      <div class="featured-badge">Most Popular</div>
+      <div class="price-tier">Pro</div>
+      <div class="price-amount">$19<span>/mo</span></div>
+      <div class="price-desc">For developers shipping fast.</div>
+      <ul class="price-features">
+        <li>All integrations (GA4, Vercel, +more)</li>
+        <li>Unlimited API calls</li>
+        <li>Full ROI reports with history</li>
+        <li>Priority support</li>
+        <li>Early access to new integrations</li>
+        <li class="muted">Team access</li>
+      </ul>
+      <a class="btn btn-primary" href="#install" style="width: 100%; justify-content: center;">Start Pro</a>
+    </div>
+
+    <!-- TEAM -->
+    <div class="price-card">
+      <div class="price-tier">Team</div>
+      <div class="price-amount">$49<span>/mo</span></div>
+      <div class="price-desc">For teams with multiple agents.</div>
+      <ul class="price-features">
+        <li>Everything in Pro</li>
+        <li>Up to 5 team members</li>
+        <li>Shared ROI dashboard</li>
+        <li>Aggregated agent reports</li>
+        <li>Webhook notifications</li>
+        <li>Custom integration support</li>
+      </ul>
+      <a class="btn btn-outline" href="mailto:hello@perceptdot.com" style="width: 100%; justify-content: center;">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section id="install">
+  <p class="section-label">Install</p>
+  <h2 class="section-title">Up and running in 60 seconds</h2>
+  <p class="section-sub">perceptdot ships as standard MCP servers. Install the packages, add the config, and your agent gains new senses.</p>
+
+  <div class="install-block">
+    <!-- Step 1 -->
+    <div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">1 — Install the packages</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-header-title">Terminal</span>
+          <button class="copy-btn" onclick="copyCode(this, 'cmd-install')">Copy</button>
+        </div>
+        <pre><code id="cmd-install">npm install -g @perceptdot/ga4 @perceptdot/vercel</code></pre>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">2 — Add to Claude Code config</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-header-title">~/.claude/claude_desktop_config.json</span>
+          <button class="copy-btn" onclick="copyCode(this, 'cmd-config')">Copy</button>
+        </div>
+        <pre><code id="cmd-config"><span class="token">{</span>
+  <span class="key">"mcpServers"</span><span class="token">:</span> <span class="token">{</span>
+    <span class="key">"perceptdot-ga4"</span><span class="token">:</span> <span class="token">{</span>
+      <span class="key">"command"</span><span class="token">:</span> <span class="string">"npx"</span><span class="token">,</span>
+      <span class="key">"args"</span><span class="token">:</span> <span class="token">[</span><span class="string">"@perceptdot/ga4"</span><span class="token">]</span>
+    <span class="token">},</span>
+    <span class="key">"perceptdot-vercel"</span><span class="token">:</span> <span class="token">{</span>
+      <span class="key">"command"</span><span class="token">:</span> <span class="string">"npx"</span><span class="token">,</span>
+      <span class="key">"args"</span><span class="token">:</span> <span class="token">[</span><span class="string">"@perceptdot/vercel"</span><span class="token">]</span>
+    <span class="token">}</span>
+  <span class="token">}</span>
+<span class="token">}</span></code></pre>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div style="grid-column: 1 / -1;">
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">3 — Ask your agent anything</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-header-title">Example prompts</span>
+        </div>
+        <pre><code><span class="comment"># In Claude Code or Cursor:</span>
+
+<span class="string">"How many users visited the site today? What pages are they landing on?"</span>
+
+<span class="string">"Did the last Vercel deployment succeed? How long did it take?"</span>
+
+<span class="string">"Give me an ROI summary of what you built this week."</span></code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">percept<span>dot</span></div>
+    <div class="footer-links">
+      <a href="https://perceptdot.com">perceptdot.com</a>
+      <a href="https://www.npmjs.com/search?q=%40perceptdot" target="_blank" rel="noopener">npm</a>
+      <a href="https://github.com/perceptdot" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:hello@perceptdot.com">Contact</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 perceptdot. Built for AI agents, by humans.</p>
+  </div>
+</footer>
+
+<script>
+  function copyCode(btn, id) {
+    const el = document.getElementById(id);
+    const text = el ? el.innerText : '';
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>

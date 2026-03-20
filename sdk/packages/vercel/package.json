@@ -1,0 +1,33 @@
+{
+  "name": "@perceptdot/vercel",
+  "version": "0.1.1",
+  "description": "AI agent vision for Vercel deployments — with ROI measurement. perceptdot.com",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "vercel": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "vercel",
+    "deployment",
+    "roi",
+    "agent",
+    "percept",
+    "observability"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
+  }
+}
