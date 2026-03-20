@@ -10,7 +10,7 @@ ENVIRONMENT = "production"
 # 또는 Cloudflare Dashboard → Workers → KV → Create namespace "API_KEYS"
 [[kv_namespaces]]
 binding = "API_KEYS"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "ab9b493f77ae443197620421f259365b"
 
 # Custom domain: api.perceptdot.com
 [env.production]
