@@ -16,7 +16,7 @@
 - ✅ **INFRA-03** GitHub repo 공개 완료 — github.com/perceptdot/percept (2026-03-20)
 - ✅ **INFRA-04** Cloudflare Workers 배포 완료 — perceptdot-api.perceptdot.workers.dev (2026-03-20)
 - ✅ **INFRA-05** 커스텀 도메인 연결 (Pages) — perceptdot.com → Cloudflare Pages (2026-03-20, AWS→Cloudflare 네임서버 변경, Zone 활성화, Pages 연결 완료)
-- [ ] **INFRA-06** API 커스텀 도메인 — api.perceptdot.com → Cloudflare Workers + wrangler 배포 (대기)
+- ✅ **INFRA-06** API 커스텀 도메인 — api.perceptdot.com → Cloudflare Workers 배포 (2026-03-20, wrangler.toml 수정 + npm run deploy + CLOUDFLARE_API_TOKEN 설정)
 - ✅ **MCP 서버 빌드** + .mcp.json 경로 업데이트 완료 (2026-03-20)
 
 ## CRITICAL — 계정 이전 (soondoobu1111 → thunova0318)
