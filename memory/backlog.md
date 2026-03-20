@@ -15,8 +15,9 @@
 
 - ✅ **INFRA-03** GitHub repo 공개 완료 — github.com/perceptdot/percept (2026-03-20)
 - ✅ **INFRA-04** Cloudflare Workers 배포 완료 — perceptdot-api.perceptdot.workers.dev (2026-03-20)
-- [ ] **INFRA-05** 커스텀 도메인 연결 + Stripe — perceptdot.com → Cloudflare Pages/Workers + 결제
-- ✅ **INFRA-06** MCP 서버 빌드 + .mcp.json 경로 업데이트 완료 (2026-03-20)
+- ✅ **INFRA-05** 커스텀 도메인 연결 (Pages) — perceptdot.com → Cloudflare Pages (2026-03-20, AWS→Cloudflare 네임서버 변경, Zone 활성화, Pages 연결 완료)
+- [ ] **INFRA-06** API 커스텀 도메인 — api.perceptdot.com → Cloudflare Workers + wrangler 배포 (대기)
+- ✅ **MCP 서버 빌드** + .mcp.json 경로 업데이트 완료 (2026-03-20)
 
 ## CRITICAL — 계정 이전 (soondoobu1111 → thunova0318)
 
@@ -63,10 +64,11 @@
 - ✅ **LEGAL-03** 한국 SaaS 법적 요건 리서치 완료 (docs/outputs/legal_compliance_report.md, 2026-03-20)
 - [ ] **LEGAL-04** 통신판매업 신고 — THUNOVA 722-60-00889로 정부24 신고 (Stripe 결정 후)
 - ✅ **LEGAL-05** 결제 구조 확정: **Lemon Squeezy** (MoR, 2026-03-20 CEO 결정) — K-사주와 동일 계정 통합 관리
-- [ ] **PAY-01** Lemon Squeezy 계정 생성 + Free/Pro $19/Team $49 상품 등록
+- ✅ **PAY-01** Lemon Squeezy 계정 생성 (2026-03-20, 인증 제출 완료, 승인 대기 중. 상품 등록은 승인 후 가능)
 - ✅ **PROD-01** AI 최적화 설계 확정: 계정없음·로그인없음·대시보드없음·API키 N개 (2026-03-20)
 - ✅ **PROD-02** Landing FAQ 섹션 추가 + 배포 완료 (10개 항목, 아코디언, 2026-03-20)
-- [ ] **PAY-02** Landing Pricing 섹션 Lemon Squeezy 체크아웃 버튼 연동
+- ⏳ **PAY-02** Lemon Squeezy 승인 대기 (KYC 심사, 24~48시간 예상) → 상품 생성/배포
+- [ ] **PAY-03** Landing Pricing 섹션 Lemon Squeezy 체크아웃 버튼 연동
 - [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 
@@ -79,6 +81,7 @@
 - ✅ **INFRA-08** Landing page 빌드 완료 — landing/index.html 24KB (2026-03-20)
 - ✅ **INFRA-09** Cloudflare Pages 배포 완료 — perceptdot-landing.pages.dev (2026-03-20)
 - ✅ **INFRA-10** MCP 서버 dist 빌드 + .mcp.json 경로 업데이트 (2026-03-20)
+- ✅ **INFRA-11** perceptdot.com 네임서버 변경 (AWS Route 53 → Cloudflare DNS) + Pages 커스텀 도메인 연결 (2026-03-20)
 
 - ✅ **IDEA-01** 아이디어 정의 + 시장 규모 조사 (2026-03-19)
 - ✅ **SETUP-01** 프로젝트 폴더 구조 + CLAUDE.md + 사업계획서 초안 (2026-03-19)
