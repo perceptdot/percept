@@ -964,6 +964,117 @@
   </div>
 </section>
 
+<!-- FAQ -->
+<section id="faq">
+  <p class="section-label">FAQ</p>
+  <h2 class="section-title">Common questions</h2>
+  <p class="section-sub">Everything you need to know before your agent takes its first look at the world.</p>
+
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>Do I need to create an account?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">No. perceptdot is account-free. You get an API key when you subscribe — paste it into your agent's config and you're done. No passwords, no dashboards.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>How does my AI agent use perceptdot?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">Your agent loads perceptdot as an MCP server. Once loaded, it can call tools like <code>ga4_realtime</code>, <code>vercel_deployments</code>, or <code>sentry_issues</code> directly — no human in the loop.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>Which AI agents are supported?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">Any MCP-compatible client: Claude Code, Cursor, Windsurf, Cline, and more. If it speaks MCP, it works with perceptdot.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>How do I add team members (Team plan)?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">You receive 5 API keys — one per seat. Share each key with a team member. They add it to their agent config. No invitations, no logins required.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>How do I cancel or change my subscription?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">Check your receipt email. It contains a link to your customer portal where you can upgrade, downgrade, or cancel — no login needed.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>Does perceptdot store my analytics data?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">No. perceptdot calls your services (GA4, Vercel, etc.) directly and returns data to your agent. Nothing is stored on our servers.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>Is my API key safe?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">Your API key stays in your local config file (<code>.mcp.json</code>). It never leaves your machine except to authenticate with perceptdot. Treat it like a password.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>What happens when I hit the free tier limit?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">After 100 API calls/day, your agent receives a structured message explaining the limit and a link to upgrade. It won't crash — it gracefully notifies.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>Can my agent automatically report ROI to me?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">Yes. Call <code>percept_roi_summary</code> at any time and your agent will summarize tokens saved, cost avoided, and time recovered — in plain language you can share with your team.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>What services does perceptdot currently support?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">GA4 (analytics), Vercel (deployments), Sentry (errors), and GitHub (PRs, workflows, issues). More integrations ship every sprint — check the changelog at <a href="https://github.com/perceptdot" target="_blank" rel="noopener">github.com/perceptdot</a>.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -981,6 +1092,19 @@
     <p class="footer-copy" style="margin-top:6px; font-size:12px;">사업자등록번호: 722-60-00889 | 통신판매업신고: 신고 진행 중</p>
   </div>
 </footer>
+
+<script>
+  function toggleFaq(btn) {
+    var expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    var answer = btn.nextElementSibling;
+    if (!expanded) {
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    } else {
+      answer.style.maxHeight = '0';
+    }
+  }
+</script>
 
 <script>
   function copyCode(btn, id) {
