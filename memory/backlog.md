@@ -70,7 +70,7 @@
 - ✅ **PROD-02** Landing FAQ 섹션 추가 + 배포 완료 (10개 항목, 아코디언, 2026-03-20)
 - ⏳ **PAY-02** Lemon Squeezy 승인 대기 (KYC 심사, 24~48시간 예상) → 상품 생성/배포
 - ✅ **PAY-04** Lemon Squeezy Payout 설정 완료 (한국계좌 KRW, W-8BEN 제출, invoice info, 2026-03-20)
-- [ ] **PAY-03** Landing Pricing 섹션 Lemon Squeezy 체크아웃 버튼 연동
+- ✅ **PAY-03** Gumroad 결제 브릿지 완료 (2026-03-21) — Pro $19/mo + Team $75/mo(5seats) 라이브, 랜딩 버튼 연결, No refunds 설정
 - [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 - ✅ **UX-01** 모바일 코드블록 최적화 — font-size 11px, -webkit-overflow-scrolling (그록 피드백, 2026-03-20)
