@@ -602,6 +602,93 @@
       color: #333;
     }
 
+    /* FAQ */
+    #faq {
+      border-top: 1px solid var(--border);
+    }
+
+    .faq-list {
+      margin-top: 56px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-question {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 28px;
+      background: var(--bg2);
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .faq-question:hover {
+      color: var(--accent2);
+      background: var(--bg3);
+    }
+
+    .faq-question[aria-expanded="true"] {
+      color: var(--accent2);
+      background: var(--bg3);
+    }
+
+    .faq-icon {
+      flex-shrink: 0;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1;
+      width: 20px;
+      text-align: center;
+      transition: color 0.2s, transform 0.25s;
+    }
+
+    .faq-question[aria-expanded="true"] .faq-icon {
+      color: var(--accent2);
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .faq-answer-inner {
+      padding: 0 28px 22px 28px;
+      background: var(--bg3);
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .faq-answer-inner code {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 13px;
+      color: var(--accent2);
+    }
+
     /* RESPONSIVE */
     @media (max-width: 700px) {
       nav {
@@ -636,6 +723,7 @@
     <a href="#features">Features</a>
     <a href="#pricing">Pricing</a>
     <a href="#install">Install</a>
+    <a href="#faq">FAQ</a>
     <a class="btn btn-primary" href="#install">Get Started Free</a>
   </div>
 </nav>
