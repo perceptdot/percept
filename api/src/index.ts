@@ -2,19 +2,28 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
+// ─── 환경 바인딩 타입 ──────────────────────────────────────────────────────────
+
+interface Env {
+  /** Cloudflare KV: API 키 저장소 */
+  API_KEYS: KVNamespace;
+  /** Resend API 키 (wrangler secret) */
+  RESEND_API_KEY: string;
+  /** Gumroad 웹훅 시크릿 (선택) */
+  GUMROAD_WEBHOOK_SECRET?: string;
+}
+
 // ─── 타입 정의 ────────────────────────────────────────────────────────────────
 
-/** MCP 서버가 POST /v1/metrics 로 보내는 페이로드 */
 interface MetricsPayload {
   session_id: string;
-  tool_name: string;      // 예: "@perceptdot/ga4"
+  tool_name: string;
   tokens_saved: number;
   time_saved_ms: number;
   calls_count: number;
-  timestamp: string;      // ISO 8601
+  timestamp: string;
 }
 
-/** 세션별 누적 집계 */
 interface SessionAggregate {
   session_id: string;
   total_tokens_saved: number;
@@ -25,7 +34,6 @@ interface SessionAggregate {
   last_seen: string;
 }
 
-/** GET /v1/roi/:session_id 응답 */
 interface RoiResponse {
   session_id: string;
   total_tokens_saved: number;
@@ -36,27 +44,45 @@ interface RoiResponse {
   upsell_message?: string;
 }
 
-/** POST /v1/report 요청 */
 interface ReportRequest {
-  session_id?: string;    // 생략 시 전체 세션 집계
+  session_id?: string;
   format?: "summary" | "detail";
 }
 
-// ─── 인메모리 스토리지 (MVP: 추후 Cloudflare KV로 교체) ─────────────────────
+/** Gumroad 웹훅 페이로드 (form-encoded) */
+interface GumroadWebhookPayload {
+  seller_id?: string;
+  product_id?: string;
+  product_name?: string;
+  permalink?: string;
+  email?: string;
+  price?: string;        // 센트 단위 문자열
+  sale_timestamp?: string;
+  order_number?: string;
+  license_key?: string;
+  test?: string;         // "true" if test purchase
+}
+
+/** KV에 저장되는 API 키 레코드 */
+interface ApiKeyRecord {
+  key: string;
+  email: string;
+  plan: "pro" | "team";
+  created_at: string;
+  order_number?: string;
+}
+
+// ─── 인메모리 스토리지 (MVP) ──────────────────────────────────────────────────
 
 const sessionStore = new Map<string, SessionAggregate>();
 
 // ─── ROI 계산 상수 ────────────────────────────────────────────────────────────
 
-/** 토큰 비용: GPT-4o 기준 $0.000005 / token (input 평균) */
 const COST_PER_TOKEN_USD = 0.000005;
-
-/** percept Pro 월 구독가 기준 (ROI 판단 임계값) */
 const PRO_MONTHLY_USD = 19;
 
 // ─── 유틸리티 ─────────────────────────────────────────────────────────────────
 
-/** 세션 집계 조회 또는 초기화 */
 function getOrCreateSession(session_id: string): SessionAggregate {
   if (!sessionStore.has(session_id)) {
     sessionStore.set(session_id, {
@@ -72,7 +98,6 @@ function getOrCreateSession(session_id: string): SessionAggregate {
   return sessionStore.get(session_id)!;
 }
 
-/** ROI 계산 및 응답 포맷 생성 */
 function buildRoiResponse(agg: SessionAggregate): RoiResponse {
   const total_cost_saved_usd = agg.total_tokens_saved * COST_PER_TOKEN_USD;
   const total_time_saved_min = agg.total_time_saved_ms / 1000 / 60;
@@ -92,35 +117,114 @@ function buildRoiResponse(agg: SessionAggregate): RoiResponse {
   };
 }
 
+/** pd_live_ 접두사 + 32자 랜덤 hex API 키 생성 */
+function generateApiKey(): string {
+  const arr = new Uint8Array(16);
+  crypto.getRandomValues(arr);
+  const hex = Array.from(arr)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return `pd_live_${hex}`;
+}
+
+/** Resend로 API 키 이메일 발송 */
+async function sendApiKeyEmail(
+  resendApiKey: string,
+  to: string,
+  apiKey: string,
+  plan: "pro" | "team"
+): Promise<{ ok: boolean; error?: string }> {
+  const planLabel = plan === "team" ? "Team ($75/mo · 5 seats)" : "Pro ($19/mo)";
+  const mcpExample =
+    plan === "team"
+      ? `{
+  "mcpServers": {
+    "@perceptdot/ga4": {
+      "command": "npx",
+      "args": ["-y", "@perceptdot/ga4"],
+      "env": { "PERCEPT_API_KEY": "${apiKey}" }
+    },
+    "@perceptdot/vercel": {
+      "command": "npx",
+      "args": ["-y", "@perceptdot/vercel"],
+      "env": { "PERCEPT_API_KEY": "${apiKey}" }
+    }
+  }
+}`
+      : `{
+  "mcpServers": {
+    "@perceptdot/ga4": {
+      "command": "npx",
+      "args": ["-y", "@perceptdot/ga4"],
+      "env": { "PERCEPT_API_KEY": "${apiKey}" }
+    }
+  }
+}`;
+
+  const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family:monospace;background:#0a0a0a;color:#e0e0e0;padding:32px;max-width:600px;">
+  <h1 style="color:#00ff88;font-size:20px;">perceptdot ${planLabel}</h1>
+  <p style="color:#aaa;">Your API key is ready. Add it to your MCP config.</p>
+
+  <h2 style="color:#e0e0e0;font-size:14px;margin-top:24px;">API KEY</h2>
+  <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:14px;color:#00ff88;word-break:break-all;">${apiKey}</pre>
+
+  <h2 style="color:#e0e0e0;font-size:14px;margin-top:24px;">MCP CONFIG (.mcp.json)</h2>
+  <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:12px;overflow-x:auto;">${mcpExample}</pre>
+
+  <p style="color:#666;font-size:12px;margin-top:24px;">
+    Docs: <a href="https://perceptdot.com" style="color:#00ff88;">perceptdot.com</a><br>
+    Support: <a href="mailto:support@perceptdot.com" style="color:#00ff88;">support@perceptdot.com</a>
+  </p>
+</body>
+</html>`;
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "perceptdot <noreply@perceptdot.com>",
+        to: [to],
+        subject: `[perceptdot] Your API Key — ${planLabel}`,
+        html,
+      }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      return { ok: false, error: `Resend error ${res.status}: ${text}` };
+    }
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: String(e) };
+  }
+}
+
 // ─── Hono 앱 초기화 ───────────────────────────────────────────────────────────
 
-const app = new Hono();
+const app = new Hono<{ Bindings: Env }>();
 
-// 미들웨어
 app.use("*", logger());
 app.use("*", cors({ origin: "*" }));
 
 // ─── 엔드포인트 ───────────────────────────────────────────────────────────────
 
-/**
- * GET /health
- * 헬스체크. 배포 확인 및 모니터링용.
- */
 app.get("/health", (c) => {
   return c.json({
     status: "ok",
     service: "perceptdot-api",
-    version: "0.1.0",
+    version: "0.2.0",
     timestamp: new Date().toISOString(),
     sessions_tracked: sessionStore.size,
   });
 });
 
-/**
- * POST /v1/metrics
- * MCP 서버(@perceptdot/ga4 등)가 호출 후 절약 수치를 보고.
- * 세션별 누적 집계 후 현재 ROI 반환.
- */
 app.post("/v1/metrics", async (c) => {
   let payload: MetricsPayload;
 
@@ -130,7 +234,6 @@ app.post("/v1/metrics", async (c) => {
     return c.json({ error: "요청 바디가 유효한 JSON이 아닙니다." }, 400);
   }
 
-  // 필수 필드 검증
   const required: (keyof MetricsPayload)[] = [
     "session_id",
     "tool_name",
@@ -145,7 +248,6 @@ app.post("/v1/metrics", async (c) => {
     }
   }
 
-  // 세션 집계 업데이트
   const agg = getOrCreateSession(payload.session_id);
   agg.total_tokens_saved += payload.tokens_saved;
   agg.total_time_saved_ms += payload.time_saved_ms;
@@ -163,55 +265,33 @@ app.post("/v1/metrics", async (c) => {
   );
 });
 
-/**
- * GET /v1/roi/:session_id
- * 특정 세션의 누적 ROI 조회.
- * roi_positive=true 이면 B2A2H 업셀 메시지 포함.
- */
 app.get("/v1/roi/:session_id", (c) => {
   const session_id = c.req.param("session_id");
   const agg = sessionStore.get(session_id);
 
   if (!agg) {
-    return c.json(
-      {
-        error: "세션을 찾을 수 없습니다.",
-        session_id,
-      },
-      404
-    );
+    return c.json({ error: "세션을 찾을 수 없습니다.", session_id }, 404);
   }
 
   return c.json(buildRoiResponse(agg));
 });
 
-/**
- * POST /v1/report
- * ROI 리포트 생성.
- * session_id 지정 시 단일 세션, 생략 시 전체 세션 요약.
- * format="detail" 이면 세션 목록 포함.
- */
 app.post("/v1/report", async (c) => {
   let body: ReportRequest = {};
 
   try {
     body = await c.req.json<ReportRequest>();
   } catch {
-    // 바디 없어도 허용
     body = {};
   }
 
   const format = body.format ?? "summary";
 
-  // 단일 세션 리포트
   if (body.session_id) {
     const agg = sessionStore.get(body.session_id);
     if (!agg) {
       return c.json(
-        {
-          error: "세션을 찾을 수 없습니다.",
-          session_id: body.session_id,
-        },
+        { error: "세션을 찾을 수 없습니다.", session_id: body.session_id },
         404
       );
     }
@@ -230,7 +310,6 @@ app.post("/v1/report", async (c) => {
     });
   }
 
-  // 전체 세션 요약 리포트
   const allSessions = Array.from(sessionStore.values());
   const totals = allSessions.reduce(
     (acc, agg) => ({
@@ -267,11 +346,6 @@ app.post("/v1/report", async (c) => {
   });
 });
 
-/**
- * POST /v1/checkout
- * 팀 플랜 체크아웃 세션 생성 (임시: Lemon Squeezy 연동 전 검증 + 세션 ID 발급).
- * PAY-02 승인 후 checkout_url 추가 예정.
- */
 app.post("/v1/checkout", async (c) => {
   let body: { seats: number; amount_usd: number };
 
@@ -311,14 +385,104 @@ app.post("/v1/checkout", async (c) => {
   );
 });
 
+/**
+ * POST /v1/webhook/gumroad
+ * Gumroad 결제 완료 웹훅 → API 키 자동 발급 → Resend 이메일 발송
+ *
+ * Gumroad 설정: https://app.gumroad.com/settings/advanced → Webhooks
+ * URL: https://api.perceptdot.com/v1/webhook/gumroad
+ */
+app.post("/v1/webhook/gumroad", async (c) => {
+  // Gumroad는 application/x-www-form-urlencoded 로 전송
+  let body: GumroadWebhookPayload;
+
+  try {
+    const formData = await c.req.formData();
+    body = Object.fromEntries(formData.entries()) as GumroadWebhookPayload;
+  } catch {
+    return c.json({ error: "페이로드 파싱 실패" }, 400);
+  }
+
+  const { email, product_name, order_number, test } = body;
+
+  // 이메일 필수
+  if (!email) {
+    return c.json({ error: "email 누락" }, 400);
+  }
+
+  // 플랜 판별 (permalink 또는 product_name 기준)
+  const permalink = body.permalink ?? "";
+  const isTeam =
+    permalink.includes("wkwgbw") ||
+    (product_name ?? "").toLowerCase().includes("team");
+  const plan: "pro" | "team" = isTeam ? "team" : "pro";
+
+  // 테스트 구매 로그만 남기고 실제 키 발급도 진행 (개발 확인용)
+  const isTest = test === "true";
+
+  // API 키 생성
+  const apiKey = generateApiKey();
+
+  // Cloudflare KV 저장 (키: apikey:<email>, 만료 없음)
+  const record: ApiKeyRecord = {
+    key: apiKey,
+    email,
+    plan,
+    created_at: new Date().toISOString(),
+    order_number: order_number ?? undefined,
+  };
+
+  try {
+    await c.env.API_KEYS.put(`apikey:${email}`, JSON.stringify(record));
+  } catch (e) {
+    console.error("KV write failed:", e);
+    return c.json({ error: "KV 저장 실패" }, 500);
+  }
+
+  // Resend 이메일 발송
+  const emailResult = await sendApiKeyEmail(
+    c.env.RESEND_API_KEY,
+    email,
+    apiKey,
+    plan
+  );
+
+  if (!emailResult.ok) {
+    console.error("Email send failed:", emailResult.error);
+    // 이메일 실패해도 키는 KV에 저장됨 → 200 반환 (재전송 가능)
+  }
+
+  return c.json({
+    ok: true,
+    plan,
+    email,
+    is_test: isTest,
+    email_sent: emailResult.ok,
+    ...(emailResult.error && { email_error: emailResult.error }),
+  });
+});
+
+/**
+ * GET /v1/apikey/:email
+ * 관리자용: 이메일로 발급된 API 키 조회
+ */
+app.get("/v1/apikey/:email", async (c) => {
+  const email = decodeURIComponent(c.req.param("email"));
+  const raw = await c.env.API_KEYS.get(`apikey:${email}`);
+
+  if (!raw) {
+    return c.json({ error: "API 키 없음", email }, 404);
+  }
+
+  const record = JSON.parse(raw) as ApiKeyRecord;
+  return c.json(record);
+});
+
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────
 
 app.notFound((c) => {
   return c.json(
-    {
-      error: "엔드포인트를 찾을 수 없습니다.",
-      path: c.req.path,
-    },
+    { error: "엔드포인트를 찾을 수 없습니다.", path: c.req.path },
     404
   );
 });
