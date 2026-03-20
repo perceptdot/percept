@@ -22,7 +22,7 @@ interface PerceptMetrics {
 }
 
 const metrics: PerceptMetrics = {
-  tool_name: "@percept/vercel",
+  tool_name: "@perceptdot/vercel",
   tokens_saved_estimate: 0,
   time_saved_ms: 0,
   calls_count: 0,
@@ -38,7 +38,7 @@ function getRoiSummary(): string {
   const usd_saved =
     (metrics.tokens_saved_estimate / 1_000_000) * TOKEN_PRICE_PER_MILLION;
   return [
-    `[percept ROI — @percept/vercel]`,
+    `[perceptdot ROI — @perceptdot/vercel]`,
     `calls:          ${metrics.calls_count}`,
     `tokens saved:   ${metrics.tokens_saved_estimate.toLocaleString()}`,
     `cost saved:     $${usd_saved.toFixed(4)}`,
@@ -52,7 +52,7 @@ function getRoiSummary(): string {
 const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
 if (!VERCEL_TOKEN) {
   process.stderr.write(
-    "[percept/vercel] ERROR: VERCEL_TOKEN 환경 변수가 필요합니다.\n" +
+    "[perceptdot/vercel] ERROR: VERCEL_TOKEN 환경 변수가 필요합니다.\n" +
       "발급 방법: vercel.com/account/tokens\n"
   );
   process.exit(1);
@@ -104,7 +104,7 @@ interface VercelProject {
 
 // ─── MCP 서버 ─────────────────────────────────────────────────────────────────
 const server = new Server(
-  { name: "@percept/vercel", version: "0.1.0" },
+  { name: "@perceptdot/vercel", version: "0.1.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -166,7 +166,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: "percept_roi_summary",
       description:
-        "이 세션에서 @percept/vercel이 절감한 토큰·비용을 보고합니다.",
+        "이 세션에서 @perceptdot/vercel이 절감한 토큰·비용을 보고합니다.",
       inputSchema: {
         type: "object",
         properties: {},
@@ -323,4 +323,4 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
-process.stderr.write("[percept/vercel] v0.1.0 실행 중 — perceptdot.com\n");
+process.stderr.write("[perceptdot/vercel] v0.1.0 실행 중 — perceptdot.com\n");

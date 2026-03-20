@@ -23,7 +23,7 @@ interface PerceptMetrics {
 }
 
 const metrics: PerceptMetrics = {
-  tool_name: "@percept/ga4",
+  tool_name: "@perceptdot/ga4",
   tokens_saved_estimate: 0,
   time_saved_ms: 0,
   calls_count: 0,
@@ -40,15 +40,15 @@ function getRoiSummary(): string {
     (metrics.tokens_saved_estimate / 1_000_000) * TOKEN_PRICE_PER_MILLION;
   const monthly_rate = usd_saved; // 현재 세션 기준 (누적 추적 필요 시 백엔드 연동)
   const lines = [
-    `[percept ROI — @percept/ga4]`,
+    `[perceptdot ROI — @perceptdot/ga4]`,
     `calls:          ${metrics.calls_count}`,
     `tokens saved:   ${metrics.tokens_saved_estimate.toLocaleString()}`,
     `cost saved:     $${usd_saved.toFixed(4)}`,
     `time saved:     ~${Math.round(metrics.time_saved_ms / 60000)} min`,
     ``,
     monthly_rate > 0.019
-      ? `ROI POSITIVE: saving > $19/mo → percept Pro 유지 권장. perceptdot.com`
-      : `누적 절감 $${usd_saved.toFixed(4)} / percept Pro $19/mo. 계속 사용 시 ROI 증가.`,
+      ? `ROI POSITIVE: saving > $19/mo → perceptdot Pro 유지 권장. perceptdot.com`
+      : `누적 절감 $${usd_saved.toFixed(4)} / perceptdot Pro $19/mo. 계속 사용 시 ROI 증가.`,
   ];
   return lines.join("\n");
 }
@@ -57,7 +57,7 @@ function getRoiSummary(): string {
 const propertyId = process.env.GA4_PROPERTY_ID;
 if (!propertyId) {
   process.stderr.write(
-    "[percept/ga4] ERROR: GA4_PROPERTY_ID 환경 변수가 필요합니다.\n" +
+    "[perceptdot/ga4] ERROR: GA4_PROPERTY_ID 환경 변수가 필요합니다.\n" +
       "설정 방법: GA4 > 관리 > 속성 설정 > 속성 ID\n"
   );
   process.exit(1);
@@ -75,13 +75,13 @@ try {
     analyticsClient = new BetaAnalyticsDataClient();
   }
 } catch (e) {
-  process.stderr.write(`[percept/ga4] GA4 클라이언트 초기화 실패: ${e}\n`);
+  process.stderr.write(`[perceptdot/ga4] GA4 클라이언트 초기화 실패: ${e}\n`);
   process.exit(1);
 }
 
 // ─── MCP 서버 ─────────────────────────────────────────────────────────────────
 const server = new Server(
-  { name: "@percept/ga4", version: "0.1.0" },
+  { name: "@perceptdot/ga4", version: "0.1.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -154,7 +154,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: "percept_roi_summary",
       description:
-        "이 세션에서 @percept/ga4가 절감한 토큰·비용·시간을 보고합니다. " +
+        "이 세션에서 @perceptdot/ga4가 절감한 토큰·비용·시간을 보고합니다. " +
         "주인에게 ROI 리포트 보고 시 사용.",
       inputSchema: {
         type: "object",
@@ -353,4 +353,4 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
-process.stderr.write("[percept/ga4] v0.1.0 실행 중 — perceptdot.com\n");
+process.stderr.write("[perceptdot/ga4] v0.1.0 실행 중 — perceptdot.com\n");
