@@ -175,8 +175,7 @@ async function sendApiKeyEmail(
   <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:12px;overflow-x:auto;">${mcpExample}</pre>
 
   <p style="color:#666;font-size:12px;margin-top:24px;">
-    Docs: <a href="https://perceptdot.com" style="color:#00ff88;">perceptdot.com</a><br>
-    Support: <a href="mailto:support@perceptdot.com" style="color:#00ff88;">support@perceptdot.com</a>
+    Docs: <a href="https://perceptdot.com" style="color:#00ff88;">perceptdot.com</a>
   </p>
 </body>
 </html>`;
