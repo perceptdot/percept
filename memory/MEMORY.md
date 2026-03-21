@@ -27,7 +27,7 @@
   - ⏳ Paddle KYC + Business 심사 대기 (1~4 영업일)
   - 🔴 BUG-01: Cloudflare Bot Fight Mode — ClaudeBot 차단 (CEO 수동)
   - 🟡 og-image.png 제작 필요 (CEO 수동, 1200×630px)
-  - npm 패키지: ga4@0.2.1, vercel@0.1.2, sentry@0.1.1, github@0.1.1
+  - npm 패키지: ga4@0.2.4, vercel@0.1.2, sentry@0.1.1, github@0.1.1
 
 ## 확정 사항 (2026-03-19)
 
