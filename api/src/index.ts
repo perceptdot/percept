@@ -443,6 +443,8 @@ app.post("/v1/webhook/gumroad", async (c) => {
 
   try {
     await c.env.API_KEYS.put(`apikey:${email}`, JSON.stringify(record));
+    // 역인덱스: key:{api_key} → record (검증용)
+    await c.env.API_KEYS.put(`key:${apiKey}`, JSON.stringify(record));
   } catch (e) {
     console.error("KV write failed:", e);
     return c.json({ error: "KV 저장 실패" }, 500);
@@ -485,6 +487,19 @@ app.get("/v1/apikey/:email", async (c) => {
 
   const record = JSON.parse(raw) as ApiKeyRecord;
   return c.json(record);
+});
+
+/**
+ * GET /v1/validate?key={api_key}
+ * API 키 유효성 검증 — MCP 서버에서 플랜 확인용
+ */
+app.get("/v1/validate", async (c) => {
+  const key = c.req.query("key");
+  if (!key) return c.json({ valid: false, plan: "free" }, 400);
+  const raw = await c.env.API_KEYS.get(`key:${key}`);
+  if (!raw) return c.json({ valid: false, plan: "free" }, 404);
+  const record = JSON.parse(raw) as ApiKeyRecord;
+  return c.json({ valid: true, plan: record.plan, email: record.email });
 });
 
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────

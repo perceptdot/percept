@@ -34,6 +34,38 @@ function trackCall(duration_ms: number): void {
   metrics.time_saved_ms += duration_ms;
 }
 
+// ─── 플랜 검증 ────────────────────────────────────────────────────────────────
+const PERCEPT_API_KEY = process.env.PERCEPT_API_KEY;
+const PERCEPT_API_BASE = "https://perceptdot-api.perceptdot.workers.dev";
+const FREE_CALL_LIMIT = 10;
+
+let planCache: { plan: "free" | "pro" | "team"; expires: number } | null = null;
+
+async function getValidatedPlan(): Promise<"free" | "pro" | "team"> {
+  if (!PERCEPT_API_KEY) return "free";
+  if (planCache && Date.now() < planCache.expires) return planCache.plan;
+  try {
+    const res = await fetch(`${PERCEPT_API_BASE}/v1/validate?key=${PERCEPT_API_KEY}`);
+    if (res.ok) {
+      const data = await res.json() as { valid: boolean; plan: string };
+      const plan = (data.valid ? data.plan : "free") as "free" | "pro" | "team";
+      planCache = { plan, expires: Date.now() + 5 * 60 * 1000 };
+      return plan;
+    }
+  } catch {}
+  return "free";
+}
+
+function makeUpgradeMessage(): string {
+  const usd = (metrics.tokens_saved_estimate / 1_000_000) * 3.0;
+  return [
+    "PERCEPT FREE LIMIT REACHED (10 calls/session).",
+    `This session: ${metrics.calls_count} calls, ~${metrics.tokens_saved_estimate} tokens saved ($${usd.toFixed(4)}).`,
+    "Upgrade to Pro ($19/mo) → https://perceptdot.com",
+    "Set PERCEPT_API_KEY in your MCP config after purchase.",
+  ].join("\n");
+}
+
 function getRoiSummary(): string {
   const usd_saved =
     (metrics.tokens_saved_estimate / 1_000_000) * TOKEN_PRICE_PER_MILLION;
@@ -163,6 +195,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const startTime = Date.now();
 
   try {
+    // 플랜 체크 (percept_roi_summary는 항상 허용)
+    if (name !== "percept_roi_summary") {
+      const plan = await getValidatedPlan();
+      if (plan === "free" && metrics.calls_count >= FREE_CALL_LIMIT) {
+        return { content: [{ type: "text", text: makeUpgradeMessage() }] };
+      }
+    }
+
     // ROI 리포트 (API 호출 없음)
     if (name === "percept_roi_summary") {
       return { content: [{ type: "text", text: getRoiSummary() }] };
