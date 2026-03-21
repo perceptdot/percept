@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "@perceptdot/ga4": {
+      "command": "node",
+      "args": ["/path/to/perceptdot/sdk/packages/ga4/dist/index.js"],
+      "env": {
+        "GA4_PROFILES": "{\"my-project\":\"GA4_PROPERTY_ID\"}",
+        "GA4_DEFAULT_PROFILE": "my-project",
+        "GOOGLE_APPLICATION_CREDENTIALS": "/path/to/service-account.json",
+        "PERCEPT_API_KEY": "pd_live_YOUR_API_KEY"
+      }
+    },
+    "@perceptdot/vercel": {
+      "command": "node",
+      "args": ["/path/to/perceptdot/sdk/packages/vercel/dist/index.js"],
+      "env": {
+        "VERCEL_TOKEN": "YOUR_VERCEL_TOKEN",
+        "PERCEPT_API_KEY": "pd_live_YOUR_API_KEY"
+      }
+    },
+    "@perceptdot/github": {
+      "command": "node",
+      "args": ["/path/to/perceptdot/sdk/packages/github/dist/index.js"],
+      "env": {
+        "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN",
+        "GITHUB_OWNER": "your-org",
+        "GITHUB_REPO": "your-repo",
+        "PERCEPT_API_KEY": "pd_live_YOUR_API_KEY"
+      }
+    }
+  }
+}
