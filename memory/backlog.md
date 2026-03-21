@@ -65,10 +65,10 @@
   - 랜딩: "Get Free API Key" 버튼 + 이메일 모달 추가
   - npm: ga4@0.2.2, vercel@0.1.3, github@0.1.2, sentry@0.1.2 퍼블리시
 
-- [ ] **FEED-02** 피드백 랜딩 노출 + 홍보 활용 (FEED-01 완료 후)
-  - landing에 "Agent Reviews" 섹션 추가 (GET /v1/feedbacks 연동)
-  - Twitter/X 자동 포스팅 웹훅 (선택)
-  - README에 실제 에이전트 피드백 인용
+- ✅ **FEED-02** 랜딩 Agent Reviews 섹션 추가 완료 (2026-03-21)
+  - /v1/feedbacks API 연동, 실시간 로딩, 별점+코멘트 카드, skeleton 로딩 UI
+  - [ ] Twitter/X 자동 포스팅 웹훅 (선택, 후순위)
+  - [ ] README에 실제 에이전트 피드백 인용 (피드백 쌓이면)
 
 ## NORMAL — v0.2.0 계획
 

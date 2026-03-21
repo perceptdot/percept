@@ -593,6 +593,85 @@ app.get("/v1/validate", async (c) => {
   return c.json({ valid: true, plan: record.plan, email: record.email });
 });
 
+// ─── RSS 피드 ────────────────────────────────────────────────────────────────
+
+/** GET /rss/feedback — 에이전트 피드백 RSS */
+app.get("/rss/feedback", async (c) => {
+  const raw = await c.env.API_KEYS.get("feedbacks:list");
+  const feedList: FeedbackRecord[] = raw ? JSON.parse(raw) : [];
+
+  const items = feedList.slice(0, 50).map((f) => {
+    const stars = "★".repeat(f.rating) + "☆".repeat(5 - f.rating);
+    return `
+    <item>
+      <title>${stars} (${f.rating}/5) — ${f.key_prefix}***</title>
+      <description><![CDATA[${f.comment}]]></description>
+      <pubDate>${new Date(f.timestamp).toUTCString()}</pubDate>
+      <guid>${f.key_prefix}-${f.timestamp}</guid>
+    </item>`;
+  }).join("");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>perceptdot — Agent Feedback</title>
+    <link>https://perceptdot.com</link>
+    <description>Real feedback from AI agents using perceptdot MCP servers.</description>
+    <language>en</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    ${items || "<item><title>No feedback yet</title><description>Be the first agent to leave feedback.</description><pubDate>" + new Date().toUTCString() + "</pubDate><guid>empty</guid></item>"}
+  </channel>
+</rss>`;
+
+  return c.text(xml, 200, { "Content-Type": "application/rss+xml; charset=utf-8" });
+});
+
+/** GET /rss/changelog — perceptdot 릴리즈 changelog RSS */
+app.get("/rss/changelog", (c) => {
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>perceptdot — Changelog</title>
+    <link>https://perceptdot.com</link>
+    <description>New integrations, updates, and releases from perceptdot.</description>
+    <language>en</language>
+    <lastBuildDate>Fri, 21 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>@perceptdot/ga4 v0.2.1 — Plan Validation + Named Profiles</title>
+      <description><![CDATA[Free plan: 10 calls/session limit with graceful upgrade message. Named Profiles: GA4_PROFILES={"project":"propertyId"} supports multiple GA4 properties in one server. Backward compatible with GA4_PROPERTY_ID.]]></description>
+      <pubDate>Fri, 21 Mar 2026 06:00:00 +0000</pubDate>
+      <guid>ga4-v0.2.1</guid>
+    </item>
+    <item>
+      <title>Pricing Update — Free 2 integrations / 200 calls, Team $99/10 seats</title>
+      <description><![CDATA[Free plan now includes 2 integrations (GA4 + Vercel) and 200 API calls/day. Team plan updated to $99/month for 10 seats ($9.9/seat).]]></description>
+      <pubDate>Fri, 21 Mar 2026 05:00:00 +0000</pubDate>
+      <guid>pricing-2026-03-21</guid>
+    </item>
+    <item>
+      <title>@perceptdot/sentry v0.1.1 + @perceptdot/github v0.1.1</title>
+      <description><![CDATA[Minor updates to Sentry and GitHub MCP servers. Improved error handling and ROI tracking.]]></description>
+      <pubDate>Fri, 21 Mar 2026 04:00:00 +0000</pubDate>
+      <guid>sentry-github-v0.1.1</guid>
+    </item>
+    <item>
+      <title>@perceptdot/sentry v0.1.0 + @perceptdot/github v0.1.0 — Launch</title>
+      <description><![CDATA[Two new MCP integrations: Sentry (error monitoring) and GitHub (PRs, issues, workflows). Both include ROI measurement.]]></description>
+      <pubDate>Thu, 20 Mar 2026 06:00:00 +0000</pubDate>
+      <guid>sentry-github-v0.1.0</guid>
+    </item>
+    <item>
+      <title>@perceptdot/ga4 v0.1.0 + @perceptdot/vercel v0.1.0 — Launch</title>
+      <description><![CDATA[perceptdot launches with two MCP integrations: GA4 (Google Analytics) and Vercel (deployments). Give your AI agent eyes.]]></description>
+      <pubDate>Wed, 19 Mar 2026 06:00:00 +0000</pubDate>
+      <guid>ga4-vercel-v0.1.0</guid>
+    </item>
+  </channel>
+</rss>`;
+
+  return c.text(xml, 200, { "Content-Type": "application/rss+xml; charset=utf-8" });
+});
+
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────
 
 app.notFound((c) => {

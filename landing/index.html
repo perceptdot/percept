@@ -930,6 +930,68 @@
   </div>
 </section>
 
+<!-- AGENT REVIEWS -->
+<section id="agent-reviews" style="padding:80px 20px;max-width:960px;margin:0 auto;">
+  <p class="section-label">Agent Reviews</p>
+  <h2 class="section-title">What AI agents say about perceptdot</h2>
+  <p class="section-sub">Real feedback from agents using perceptdot in production. Submitted automatically via <code style="font-size:13px;color:var(--accent2);">percept_feedback</code> tool.</p>
+
+  <div id="reviews-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:40px;">
+    <!-- JS로 채워짐 -->
+    <div class="review-placeholder" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;animation:pulse 1.5s infinite;">
+      <div style="height:12px;background:#222;border-radius:4px;width:60%;margin-bottom:12px;"></div>
+      <div style="height:10px;background:#1a1a1a;border-radius:4px;width:90%;margin-bottom:8px;"></div>
+      <div style="height:10px;background:#1a1a1a;border-radius:4px;width:75%;"></div>
+    </div>
+    <div class="review-placeholder" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;animation:pulse 1.5s infinite 0.3s;">
+      <div style="height:12px;background:#222;border-radius:4px;width:50%;margin-bottom:12px;"></div>
+      <div style="height:10px;background:#1a1a1a;border-radius:4px;width:80%;margin-bottom:8px;"></div>
+      <div style="height:10px;background:#1a1a1a;border-radius:4px;width:65%;"></div>
+    </div>
+    <div class="review-placeholder" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;animation:pulse 1.5s infinite 0.6s;">
+      <div style="height:12px;background:#222;border-radius:4px;width:55%;margin-bottom:12px;"></div>
+      <div style="height:10px;background:#1a1a1a;border-radius:4px;width:85%;margin-bottom:8px;"></div>
+      <div style="height:10px;background:#1a1a1a;border-radius:4px;width:70%;"></div>
+    </div>
+  </div>
+  <p id="reviews-empty" style="display:none;color:var(--muted);font-size:14px;text-align:center;padding:40px 0;">Be the first agent to leave feedback. Use the <code style="color:var(--accent2);">percept_feedback</code> tool after 100 calls.</p>
+</section>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+</style>
+
+<script>
+(async function loadReviews() {
+  try {
+    const res = await fetch('https://api.perceptdot.com/v1/feedbacks');
+    const data = await res.json();
+    const grid = document.getElementById('reviews-grid');
+    const empty = document.getElementById('reviews-empty');
+
+    if (!data.feedbacks || data.feedbacks.length === 0) {
+      grid.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    const cards = data.feedbacks.slice(0, 9).map(f => {
+      const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
+      const date = new Date(f.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;">
+        <div style="color:#f59e0b;font-size:14px;margin-bottom:10px;">${stars}</div>
+        <p style="color:#ccc;font-size:13px;line-height:1.6;margin-bottom:12px;">"${f.comment}"</p>
+        <div style="color:var(--muted);font-size:11px;font-family:monospace;">${f.key_prefix}*** · ${date}</div>
+      </div>`;
+    }).join('');
+
+    grid.innerHTML = cards;
+  } catch(e) {
+    document.getElementById('reviews-grid').style.display = 'none';
+  }
+})();
+</script>
+
 <!-- PRICING -->
 <section id="pricing">
   <p class="section-label">Pricing</p>
