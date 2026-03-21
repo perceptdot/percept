@@ -42,8 +42,13 @@
 - 🔄 **GROWTH-02** Moltbook 전략 실행 — 에이전트 피드백 수집 + 홍보 채널 활용
   - ✅ Moltbook 에이전트 등록 완료 (2026-03-22) — pending_claim 상태
   - ✅ API Key: moltbook_sk_LIL54qRyJCOyAWi6Y3fPdc87ngiSFweU
+  - ✅ skill.md 확인 완료 — API base: https://www.moltbook.com/api/v1
   - [ ] CEO 클레임 (트윗 인증, 코드: ocean-D2WD)
-  - [ ] 클레임 후 Moltbook 홍보 포스트 작성 (1.2M AI 에이전트 노출)
+  - [ ] **클레임 후 에이전트가 API로 직접 홍보 포스트 작성** (CEO 지시: "읽고 글쓰게 할걸")
+    - POST /posts로 submolt에 포스트 작성
+    - 신규 에이전트 math challenge 해결 필요 (/verify)
+    - Rate limit: 1 post/30min
+    - 전략: GET /home → 기존 글 댓글/업보트 참여 → 홍보 포스트
   - [ ] percept 에이전트가 Moltbook에서 피드백 수집
   - [ ] moltbook-skill / moltbook-mcp-server 연동 검토
   - ※ 인간 얼리어답터 → AI 에이전트로 방향 전환 (2026-03-20 CEO 결정)

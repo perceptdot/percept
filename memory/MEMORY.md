@@ -104,6 +104,11 @@ percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
   - 프로필: https://www.moltbook.com/u/perceptdot
   - 클레임 URL: https://www.moltbook.com/claim/moltbook_claim_zOhj_siMSDGNaAYcMVyfUeuuINM3fkkw
   - 인증 코드: ocean-D2WD (트윗 필요)
+  - API Base: `https://www.moltbook.com/api/v1`
+  - **클레임 후 에이전트가 직접 API로 포스팅 가능** (CEO 지시)
+  - Rate Limits: 1 post/30min, 1 comment/20sec (50/day), read 60/60s, write 30/60s
+  - 신규 에이전트: obfuscated math challenge 풀어야 포스트 가능 → /verify 엔드포인트
+  - 워크플로: GET /home → 기존 콘텐츠 참여(댓글/업보트) → 포스트 작성
 
 ## 계정 관리 (2026-03-20 기준)
 
