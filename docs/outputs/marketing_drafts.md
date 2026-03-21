@@ -1,7 +1,7 @@
 # perceptdot Marketing Drafts
 
-> Created: 2026-03-21
-> Status: Draft v1 — CEO review required
+> Created: 2026-03-21 | Updated: 2026-03-22
+> Status: Draft v2 — Beta 전환 반영
 > Target: Global (English)
 
 ---
@@ -46,11 +46,11 @@ That's it. Next time you ask Claude Code anything about your analytics, it reads
 
 The idea is simple: if the agent can prove its own ROI, you never need to justify the tool to anyone. The agent does it for you.
 
-Free tier: 200 calls/month, 2 integrations. More than enough to try it.
+It's in open beta right now. 200 free calls/month — just enter your email on the site and you get an API key instantly. No credit card, no account.
 
 - npm: `@perceptdot/ga4`, `@perceptdot/vercel`, `@perceptdot/github`, `@perceptdot/sentry`
 - Site: [perceptdot.com](https://perceptdot.com)
-- GitHub: open source
+- GitHub: [github.com/perceptdot](https://github.com/perceptdot)
 
 Would love feedback from anyone using MCP servers with Claude Code. What services would you want your agent to see next?
 
@@ -123,11 +123,13 @@ Agent asks "what's the traffic looking like?" You open GA4. Copy numbers. Paste.
 
 Each call saves ~200-450 tokens compared to you pasting dashboard data into context. There's a built-in ROI tracker (`percept_roi_summary`) that shows exactly how much was saved per session.
 
-Free: 200 calls/month. Pro: $19/mo. More than enough to see if it clicks.
+Open beta — 200 free calls/month. Enter your email, get an API key, done.
 
 npm packages: `@perceptdot/ga4`, `@perceptdot/vercel`, `@perceptdot/github`, `@perceptdot/sentry`
 
 Site: [perceptdot.com](https://perceptdot.com)
+
+Paid plans (Pro/Team) coming soon. Free tier is generous enough to try everything.
 
 Anyone else doing MCP integrations in Cursor? Curious what services people want connected.
 
@@ -158,7 +160,7 @@ It's small numbers today, but the pattern matters: the agent proves ROI to the h
 
 Stack: TypeScript + Hono (Cloudflare Workers for the API layer) + npm for distribution.
 
-Free tier: 200 calls/month, 2 integrations. Pro: $19/mo.
+Open beta: 200 calls/month, free. Pro and Team plans coming soon.
 
 https://perceptdot.com
 
@@ -249,13 +251,12 @@ That's what we're building at perceptdot.
 
 **Tweet 7 (CTA):**
 
-Try it free. 200 calls/month. No account needed.
+Open beta — 200 calls/month. No credit card. No account.
 
-npm install any of:
-@perceptdot/ga4
-@perceptdot/vercel
-@perceptdot/github
-@perceptdot/sentry
+npx @perceptdot/ga4
+npx @perceptdot/vercel
+npx @perceptdot/github
+npx @perceptdot/sentry
 
 perceptdot.com
 
@@ -273,7 +274,7 @@ Your AI agent writes code, deploys apps, and debugs prod — but it can't check 
 
 perceptdot fixes that. MCP servers that give agents direct access to GA4, Vercel, GitHub, Sentry.
 
-60s setup. No dashboard.
+60s setup. No dashboard. Open beta — free.
 
 perceptdot.com
 
@@ -283,7 +284,7 @@ Checking dashboards so your AI agent doesn't have to is not a job.
 
 perceptdot = MCP servers that let agents read GA4, Vercel, GitHub, and Sentry directly. 60s setup. ~450 tokens saved per call.
 
-Give your agent eyes: perceptdot.com
+Open beta — 200 free calls: perceptdot.com
 
 **Option C (maximum hook):**
 
@@ -291,7 +292,7 @@ You are your AI agent's eyeballs.
 
 Every time it asks "what's the traffic?" and you open GA4 to copy-paste numbers — that's you being a human clipboard.
 
-perceptdot gives agents direct access. GA4, Vercel, GitHub, Sentry. 60 seconds. No dashboard.
+perceptdot gives agents direct access. GA4, Vercel, GitHub, Sentry. 60 seconds. No dashboard. Open beta.
 
 perceptdot.com
 
@@ -299,12 +300,20 @@ perceptdot.com
 
 ## Notes for CEO
 
+### 현재 상태 (2026-03-22)
+- **사이트**: Open Beta · Free Starter (perceptdot.com)
+- **가격**: Pro/Team Coming Soon (TBD), 무료 200 calls/month
+- **CTA**: "Get Free API Key" (이메일 입력 → 즉시 발급)
+- **리뷰**: 실제 피드백 올 때까지 섹션 자동 숨김
+- **npm**: ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
+
 ### Posting order recommendation:
-1. **Twitter single tweet** first (Option B or C) — test the hook
-2. **Twitter thread** — if single tweet gets traction
-3. **Reddit r/ClaudeAI** — highest intent audience
-4. **Reddit r/cursor** — second highest intent
-5. **Hacker News** — highest risk/reward, post on a Tuesday or Wednesday morning US time
+1. **awesome-mcp-servers PR** — 먼저 제출 (83.7k 스타, 자연 유입)
+2. **Twitter single tweet** (Option B or C) — hook 테스트
+3. **Twitter thread** — single tweet 반응 있으면
+4. **Reddit r/ClaudeAI** — highest intent audience
+5. **Reddit r/cursor** — second highest intent
+6. **Hacker News** — highest risk/reward, 화/수 오전 US time
 
 ### Key phrases that tested well in drafting:
 - "Your AI agent is blind" — strongest hook
@@ -312,9 +321,11 @@ perceptdot.com
 - "The agent justifies its own tools" — the B2A2H differentiator
 - "No dashboard" — counter-intuitive for a monitoring tool
 - "60 seconds" — removes friction objection
+- "Open beta — free" — zero friction CTA
 
 ### What to avoid:
 - Don't say "revolutionary" or "game-changing" — HN and Reddit will downvote
 - Don't compare to Composio by name in public posts — looks insecure
 - Don't oversell the cost savings ($0.014/session) — be honest, frame it as "the pattern matters"
 - Don't use "AI-powered" — perceptdot IS the tool for AI, not powered by it
+- Don't mention specific paid pricing (Pro $19/mo etc.) — Coming Soon 상태
