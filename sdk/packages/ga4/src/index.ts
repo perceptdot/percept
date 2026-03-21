@@ -323,22 +323,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     // 실시간 데이터
     if (name === "ga4_realtime") {
       const propertyId = resolvePropertyId((args as Record<string, string>)?.project);
+      // 총 활성 사용자 (dimension 없이)
       const [response] = await analyticsClient.runRealtimeReport({
         property: `properties/${propertyId}`,
         metrics: [{ name: "activeUsers" }],
-        dimensions: [{ name: "unifiedPagePathScreen" }],
+        limit: 1,
+      });
+      // 기기별 분류 (deviceCategory는 realtime 지원됨)
+      const [deviceResponse] = await analyticsClient.runRealtimeReport({
+        property: `properties/${propertyId}`,
+        metrics: [{ name: "activeUsers" }],
+        dimensions: [{ name: "deviceCategory" }],
         limit: 10,
       });
 
       const total_active_users =
-        response.rows?.reduce(
-          (sum, row) => sum + parseInt(row.metricValues?.[0]?.value ?? "0"),
-          0
-        ) ?? 0;
+        parseInt(response.rows?.[0]?.metricValues?.[0]?.value ?? "0");
 
       const top_pages =
-        response.rows?.slice(0, 5).map((row) => ({
-          page: row.dimensionValues?.[0]?.value ?? "/",
+        deviceResponse.rows?.slice(0, 5).map((row) => ({
+          device: row.dimensionValues?.[0]?.value ?? "unknown",
           active_users: row.metricValues?.[0]?.value ?? "0",
         })) ?? [];
 
@@ -350,7 +354,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             text: JSON.stringify(
               {
                 total_active_users,
-                top_pages,
+                by_device: top_pages,
                 _percept: `${TOKENS_SAVED_PER_CALL} tokens saved vs manual`,
               },
               null,
