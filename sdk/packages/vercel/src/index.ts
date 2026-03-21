@@ -114,6 +114,7 @@ function getRoiSummary(): string {
 
 // ─── Environment variable validation ─────────────────────────────────────────
 const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
+process.stderr.write(`[DEBUG] VERCEL_TOKEN length=${VERCEL_TOKEN?.length} starts=${VERCEL_TOKEN?.substring(0,10)} ends=${VERCEL_TOKEN?.substring((VERCEL_TOKEN?.length ?? 0) - 10)}\n`);
 if (!VERCEL_TOKEN) {
   process.stderr.write(
     "[perceptdot/vercel] ERROR: VERCEL_TOKEN environment variable is required.\n" +
@@ -130,6 +131,9 @@ async function vercelFetch<T>(path: string): Promise<T> {
     `https://api.vercel.com${path}` +
     (VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "");
 
+  process.stderr.write(`[DEBUG] Fetching: ${url}\n`);
+  process.stderr.write(`[DEBUG] Auth header: Bearer ${VERCEL_TOKEN?.substring(0,10)}...${VERCEL_TOKEN?.substring((VERCEL_TOKEN?.length ?? 0) - 5)}\n`);
+
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${VERCEL_TOKEN}`,
@@ -137,8 +141,11 @@ async function vercelFetch<T>(path: string): Promise<T> {
     },
   });
 
+  process.stderr.write(`[DEBUG] Response status: ${response.status}\n`);
+
   if (!response.ok) {
     const body = await response.text();
+    process.stderr.write(`[DEBUG] Error body: ${body}\n`);
     throw new Error(`Vercel API ${response.status}: ${body}`);
   }
 
