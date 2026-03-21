@@ -101,7 +101,7 @@
 - ✅ **PROD-02** Landing FAQ 섹션 추가 + 배포 완료 (10개 항목, 아코디언, 2026-03-20)
 - ⏳ **PAY-02** Paddle 승인 대기 → 승인 시 K-사주 + perceptdot 동시 Gumroad→Paddle 전환 (2026-03-21 CEO 결정: 임시=Gumroad, 정식=Paddle)
 - ✅ **PAY-04** Lemon Squeezy Payout 설정 완료 (한국계좌 KRW, W-8BEN 제출, invoice info, 2026-03-20)
-- ✅ **PAY-03** Gumroad 결제 브릿지 완료 (2026-03-21) — Pro $19/mo + Team $75/mo(5seats) 라이브, 랜딩 버튼 연결, No refunds 설정
+- ✅ **PAY-03** Gumroad 결제 브릿지 완료 (2026-03-21) — Pro $19/mo + Team $99/mo(10seats) 라이브, 랜딩 버튼 연결, No refunds 설정
 - ✅ **PAY-05** Gumroad 웹훅 + API 키 자동발급 E2E 검증 완료 (2026-03-21) — KV 저장, Resend 이메일, 4개 MCP 서버 설정. Gumroad Ping URL 등록 + thunova0318 실수신 확인 (pd_live_xxx 키 포함)
 - ✅ **DEV-10** 전역 MCP 연결 완료 (2026-03-21) — ~/.claude/.mcp.json 생성, ga4+vercel+github 3개 전역 로드
 - ✅ **PAY-06** API 키 검증 + 무료/유료 차별화 완료 (2026-03-21) — /v1/validate 엔드포인트, KV 역인덱스, Free 10회 제한, 4개 MCP 서버 패치 퍼블리시 (ga4@0.2.1, vercel@0.1.2, github@0.1.1, sentry@0.1.1)
