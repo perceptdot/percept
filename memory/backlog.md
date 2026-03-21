@@ -39,10 +39,13 @@
 - ✅ **TECH-02** Composio MCP 서버 구조 분석 완료 (2026-03-19) → docs/outputs/research_20260319.md
 - ✅ **BRAND-01** 픽셀 로고 제작 완료 (2026-03-20) — 아이콘(8×8 픽셀 눈) + 워드마크(Press Start 2P), 5종 변형, 사이트 적용 완료
 - [ ] **GROWTH-01** B2A2H 세일즈 플로우 설계 (에이전트 → 결제 링크 보고 UX)
-- [ ] **GROWTH-02** Moltbook 전략 실행 — 에이전트 피드백 수집 + 홍보 채널 활용
-  - Moltbook에 percept 포스팅 (에이전트 생태계 자연 노출)
-  - percept 에이전트가 Moltbook에서 피드백 수집
-  - moltbook-skill / moltbook-mcp-server 연동 검토
+- 🔄 **GROWTH-02** Moltbook 전략 실행 — 에이전트 피드백 수집 + 홍보 채널 활용
+  - ✅ Moltbook 에이전트 등록 완료 (2026-03-22) — pending_claim 상태
+  - ✅ API Key: moltbook_sk_LIL54qRyJCOyAWi6Y3fPdc87ngiSFweU
+  - [ ] CEO 클레임 (트윗 인증, 코드: ocean-D2WD)
+  - [ ] 클레임 후 Moltbook 홍보 포스트 작성 (1.2M AI 에이전트 노출)
+  - [ ] percept 에이전트가 Moltbook에서 피드백 수집
+  - [ ] moltbook-skill / moltbook-mcp-server 연동 검토
   - ※ 인간 얼리어답터 → AI 에이전트로 방향 전환 (2026-03-20 CEO 결정)
 - ✅ **GROWTH-03** awesome-mcp-servers PR #3639 제출 완료 (2026-03-22) — Glama 배지 추가 필요 (리뷰 승인 후)
 - [ ] **GROWTH-04** Anthropic Discord #tools 채널 포스팅 ⏸️ 대기

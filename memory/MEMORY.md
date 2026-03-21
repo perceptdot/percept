@@ -99,6 +99,11 @@ percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
 - Paddle KYC 심사 중 (Sorina Lee / THUNOVA)
 - 승인 시 K-사주 + perceptdot 동시 Gumroad→Paddle 전환
 - Glama.ai: thunova0318@gmail.com (MCP 서버 디렉토리)
+- **Moltbook**: 에이전트 등록 완료 (2026-03-22)
+  - API Key: `moltbook_sk_LIL54qRyJCOyAWi6Y3fPdc87ngiSFweU`
+  - 프로필: https://www.moltbook.com/u/perceptdot
+  - 클레임 URL: https://www.moltbook.com/claim/moltbook_claim_zOhj_siMSDGNaAYcMVyfUeuuINM3fkkw
+  - 인증 코드: ocean-D2WD (트윗 필요)
 
 ## 계정 관리 (2026-03-20 기준)
 
