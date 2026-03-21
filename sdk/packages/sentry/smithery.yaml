@@ -1,24 +1,32 @@
+# Smithery configuration — @perceptdot/sentry
+# AI agent vision for Sentry error monitoring with ROI measurement
+# https://smithery.ai/docs/config#smitheryyaml
+
 startCommand:
   type: stdio
   configSchema:
+    type: object
+    required:
+      - sentryAuthToken
+      - sentryOrg
+      - sentryProject
     properties:
       sentryAuthToken:
         type: string
-        description: Sentry Auth Token
+        description: "Sentry Auth Token. Generate at sentry.io/settings/auth-tokens"
       sentryOrg:
         type: string
-        description: Sentry organization slug
+        description: "Sentry organization slug"
       sentryProject:
         type: string
-        description: Sentry project slug
-    required: [sentryAuthToken, sentryOrg, sentryProject]
+        description: "Sentry project slug"
   commandFunction: |-
-    (config) => ({
-      command: "npx",
-      args: ["@perceptdot/sentry"],
+    config => ({
+      command: 'npx',
+      args: ['-y', '@perceptdot/sentry'],
       env: {
         SENTRY_AUTH_TOKEN: config.sentryAuthToken,
         SENTRY_ORG: config.sentryOrg,
-        SENTRY_PROJECT: config.sentryProject,
+        SENTRY_PROJECT: config.sentryProject
       }
     })

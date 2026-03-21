@@ -4,25 +4,23 @@
 
 startCommand:
   type: stdio
-
-configSchema:
-  type: object
-  required:
-    - vercelToken
-  properties:
-    vercelToken:
-      type: string
-      description: "Vercel API 토큰. vercel.com/account/tokens 에서 발급."
-    vercelTeamId:
-      type: string
-      description: "Vercel 팀 ID (선택). 팀 프로젝트 조회 시 필요."
-
-commandFunction: |-
-  config => ({
-    command: 'npx',
-    args: ['-y', '@perceptdot/vercel'],
-    env: {
-      VERCEL_TOKEN: config.vercelToken,
-      ...(config.vercelTeamId ? { VERCEL_TEAM_ID: config.vercelTeamId } : {})
-    }
-  })
+  configSchema:
+    type: object
+    required:
+      - vercelToken
+    properties:
+      vercelToken:
+        type: string
+        description: "Vercel API token. Generate at vercel.com/account/tokens"
+      vercelTeamId:
+        type: string
+        description: "Vercel Team ID (optional). Required for team project access."
+  commandFunction: |-
+    config => ({
+      command: 'npx',
+      args: ['-y', '@perceptdot/vercel'],
+      env: {
+        VERCEL_TOKEN: config.vercelToken,
+        ...(config.vercelTeamId ? { VERCEL_TEAM_ID: config.vercelTeamId } : {})
+      }
+    })

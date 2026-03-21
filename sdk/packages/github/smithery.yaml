@@ -5,24 +5,28 @@
 startCommand:
   type: stdio
   configSchema:
+    type: object
+    required:
+      - githubToken
+      - owner
+      - repo
     properties:
       githubToken:
         type: string
-        description: GitHub Personal Access Token
+        description: "GitHub Personal Access Token. Generate at github.com/settings/tokens"
       owner:
         type: string
-        description: Repository owner (username or org)
+        description: "Repository owner (username or organization)"
       repo:
         type: string
-        description: Repository name
-    required: [githubToken, owner, repo]
+        description: "Repository name"
   commandFunction: |-
-    (config) => ({
-      command: "npx",
-      args: ["@perceptdot/github"],
+    config => ({
+      command: 'npx',
+      args: ['-y', '@perceptdot/github'],
       env: {
         GITHUB_TOKEN: config.githubToken,
         GITHUB_OWNER: config.owner,
-        GITHUB_REPO: config.repo,
+        GITHUB_REPO: config.repo
       }
     })

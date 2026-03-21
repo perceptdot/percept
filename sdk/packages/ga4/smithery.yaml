@@ -4,26 +4,24 @@
 
 startCommand:
   type: stdio
-
-configSchema:
-  type: object
-  required:
-    - ga4PropertyId
-    - googleServiceAccountKey
-  properties:
-    ga4PropertyId:
-      type: string
-      description: "GA4 Property ID (숫자). GA4 콘솔 → 관리 → 속성 설정 → 속성 ID"
-    googleServiceAccountKey:
-      type: string
-      description: "Google 서비스 계정 키 JSON 문자열. Analytics Data API 뷰어 권한 필요."
-
-commandFunction: |-
-  config => ({
-    command: 'npx',
-    args: ['-y', '@perceptdot/ga4'],
-    env: {
-      GA4_PROPERTY_ID: config.ga4PropertyId,
-      GOOGLE_SERVICE_ACCOUNT_KEY: config.googleServiceAccountKey
-    }
-  })
+  configSchema:
+    type: object
+    required:
+      - ga4PropertyId
+      - googleServiceAccountKey
+    properties:
+      ga4PropertyId:
+        type: string
+        description: "GA4 Property ID (number). GA4 Console → Admin → Property Settings → Property ID"
+      googleServiceAccountKey:
+        type: string
+        description: "Google Service Account Key JSON string. Requires Analytics Data API viewer permission."
+  commandFunction: |-
+    config => ({
+      command: 'npx',
+      args: ['-y', '@perceptdot/ga4'],
+      env: {
+        GA4_PROPERTY_ID: config.ga4PropertyId,
+        GOOGLE_SERVICE_ACCOUNT_KEY: config.googleServiceAccountKey
+      }
+    })
