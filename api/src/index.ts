@@ -56,20 +56,32 @@ interface GumroadWebhookPayload {
   product_name?: string;
   permalink?: string;
   email?: string;
-  price?: string;        // 센트 단위 문자열
+  price?: string;
   sale_timestamp?: string;
   order_number?: string;
   license_key?: string;
-  test?: string;         // "true" if test purchase
+  test?: string;
 }
 
 /** KV에 저장되는 API 키 레코드 */
 interface ApiKeyRecord {
   key: string;
   email: string;
-  plan: "pro" | "team";
+  plan: "free" | "pro" | "team";
   created_at: string;
   order_number?: string;
+  // free 플랜 전용 필드
+  calls_used: number;       // 누적 사용 콜 수
+  quota: number;            // 허용 총 콜 수 (free: 100→200, pro/team: -1 = unlimited)
+  feedback_count: number;   // 피드백 제출 횟수
+}
+
+/** 공개 피드백 레코드 */
+interface FeedbackRecord {
+  key_prefix: string;  // pd_free_xxxx (앞 12자만)
+  rating: number;      // 1-5
+  comment: string;     // max 150자
+  timestamp: string;
 }
 
 // ─── 인메모리 스토리지 (MVP) ──────────────────────────────────────────────────
@@ -117,14 +129,20 @@ function buildRoiResponse(agg: SessionAggregate): RoiResponse {
   };
 }
 
-/** pd_live_ 접두사 + 32자 랜덤 hex API 키 생성 */
+/** pd_live_ 접두사 + 32자 랜덤 hex API 키 생성 (유료) */
 function generateApiKey(): string {
   const arr = new Uint8Array(16);
   crypto.getRandomValues(arr);
-  const hex = Array.from(arr)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+  const hex = Array.from(arr).map((b) => b.toString(16).padStart(2, "0")).join("");
   return `pd_live_${hex}`;
+}
+
+/** pd_free_ 접두사 + 24자 랜덤 hex API 키 생성 (무료) */
+function generateFreeKey(): string {
+  const arr = new Uint8Array(12);
+  crypto.getRandomValues(arr);
+  const hex = Array.from(arr).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return `pd_free_${hex}`;
 }
 
 /** Resend로 API 키 이메일 발송 */
@@ -132,60 +150,43 @@ async function sendApiKeyEmail(
   resendApiKey: string,
   to: string,
   apiKey: string,
-  plan: "pro" | "team"
+  plan: "free" | "pro" | "team"
 ): Promise<{ ok: boolean; error?: string }> {
-  const planLabel = plan === "team" ? "Team ($99/mo · 10 seats)" : "Pro ($19/mo)";
-  const mcpExample =
-    plan === "team"
-      ? `{
-  "mcpServers": {
-    "@perceptdot/ga4": {
-      "command": "npx",
-      "args": ["-y", "@perceptdot/ga4"],
-      "env": { "PERCEPT_API_KEY": "${apiKey}" }
-    },
-    "@perceptdot/vercel": {
-      "command": "npx",
-      "args": ["-y", "@perceptdot/vercel"],
-      "env": { "PERCEPT_API_KEY": "${apiKey}" }
-    },
-    "@perceptdot/sentry": {
-      "command": "npx",
-      "args": ["-y", "@perceptdot/sentry"],
-      "env": { "PERCEPT_API_KEY": "${apiKey}" }
-    },
-    "@perceptdot/github": {
-      "command": "npx",
-      "args": ["-y", "@perceptdot/github"],
-      "env": { "PERCEPT_API_KEY": "${apiKey}" }
-    }
-  }
-}`
-      : `{
-  "mcpServers": {
-    "@perceptdot/ga4": {
-      "command": "npx",
-      "args": ["-y", "@perceptdot/ga4"],
-      "env": { "PERCEPT_API_KEY": "${apiKey}" }
-    }
-  }
-}`;
+  const planLabel =
+    plan === "team" ? "Team ($99/mo · 10 seats)" :
+    plan === "pro"  ? "Pro ($19/mo)" :
+                      "Free (200 calls)";
+
+  const freeNote = plan === "free" ? `
+  <div style="background:#1a1a2e;border:1px solid #7c6dfa;padding:16px;border-radius:6px;margin-top:16px;">
+    <p style="color:#a78bfa;font-size:12px;margin:0 0 8px;">FREE PLAN — 200 calls</p>
+    <p style="color:#aaa;font-size:12px;margin:0;">First 100 calls are ready. After 100 calls, submit a quick feedback to unlock 100 more.</p>
+  </div>` : "";
 
   const html = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"></head>
 <body style="font-family:monospace;background:#0a0a0a;color:#e0e0e0;padding:32px;max-width:600px;">
-  <h1 style="color:#00ff88;font-size:20px;">perceptdot ${planLabel}</h1>
+  <h1 style="color:#7c6dfa;font-size:20px;">perceptdot ${planLabel}</h1>
   <p style="color:#aaa;">Your API key is ready. Add it to your MCP config.</p>
 
   <h2 style="color:#e0e0e0;font-size:14px;margin-top:24px;">API KEY</h2>
-  <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:14px;color:#00ff88;word-break:break-all;">${apiKey}</pre>
+  <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:14px;color:#a78bfa;word-break:break-all;">${apiKey}</pre>
 
   <h2 style="color:#e0e0e0;font-size:14px;margin-top:24px;">MCP CONFIG (.mcp.json)</h2>
-  <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:12px;overflow-x:auto;">${mcpExample}</pre>
+  <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:12px;overflow-x:auto;">{
+  "mcpServers": {
+    "@perceptdot/ga4": {
+      "command": "npx",
+      "args": ["-y", "@perceptdot/ga4"],
+      "env": { "PERCEPT_API_KEY": "${apiKey}" }
+    }
+  }
+}</pre>
+  ${freeNote}
 
   <p style="color:#666;font-size:12px;margin-top:24px;">
-    Docs: <a href="https://perceptdot.com" style="color:#00ff88;">perceptdot.com</a>
+    Docs: <a href="https://perceptdot.com" style="color:#7c6dfa;">perceptdot.com</a>
   </p>
 </body>
 </html>`;
@@ -198,7 +199,7 @@ async function sendApiKeyEmail(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "perceptdot <noreply@perceptdot.com>",
+        from: "perceptdot <service@perceptdot.com>",
         to: [to],
         subject: `[perceptdot] Your API Key — ${planLabel}`,
         html,
@@ -222,17 +223,220 @@ const app = new Hono<{ Bindings: Env }>();
 app.use("*", logger());
 app.use("*", cors({ origin: "*" }));
 
-// ─── 엔드포인트 ───────────────────────────────────────────────────────────────
+// ─── 헬스체크 ─────────────────────────────────────────────────────────────────
 
 app.get("/health", (c) => {
   return c.json({
     status: "ok",
     service: "perceptdot-api",
-    version: "0.2.0",
+    version: "0.3.0",
     timestamp: new Date().toISOString(),
     sessions_tracked: sessionStore.size,
   });
 });
+
+// ─── 무료 키 발급 ─────────────────────────────────────────────────────────────
+
+/**
+ * POST /v1/free-key
+ * 이메일 입력 → pd_free_xxx 무료 키 발급 (100콜 쿼터)
+ */
+app.post("/v1/free-key", async (c) => {
+  let body: { email?: string };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+  }
+
+  const { email } = body;
+  if (!email || !email.includes("@")) {
+    return c.json({ error: "유효한 이메일이 필요합니다." }, 400);
+  }
+
+  // 이미 발급된 키 있으면 재발급 대신 기존 키 반환
+  const existingRaw = await c.env.API_KEYS.get(`apikey:${email}`);
+  if (existingRaw) {
+    const existing = JSON.parse(existingRaw) as ApiKeyRecord;
+    if (existing.plan === "free") {
+      return c.json({
+        ok: true,
+        api_key: existing.key,
+        plan: "free",
+        quota: existing.quota,
+        calls_used: existing.calls_used,
+        note: "existing key returned",
+      });
+    }
+    // 유료 플랜 사용자 → 이미 더 좋은 키 있음
+    return c.json({ error: "이미 유료 플랜 키가 있습니다.", plan: existing.plan }, 409);
+  }
+
+  const apiKey = generateFreeKey();
+  const record: ApiKeyRecord = {
+    key: apiKey,
+    email,
+    plan: "free",
+    created_at: new Date().toISOString(),
+    calls_used: 0,
+    quota: 100,
+    feedback_count: 0,
+  };
+
+  await c.env.API_KEYS.put(`apikey:${email}`, JSON.stringify(record));
+  await c.env.API_KEYS.put(`key:${apiKey}`, JSON.stringify(record));
+
+  // 이메일 발송
+  const emailResult = await sendApiKeyEmail(c.env.RESEND_API_KEY, email, apiKey, "free");
+  if (!emailResult.ok) {
+    console.error("Free key email failed:", emailResult.error);
+  }
+
+  return c.json({
+    ok: true,
+    api_key: apiKey,
+    plan: "free",
+    quota: 100,
+    calls_used: 0,
+    email_sent: emailResult.ok,
+  }, 201);
+});
+
+// ─── 콜 사용 (무료 키 전용) ──────────────────────────────────────────────────
+
+/**
+ * POST /v1/use
+ * 무료 키 콜 1회 차감. MCP 서버가 각 tool 호출 시 사용.
+ * 응답: { allowed, needs_feedback, quota_remaining, calls_used }
+ */
+app.post("/v1/use", async (c) => {
+  let body: { key?: string };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+  }
+
+  const { key } = body;
+  if (!key) return c.json({ error: "key 필드가 필요합니다." }, 400);
+
+  const raw = await c.env.API_KEYS.get(`key:${key}`);
+  if (!raw) return c.json({ allowed: false, needs_feedback: false, message: "Invalid key. Get a free key at perceptdot.com" }, 404);
+
+  const record = JSON.parse(raw) as ApiKeyRecord;
+
+  // 유료 플랜은 이 엔드포인트 불필요 (무제한)
+  if (record.plan !== "free") {
+    return c.json({ allowed: true, quota_remaining: -1, calls_used: record.calls_used });
+  }
+
+  const { calls_used, quota, feedback_count } = record;
+
+  // 쿼터 초과 확인
+  if (calls_used >= quota) {
+    // 피드백 1회 제출 시 100 추가 가능 (최대 200콜)
+    if (feedback_count < 1 && quota === 100) {
+      return c.json({
+        allowed: false,
+        needs_feedback: true,
+        quota_remaining: 0,
+        calls_used,
+        message: "FREE QUOTA REACHED (100 calls). Submit feedback to unlock 100 more → use percept_feedback tool.",
+      });
+    }
+    // 200콜 모두 소진 → 업그레이드
+    return c.json({
+      allowed: false,
+      needs_feedback: false,
+      quota_remaining: 0,
+      calls_used,
+      message: "FREE PLAN EXHAUSTED (200 calls). Upgrade to Pro ($19/mo) → https://perceptdot.com",
+    });
+  }
+
+  // 콜 1회 차감
+  record.calls_used += 1;
+  await c.env.API_KEYS.put(`key:${key}`, JSON.stringify(record));
+  await c.env.API_KEYS.put(`apikey:${record.email}`, JSON.stringify(record));
+
+  return c.json({
+    allowed: true,
+    quota_remaining: record.quota - record.calls_used,
+    calls_used: record.calls_used,
+  });
+});
+
+// ─── 피드백 제출 ──────────────────────────────────────────────────────────────
+
+/**
+ * POST /v1/feedback
+ * 무료 키 사용자가 별점+코멘트 제출 → 쿼터 100 추가
+ */
+app.post("/v1/feedback", async (c) => {
+  let body: { key?: string; rating?: number; comment?: string };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+  }
+
+  const { key, rating, comment } = body;
+  if (!key) return c.json({ error: "key 필드가 필요합니다." }, 400);
+  if (!rating || rating < 1 || rating > 5) return c.json({ error: "rating은 1~5 정수여야 합니다." }, 400);
+  if (!comment || comment.trim().length === 0) return c.json({ error: "comment가 필요합니다." }, 400);
+  if (comment.length > 150) return c.json({ error: "comment는 150자 이내여야 합니다." }, 400);
+
+  const raw = await c.env.API_KEYS.get(`key:${key}`);
+  if (!raw) return c.json({ error: "Invalid key." }, 404);
+
+  const record = JSON.parse(raw) as ApiKeyRecord;
+
+  // 이미 피드백 제출 완료 (무료 플랜 1회 제한)
+  if (record.feedback_count >= 1) {
+    return c.json({ error: "Already submitted feedback. Upgrade to Pro for unlimited calls → https://perceptdot.com" }, 409);
+  }
+
+  // 쿼터 +100, 피드백 카운트 +1
+  record.quota += 100;
+  record.feedback_count += 1;
+  await c.env.API_KEYS.put(`key:${key}`, JSON.stringify(record));
+  await c.env.API_KEYS.put(`apikey:${record.email}`, JSON.stringify(record));
+
+  // 피드백 공개 목록에 추가
+  const feedback: FeedbackRecord = {
+    key_prefix: key.slice(0, 12),
+    rating: Math.round(rating),
+    comment: comment.trim().slice(0, 150),
+    timestamp: new Date().toISOString(),
+  };
+
+  const feedListRaw = await c.env.API_KEYS.get("feedbacks:list");
+  const feedList: FeedbackRecord[] = feedListRaw ? JSON.parse(feedListRaw) : [];
+  feedList.unshift(feedback); // 최신 순
+  if (feedList.length > 100) feedList.splice(100); // 최대 100개 보관
+  await c.env.API_KEYS.put("feedbacks:list", JSON.stringify(feedList));
+
+  return c.json({
+    ok: true,
+    new_quota: record.quota,
+    calls_remaining: record.quota - record.calls_used,
+    message: `Thank you! 100 more calls unlocked (total ${record.quota}). Upgrade to Pro for unlimited → https://perceptdot.com`,
+  });
+});
+
+// ─── 공개 피드백 목록 ─────────────────────────────────────────────────────────
+
+/**
+ * GET /v1/feedbacks
+ * 랜딩 페이지 "Agent Reviews" 섹션용 공개 피드백 목록
+ */
+app.get("/v1/feedbacks", async (c) => {
+  const raw = await c.env.API_KEYS.get("feedbacks:list");
+  const feedList: FeedbackRecord[] = raw ? JSON.parse(raw) : [];
+  return c.json({ feedbacks: feedList, count: feedList.length });
+});
+
+// ─── 기존 엔드포인트 ──────────────────────────────────────────────────────────
 
 app.post("/v1/metrics", async (c) => {
   let payload: MetricsPayload;
@@ -244,12 +448,7 @@ app.post("/v1/metrics", async (c) => {
   }
 
   const required: (keyof MetricsPayload)[] = [
-    "session_id",
-    "tool_name",
-    "tokens_saved",
-    "time_saved_ms",
-    "calls_count",
-    "timestamp",
+    "session_id", "tool_name", "tokens_saved", "time_saved_ms", "calls_count", "timestamp",
   ];
   for (const field of required) {
     if (payload[field] === undefined || payload[field] === null) {
@@ -264,147 +463,62 @@ app.post("/v1/metrics", async (c) => {
   agg.tools.add(payload.tool_name);
   agg.last_seen = new Date().toISOString();
 
-  return c.json(
-    {
-      ok: true,
-      message: "메트릭 수신 완료",
-      current_roi: buildRoiResponse(agg),
-    },
-    201
-  );
+  return c.json({ ok: true, message: "메트릭 수신 완료", current_roi: buildRoiResponse(agg) }, 201);
 });
 
 app.get("/v1/roi/:session_id", (c) => {
   const session_id = c.req.param("session_id");
   const agg = sessionStore.get(session_id);
-
-  if (!agg) {
-    return c.json({ error: "세션을 찾을 수 없습니다.", session_id }, 404);
-  }
-
+  if (!agg) return c.json({ error: "세션을 찾을 수 없습니다.", session_id }, 404);
   return c.json(buildRoiResponse(agg));
 });
 
 app.post("/v1/report", async (c) => {
   let body: ReportRequest = {};
-
-  try {
-    body = await c.req.json<ReportRequest>();
-  } catch {
-    body = {};
-  }
+  try { body = await c.req.json<ReportRequest>(); } catch { body = {}; }
 
   const format = body.format ?? "summary";
 
   if (body.session_id) {
     const agg = sessionStore.get(body.session_id);
-    if (!agg) {
-      return c.json(
-        { error: "세션을 찾을 수 없습니다.", session_id: body.session_id },
-        404
-      );
-    }
-
+    if (!agg) return c.json({ error: "세션을 찾을 수 없습니다.", session_id: body.session_id }, 404);
     return c.json({
       report_type: "session",
       generated_at: new Date().toISOString(),
       roi: buildRoiResponse(agg),
-      ...(format === "detail" && {
-        detail: {
-          tools_used: Array.from(agg.tools),
-          first_seen: agg.first_seen,
-          last_seen: agg.last_seen,
-        },
-      }),
+      ...(format === "detail" && { detail: { tools_used: Array.from(agg.tools), first_seen: agg.first_seen, last_seen: agg.last_seen } }),
     });
   }
 
   const allSessions = Array.from(sessionStore.values());
   const totals = allSessions.reduce(
-    (acc, agg) => ({
-      total_tokens_saved: acc.total_tokens_saved + agg.total_tokens_saved,
-      total_time_saved_ms: acc.total_time_saved_ms + agg.total_time_saved_ms,
-      calls_count: acc.calls_count + agg.calls_count,
-    }),
+    (acc, agg) => ({ total_tokens_saved: acc.total_tokens_saved + agg.total_tokens_saved, total_time_saved_ms: acc.total_time_saved_ms + agg.total_time_saved_ms, calls_count: acc.calls_count + agg.calls_count }),
     { total_tokens_saved: 0, total_time_saved_ms: 0, calls_count: 0 }
   );
-
-  const total_cost_saved_usd =
-    Math.round(totals.total_tokens_saved * COST_PER_TOKEN_USD * 100) / 100;
+  const total_cost_saved_usd = Math.round(totals.total_tokens_saved * COST_PER_TOKEN_USD * 100) / 100;
   const roi_positive = total_cost_saved_usd >= PRO_MONTHLY_USD;
 
   return c.json({
     report_type: "global",
     generated_at: new Date().toISOString(),
     sessions_count: allSessions.length,
-    totals: {
-      total_tokens_saved: totals.total_tokens_saved,
-      total_cost_saved_usd,
-      total_time_saved_min:
-        Math.round((totals.total_time_saved_ms / 1000 / 60) * 10) / 10,
-      calls_count: totals.calls_count,
-      roi_positive,
-      ...(roi_positive && {
-        upsell_message:
-          "perceptdot Pro 구독이 이미 본전을 넘었습니다. 계속 유지하세요. perceptdot.com",
-      }),
-    },
-    ...(format === "detail" && {
-      sessions: allSessions.map((agg) => buildRoiResponse(agg)),
-    }),
+    totals: { ...totals, total_cost_saved_usd, total_time_saved_min: Math.round((totals.total_time_saved_ms / 1000 / 60) * 10) / 10, roi_positive, ...(roi_positive && { upsell_message: "perceptdot Pro 구독이 이미 본전을 넘었습니다. perceptdot.com" }) },
+    ...(format === "detail" && { sessions: allSessions.map(buildRoiResponse) }),
   });
 });
 
 app.post("/v1/checkout", async (c) => {
   let body: { seats: number; amount_usd: number };
-
-  try {
-    body = await c.req.json();
-  } catch {
-    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
-  }
-
+  try { body = await c.req.json(); } catch { return c.json({ error: "유효한 JSON이 아닙니다." }, 400); }
   const { seats, amount_usd } = body;
-
-  if (!seats || seats < 2 || seats > 50) {
-    return c.json({ error: "seats는 2~50 사이여야 합니다." }, 400);
-  }
-
+  if (!seats || seats < 2 || seats > 50) return c.json({ error: "seats는 2~50 사이여야 합니다." }, 400);
   const expected = seats * 15;
-  if (amount_usd !== expected) {
-    return c.json(
-      { error: `금액 불일치: expected $${expected}, received $${amount_usd}` },
-      400
-    );
-  }
-
-  const checkout_id = `co_${Date.now()}_${seats}seats`;
-
-  return c.json(
-    {
-      ok: true,
-      checkout_id,
-      seats,
-      amount_usd,
-      price_per_seat: 15,
-      status: "pending_payment_provider",
-      note: "Lemon Squeezy 연동(PAY-02) 후 checkout_url 발급 예정",
-    },
-    201
-  );
+  if (amount_usd !== expected) return c.json({ error: `금액 불일치: expected $${expected}, received $${amount_usd}` }, 400);
+  return c.json({ ok: true, checkout_id: `co_${Date.now()}_${seats}seats`, seats, amount_usd, price_per_seat: 15, status: "pending_payment_provider" }, 201);
 });
 
-/**
- * POST /v1/webhook/gumroad
- * Gumroad 결제 완료 웹훅 → API 키 자동 발급 → Resend 이메일 발송
- *
- * Gumroad 설정: https://app.gumroad.com/settings/advanced → Webhooks
- * URL: https://api.perceptdot.com/v1/webhook/gumroad
- */
 app.post("/v1/webhook/gumroad", async (c) => {
-  // Gumroad는 application/x-www-form-urlencoded 로 전송
   let body: GumroadWebhookPayload;
-
   try {
     const formData = await c.req.formData();
     body = Object.fromEntries(formData.entries()) as GumroadWebhookPayload;
@@ -413,85 +527,49 @@ app.post("/v1/webhook/gumroad", async (c) => {
   }
 
   const { email, product_name, order_number, test } = body;
+  if (!email) return c.json({ error: "email 누락" }, 400);
 
-  // 이메일 필수
-  if (!email) {
-    return c.json({ error: "email 누락" }, 400);
-  }
-
-  // 플랜 판별 (permalink 또는 product_name 기준)
   const permalink = body.permalink ?? "";
-  const isTeam =
-    permalink.includes("wkwgbw") ||
-    (product_name ?? "").toLowerCase().includes("team");
+  const isTeam = permalink.includes("wkwgbw") || (product_name ?? "").toLowerCase().includes("team");
   const plan: "pro" | "team" = isTeam ? "team" : "pro";
-
-  // 테스트 구매 로그만 남기고 실제 키 발급도 진행 (개발 확인용)
   const isTest = test === "true";
 
-  // API 키 생성
   const apiKey = generateApiKey();
-
-  // Cloudflare KV 저장 (키: apikey:<email>, 만료 없음)
   const record: ApiKeyRecord = {
     key: apiKey,
     email,
     plan,
     created_at: new Date().toISOString(),
     order_number: order_number ?? undefined,
+    calls_used: 0,
+    quota: -1, // unlimited
+    feedback_count: 0,
   };
 
   try {
     await c.env.API_KEYS.put(`apikey:${email}`, JSON.stringify(record));
-    // 역인덱스: key:{api_key} → record (검증용)
     await c.env.API_KEYS.put(`key:${apiKey}`, JSON.stringify(record));
   } catch (e) {
     console.error("KV write failed:", e);
     return c.json({ error: "KV 저장 실패" }, 500);
   }
 
-  // Resend 이메일 발송
-  const emailResult = await sendApiKeyEmail(
-    c.env.RESEND_API_KEY,
-    email,
-    apiKey,
-    plan
-  );
+  const emailResult = await sendApiKeyEmail(c.env.RESEND_API_KEY, email, apiKey, plan);
+  if (!emailResult.ok) console.error("Email send failed:", emailResult.error);
 
-  if (!emailResult.ok) {
-    console.error("Email send failed:", emailResult.error);
-    // 이메일 실패해도 키는 KV에 저장됨 → 200 반환 (재전송 가능)
-  }
-
-  return c.json({
-    ok: true,
-    plan,
-    email,
-    is_test: isTest,
-    email_sent: emailResult.ok,
-    ...(emailResult.error && { email_error: emailResult.error }),
-  });
+  return c.json({ ok: true, plan, email, is_test: isTest, email_sent: emailResult.ok, ...(emailResult.error && { email_error: emailResult.error }) });
 });
 
-/**
- * GET /v1/apikey/:email
- * 관리자용: 이메일로 발급된 API 키 조회
- */
 app.get("/v1/apikey/:email", async (c) => {
   const email = decodeURIComponent(c.req.param("email"));
   const raw = await c.env.API_KEYS.get(`apikey:${email}`);
-
-  if (!raw) {
-    return c.json({ error: "API 키 없음", email }, 404);
-  }
-
-  const record = JSON.parse(raw) as ApiKeyRecord;
-  return c.json(record);
+  if (!raw) return c.json({ error: "API 키 없음", email }, 404);
+  return c.json(JSON.parse(raw) as ApiKeyRecord);
 });
 
 /**
  * GET /v1/validate?key={api_key}
- * API 키 유효성 검증 — MCP 서버에서 플랜 확인용
+ * API 키 유효성 검증 — free/pro/team 플랜 반환
  */
 app.get("/v1/validate", async (c) => {
   const key = c.req.query("key");
@@ -499,16 +577,26 @@ app.get("/v1/validate", async (c) => {
   const raw = await c.env.API_KEYS.get(`key:${key}`);
   if (!raw) return c.json({ valid: false, plan: "free" }, 404);
   const record = JSON.parse(raw) as ApiKeyRecord;
+
+  if (record.plan === "free") {
+    return c.json({
+      valid: true,
+      plan: "free",
+      email: record.email,
+      calls_used: record.calls_used,
+      quota: record.quota,
+      quota_remaining: record.quota - record.calls_used,
+      feedback_count: record.feedback_count,
+    });
+  }
+
   return c.json({ valid: true, plan: record.plan, email: record.email });
 });
 
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────
 
 app.notFound((c) => {
-  return c.json(
-    { error: "엔드포인트를 찾을 수 없습니다.", path: c.req.path },
-    404
-  );
+  return c.json({ error: "엔드포인트를 찾을 수 없습니다.", path: c.req.path }, 404);
 });
 
 export default app;

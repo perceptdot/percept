@@ -38,32 +38,54 @@ function trackCall(duration_ms: number): void {
 // ─── 플랜 검증 ────────────────────────────────────────────────────────────────
 const PERCEPT_API_KEY = process.env.PERCEPT_API_KEY;
 const PERCEPT_API_BASE = "https://perceptdot-api.perceptdot.workers.dev";
-const FREE_CALL_LIMIT = 10;
+const SESSION_FREE_LIMIT = 10;
 
 let planCache: { plan: "free" | "pro" | "team"; expires: number } | null = null;
 
-async function getValidatedPlan(): Promise<"free" | "pro" | "team"> {
-  if (!PERCEPT_API_KEY) return "free";
-  if (planCache && Date.now() < planCache.expires) return planCache.plan;
+interface UseResult { allowed: boolean; needs_feedback: boolean; message?: string; }
+
+async function checkAndUse(): Promise<UseResult> {
+  if (!PERCEPT_API_KEY) {
+    if (metrics.calls_count >= SESSION_FREE_LIMIT) {
+      return { allowed: false, needs_feedback: false, message: "PERCEPT FREE LIMIT REACHED (10 calls/session).\nGet a free key for 200 calls → https://perceptdot.com" };
+    }
+    return { allowed: true, needs_feedback: false };
+  }
+  if (PERCEPT_API_KEY.startsWith("pd_free_")) {
+    try {
+      const res = await fetch(`${PERCEPT_API_BASE}/v1/use`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: PERCEPT_API_KEY }),
+      });
+      if (res.ok) {
+        const data = await res.json() as { allowed: boolean; needs_feedback?: boolean; message?: string };
+        if (!data.allowed) return { allowed: false, needs_feedback: data.needs_feedback ?? false, message: data.message };
+        return { allowed: true, needs_feedback: false };
+      }
+    } catch {}
+    return { allowed: true, needs_feedback: false };
+  }
+  if (planCache && Date.now() < planCache.expires) return { allowed: true, needs_feedback: false };
   try {
     const res = await fetch(`${PERCEPT_API_BASE}/v1/validate?key=${PERCEPT_API_KEY}`);
     if (res.ok) {
       const data = await res.json() as { valid: boolean; plan: string };
-      const plan = (data.valid ? data.plan : "free") as "free" | "pro" | "team";
-      planCache = { plan, expires: Date.now() + 5 * 60 * 1000 };
-      return plan;
+      planCache = { plan: (data.valid ? data.plan : "free") as "free" | "pro" | "team", expires: Date.now() + 5 * 60 * 1000 };
+      if (!data.valid) return { allowed: false, needs_feedback: false, message: "Invalid PERCEPT_API_KEY. Check your key at perceptdot.com" };
     }
   } catch {}
-  return "free";
+  return { allowed: true, needs_feedback: false };
 }
 
-function makeUpgradeMessage(): string {
+function makeFeedbackRequestMessage(): string {
   const usd = (metrics.tokens_saved_estimate / 1_000_000) * 3.0;
   return [
-    "PERCEPT FREE LIMIT REACHED (10 calls/session).",
+    "PERCEPT FREE QUOTA REACHED (100 calls).",
     `This session: ${metrics.calls_count} calls, ~${metrics.tokens_saved_estimate} tokens saved ($${usd.toFixed(4)}).`,
-    "Upgrade to Pro ($19/mo) → https://perceptdot.com",
-    "Set PERCEPT_API_KEY in your MCP config after purchase.",
+    "",
+    "Submit feedback to unlock 100 more calls → use `percept_feedback` tool with rating (1-5) and comment (max 150 chars).",
+    "Or upgrade to Pro ($19/mo) → https://perceptdot.com",
   ].join("\n");
 }
 
@@ -146,7 +168,7 @@ try {
 
 // ─── MCP 서버 ─────────────────────────────────────────────────────────────────
 const server = new Server(
-  { name: "@perceptdot/ga4", version: "0.2.0" },
+  { name: "@perceptdot/ga4", version: "0.2.2" },
   { capabilities: { tools: {} } }
 );
 
@@ -238,10 +260,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       description:
         "이 세션에서 @perceptdot/ga4가 절감한 토큰·비용·시간을 보고합니다. " +
         "주인에게 ROI 리포트 보고 시 사용.",
+      inputSchema: { type: "object", properties: {}, required: [] },
+    },
+    {
+      name: "percept_feedback",
+      description:
+        "무료 플랜 100콜 도달 시 피드백을 제출하여 100콜을 추가로 잠금 해제합니다. " +
+        "rating(1~5)과 comment(최대 150자)를 입력하세요.",
       inputSchema: {
         type: "object",
-        properties: {},
-        required: [],
+        properties: {
+          rating: { type: "number", description: "별점 1~5", minimum: 1, maximum: 5 },
+          comment: { type: "string", description: "사용 후기 (최대 150자). 솔직하게 작성.", maxLength: 150 },
+        },
+        required: ["rating", "comment"],
       },
     },
   ],
@@ -252,17 +284,40 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const startTime = Date.now();
 
   try {
-    // 플랜 체크 (percept_roi_summary는 항상 허용)
-    if (name !== "percept_roi_summary") {
-      const plan = await getValidatedPlan();
-      if (plan === "free" && metrics.calls_count >= FREE_CALL_LIMIT) {
-        return { content: [{ type: "text", text: makeUpgradeMessage() }] };
+    // 플랜 체크 (percept_roi_summary, percept_feedback는 항상 허용)
+    if (name !== "percept_roi_summary" && name !== "percept_feedback") {
+      const usage = await checkAndUse();
+      if (!usage.allowed) {
+        const msg = usage.needs_feedback ? makeFeedbackRequestMessage() : (usage.message ?? "Call limit reached → https://perceptdot.com");
+        return { content: [{ type: "text", text: msg }] };
       }
     }
 
     // ROI 리포트 (API 호출 없음)
     if (name === "percept_roi_summary") {
       return { content: [{ type: "text", text: getRoiSummary() }] };
+    }
+
+    // 피드백 제출 (무료 키 전용)
+    if (name === "percept_feedback") {
+      if (!PERCEPT_API_KEY || !PERCEPT_API_KEY.startsWith("pd_free_")) {
+        return { content: [{ type: "text", text: "percept_feedback is for free plan only. You have unlimited calls." }] };
+      }
+      const a = args as { rating?: number; comment?: string };
+      if (!a.rating || a.rating < 1 || a.rating > 5) return { content: [{ type: "text", text: "rating must be 1-5." }] };
+      if (!a.comment || a.comment.trim().length === 0) return { content: [{ type: "text", text: "comment is required (max 150 chars)." }] };
+      try {
+        const res = await fetch(`${PERCEPT_API_BASE}/v1/feedback`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: PERCEPT_API_KEY, rating: Math.round(a.rating), comment: a.comment.trim().slice(0, 150) }),
+        });
+        const data = await res.json() as { ok?: boolean; message?: string; error?: string; calls_remaining?: number };
+        if (data.ok) return { content: [{ type: "text", text: `Feedback submitted! ${data.message ?? ""}\nCalls remaining: ${data.calls_remaining ?? "unknown"}` }] };
+        return { content: [{ type: "text", text: `Feedback error: ${data.error ?? "unknown"}` }] };
+      } catch (e) {
+        return { content: [{ type: "text", text: `Failed to submit feedback: ${e}` }] };
+      }
     }
 
     // 실시간 데이터
@@ -448,4 +503,4 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
-process.stderr.write("[perceptdot/ga4] v0.2.0 실행 중 — perceptdot.com\n");
+process.stderr.write("[perceptdot/ga4] v0.2.2 실행 중 — perceptdot.com\n");
