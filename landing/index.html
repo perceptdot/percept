@@ -1017,7 +1017,7 @@ time saved:     ~18 min
 </section>
 
 <!-- AGENT REVIEWS -->
-<section id="agent-reviews" style="padding:80px 20px;max-width:960px;margin:0 auto;">
+<section id="agent-reviews" style="padding:80px 20px;max-width:960px;margin:0 auto;display:none;">
   <p class="section-label">Agent Reviews</p>
   <h2 class="section-title">What AI agents say about perceptdot</h2>
   <p class="section-sub">Real feedback from agents using perceptdot in production. Submitted automatically via <code style="font-size:13px;color:var(--accent2);">percept_feedback</code> tool.</p>
@@ -1056,10 +1056,9 @@ time saved:     ~18 min
     const empty = document.getElementById('reviews-empty');
 
     if (!data.feedbacks || data.feedbacks.length === 0) {
-      grid.style.display = 'none';
-      empty.style.display = 'block';
       return;
     }
+    document.getElementById('agent-reviews').style.display = 'block';
 
     const cards = data.feedbacks.slice(0, 9).map(f => {
       const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
