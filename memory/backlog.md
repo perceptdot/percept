@@ -102,6 +102,7 @@
 - ✅ **PAY-03** Gumroad 결제 브릿지 완료 (2026-03-21) — Pro $19/mo + Team $75/mo(5seats) 라이브, 랜딩 버튼 연결, No refunds 설정
 - ✅ **PAY-05** Gumroad 웹훅 + API 키 자동발급 E2E 검증 완료 (2026-03-21) — KV 저장, Resend 이메일, 4개 MCP 서버 설정. Gumroad Ping URL 등록 + thunova0318 실수신 확인 (pd_live_xxx 키 포함)
 - ✅ **DEV-10** 전역 MCP 연결 완료 (2026-03-21) — ~/.claude/.mcp.json 생성, ga4+vercel+github 3개 전역 로드
+- ✅ **PAY-06** API 키 검증 + 무료/유료 차별화 완료 (2026-03-21) — /v1/validate 엔드포인트, KV 역인덱스, Free 10회 제한, 4개 MCP 서버 패치 퍼블리시 (ga4@0.2.1, vercel@0.1.2, github@0.1.1, sentry@0.1.1)
 - [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 - ✅ **UX-01** 모바일 코드블록 최적화 — font-size 11px, -webkit-overflow-scrolling (그록 피드백, 2026-03-20)
