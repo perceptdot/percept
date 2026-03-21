@@ -892,6 +892,79 @@
   </div>
 </section>
 
+<!-- OUTPUT PREVIEW -->
+<section style="padding:80px 20px;max-width:960px;margin:0 auto;">
+  <p class="section-label">What You Get</p>
+  <h2 class="section-title">This is what your agent<br />sends you every morning</h2>
+  <p class="section-sub">No dashboards. No manual checks. Your agent reads the data and delivers a plain-English report directly in the conversation.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px;">
+    <!-- ROI Report -->
+    <div style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;">
+      <div style="background:#161616;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+        <span style="width:10px;height:10px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+        <span style="color:#555;font-size:11px;margin-left:8px;font-family:monospace;">percept_roi_summary</span>
+      </div>
+      <pre style="margin:0;padding:20px;font-size:12px;line-height:1.7;overflow-x:auto;font-family:monospace;color:#ccc;">[perceptdot ROI — session]
+calls:          47
+tokens saved:   21,150
+cost saved:     $0.063
+time saved:     ~18 min
+
+<span style="color:#a78bfa;">GA4</span>  1,247 sessions today (+12% WoW)
+<span style="color:#a78bfa;">GA4</span>  Top page: /pricing (342 views)
+<span style="color:#6ee7b7;">VCL</span>  Last deploy: 2h ago — READY ✓
+<span style="color:#6ee7b7;">VCL</span>  3 deploys today, 0 failures
+<span style="color:#f9a8d4;">SNT</span>  0 new errors in 24h ✓
+<span style="color:#93c5fd;">GH</span>   2 open PRs · 1 review pending
+
+<span style="color:#7c6dfa;">perceptdot saved $0.063 today</span>
+<span style="color:#555;">Pro $19/mo pays off at ~300 calls</span></pre>
+    </div>
+
+    <!-- GA4 query result -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;">
+        <div style="background:#161616;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+          <span style="color:#555;font-size:11px;margin-left:8px;font-family:monospace;">ga4_realtime</span>
+        </div>
+        <pre style="margin:0;padding:16px;font-size:12px;line-height:1.6;font-family:monospace;color:#ccc;">{
+  <span style="color:#86efac;">"total_active_users"</span>: <span style="color:#7dd3fc;">23</span>,
+  <span style="color:#86efac;">"top_pages"</span>: [
+    { <span style="color:#86efac;">"page"</span>: <span style="color:#fca5a5;">"/pricing"</span>, <span style="color:#86efac;">"users"</span>: <span style="color:#7dd3fc;">8</span> },
+    { <span style="color:#86efac;">"page"</span>: <span style="color:#fca5a5;">"/"</span>, <span style="color:#86efac;">"users"</span>: <span style="color:#7dd3fc;">11</span> }
+  ],
+  <span style="color:#86efac;">"_percept"</span>: <span style="color:#fca5a5;">"450 tokens saved"</span>
+}</pre>
+      </div>
+
+      <div style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;">
+        <div style="background:#161616;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+          <span style="color:#555;font-size:11px;margin-left:8px;font-family:monospace;">vercel_latest_status</span>
+        </div>
+        <pre style="margin:0;padding:16px;font-size:12px;line-height:1.6;font-family:monospace;color:#ccc;">{
+  <span style="color:#86efac;">"state"</span>: <span style="color:#6ee7b7;">"READY"</span>,
+  <span style="color:#86efac;">"name"</span>: <span style="color:#fca5a5;">"my-app"</span>,
+  <span style="color:#86efac;">"created"</span>: <span style="color:#fca5a5;">"2h ago"</span>,
+  <span style="color:#86efac;">"_percept"</span>: <span style="color:#fca5a5;">"200 tokens saved"</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:32px;">
+    All of this in a single conversation turn. No copy-paste. No tab switching.
+  </p>
+</section>
+
 <!-- FEATURES -->
 <section id="features" style="border-top: 1px solid var(--border);">
   <p class="section-label">Features</p>

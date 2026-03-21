@@ -433,7 +433,8 @@ app.post("/v1/feedback", async (c) => {
 app.get("/v1/feedbacks", async (c) => {
   const raw = await c.env.API_KEYS.get("feedbacks:list");
   const feedList: FeedbackRecord[] = raw ? JSON.parse(raw) : [];
-  return c.json({ feedbacks: feedList, count: feedList.length });
+  const publicFeedbacks = feedList.filter((f) => f.rating >= 3);
+  return c.json({ feedbacks: publicFeedbacks, count: publicFeedbacks.length });
 });
 
 // ─── 기존 엔드포인트 ──────────────────────────────────────────────────────────

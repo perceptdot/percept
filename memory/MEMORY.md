@@ -16,11 +16,17 @@
   - ✅ @perceptdot/ga4@0.2.1 — Named Profiles + 플랜 검증
   - ✅ Landing 가격 개편: Free 2통합/200콜, Team $99/10시트
   - ✅ SEO: sitemap.xml + robots.txt + OG/Twitter 메타 + canonical
-  - ✅ Gumroad 결제 라이브 (Pro $19, Team $99 — Gumroad 가격 수동 변경 필요)
-  - ✅ api.perceptdot.com Workers 재배포 완료 (DNS 전파 중)
-  - ✅ .mcp.json 보안 이슈 수정 (히스토리 제거 + gitignore)
+  - ✅ Google Search Console 등록 + sitemap 3 pages 인덱스 완료
+  - ✅ GA4 Property G-982JCXJW0N 발급 + 랜딩 삽입 완료
+  - ✅ Gumroad 결제 라이브 (Pro $19, Team $99)
+  - ✅ api.perceptdot.com Workers 재배포 완료 (DNS 전파 완료)
+  - ✅ .mcp.json 보안 이슈 수정 + Vercel/GitHub 토큰 재발급 완료
+  - ✅ service@perceptdot.com 이메일 셋업 완료 (Cloudflare Routing + Brevo SMTP)
+  - ✅ RSS 피드 구현 완료 (/rss/changelog + /rss/feedback)
+  - ✅ PAY-06: API 키 검증 + 무료/유료 차별화 완료
   - ⏳ Paddle KYC + Business 심사 대기 (1~4 영업일)
-  - 🔄 SEO-01: GA4 Property ID 발급 대기 (CEO 수동)
+  - 🔴 BUG-01: Cloudflare Bot Fight Mode — ClaudeBot 차단 (CEO 수동)
+  - 🟡 og-image.png 제작 필요 (CEO 수동, 1200×630px)
   - npm 패키지: ga4@0.2.1, vercel@0.1.2, sentry@0.1.1, github@0.1.1
 
 ## 확정 사항 (2026-03-19)
