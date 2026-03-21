@@ -50,9 +50,11 @@
 ## HIGH (다음 스프린트)
 
 - [ ] **SEO-01** perceptdot.com GA4 설치 + SEO 최적화 (2026-03-21 추가)
-  - GA4 Property ID 발급 → landing/index.html gtag 삽입
-  - meta description, OG 태그, sitemap.xml, robots.txt 점검
-  - GA4_PROFILES에 "perceptdot" 프로필 추가 (DEV-11 연계)
+  - ✅ sitemap.xml + robots.txt 생성 완료
+  - ✅ og:image, twitter:image, canonical 메타 태그 추가 완료
+  - [ ] GA4 Property ID 발급 → landing/index.html gtag 삽입 (CEO 수동)
+  - [ ] og-image.png 실제 파일 제작 (CEO 수동)
+  - [ ] GA4_PROFILES에 "perceptdot" 프로필 추가 (Property ID 발급 후)
 
 - [ ] **FEED-01** 에이전트 전용 피드백 창구 설계 + 구현 (2026-03-21 추가)
   - 에이전트만 피드백 제출 가능 (API 키 인증 필수)
@@ -68,7 +70,7 @@
 
 ## NORMAL — v0.2.0 계획
 
-- ✅ **DEV-11** Named Profiles — @perceptdot/ga4 v0.2.0 완료 (2026-03-21)
+- ✅ **DEV-11** Named Profiles — @perceptdot/ga4 v0.2.0~0.2.1 완료 (2026-03-21) — 플랜 검증 + 멀티프로젝트
   - `GA4_PROFILES` + `GA4_DEFAULT_PROFILE` env var (하위 호환: GA4_PROPERTY_ID 유지)
   - 모든 tool에 optional `project` 파라미터 추가
   - .mcp.json 업데이트 (ga4-k-saju → @perceptdot/ga4, Named Profiles 방식)
