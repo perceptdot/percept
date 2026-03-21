@@ -11,13 +11,17 @@
   - @perceptdot/ga4@0.1.0, @perceptdot/vercel@0.1.0 → npmjs.com 라이브
   - Hono 백엔드(api/) + Python SDK(python-sdk/) 기초 완성
 - **2단계 ✅ 완료 (2026-03-20)**: GitHub 공개 + Cloudflare Workers + Landing Pages 배포
-- **3단계 🔄 진행 중 (2026-03-21)**: 도메인 + 결제 + Growth + v0.2.0 설계
-  - ✅ @perceptdot/sentry@0.1.0, @perceptdot/github@0.1.0 npm 라이브
-  - ✅ Landing 4개 통합 카드 완성 + Pages 재배포
-  - ✅ perceptdot.com Pages 도메인 연결 완료 (AWS Route 53 → Cloudflare)
-  - ✅ Lemon Squeezy 계정 생성 + KYC 제출 (승인 대기 중, 24~48시간)
-  - 🔄 api.perceptdot.com Workers 도메인 연결 (대기)
-  - npm 패키지 4종: @perceptdot/ga4, vercel, sentry, github
+- **3단계 🔄 진행 중 (2026-03-21)**: 도메인 + 결제 + Growth + v0.2.x
+  - ✅ @perceptdot/sentry@0.1.1, @perceptdot/github@0.1.1, vercel@0.1.2 npm 라이브
+  - ✅ @perceptdot/ga4@0.2.1 — Named Profiles + 플랜 검증
+  - ✅ Landing 가격 개편: Free 2통합/200콜, Team $99/10시트
+  - ✅ SEO: sitemap.xml + robots.txt + OG/Twitter 메타 + canonical
+  - ✅ Gumroad 결제 라이브 (Pro $19, Team $99 — Gumroad 가격 수동 변경 필요)
+  - ✅ api.perceptdot.com Workers 재배포 완료 (DNS 전파 중)
+  - ✅ .mcp.json 보안 이슈 수정 (히스토리 제거 + gitignore)
+  - ⏳ Paddle KYC + Business 심사 대기 (1~4 영업일)
+  - 🔄 SEO-01: GA4 Property ID 발급 대기 (CEO 수동)
+  - npm 패키지: ga4@0.2.1, vercel@0.1.2, sentry@0.1.1, github@0.1.1
 
 ## 확정 사항 (2026-03-19)
 
