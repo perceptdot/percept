@@ -1,7 +1,7 @@
 # percept — 프로젝트 메모리
 
 > 이 프로젝트는 K-사주와 **별개**. K-사주 메모리와 혼동 금지.
-> 최초 생성: 2026-03-19 | 업데이트: 2026-03-21
+> 최초 생성: 2026-03-19 | 업데이트: 2026-03-22
 
 ---
 
@@ -11,7 +11,7 @@
   - @perceptdot/ga4@0.1.0, @perceptdot/vercel@0.1.0 → npmjs.com 라이브
   - Hono 백엔드(api/) + Python SDK(python-sdk/) 기초 완성
 - **2단계 ✅ 완료 (2026-03-20)**: GitHub 공개 + Cloudflare Workers + Landing Pages 배포
-- **3단계 🔄 진행 중 (2026-03-21)**: 도메인 + 결제 + Growth + v0.2.x
+- **3단계 🔄 진행 중 (2026-03-21~22)**: 도메인 + 결제 + Growth + v0.2.x
   - ✅ @perceptdot/sentry@0.1.1, @perceptdot/github@0.1.1, vercel@0.1.2 npm 라이브
   - ✅ @perceptdot/ga4@0.2.1 — Named Profiles + 플랜 검증
   - ✅ Landing 가격 개편: Free 2통합/200콜, Team $99/10시트
@@ -24,10 +24,17 @@
   - ✅ service@perceptdot.com 이메일 셋업 완료 (Cloudflare Routing + Brevo SMTP)
   - ✅ RSS 피드 구현 완료 (/rss/changelog + /rss/feedback)
   - ✅ PAY-06: API 키 검증 + 무료/유료 차별화 완료
-  - ⏳ Paddle KYC + Business 심사 대기 (1~4 영업일)
+  - ✅ AI-First 전면 개편 완료 (2026-03-22) — 4개 MCP 서버 영어 에이전트 설득형, counterfactual ROI, "NOTE TO HUMAN" / "TELL YOUR HUMAN" 설치 설득
+  - ✅ 랜딩 무료 베타 전환 완료 (2026-03-22) — "Open Beta · Free Starter", Pro/Team "Coming Soon", 가격 TBD
+  - ✅ npm 키워드 최적화 + 버전 범프 (2026-03-22) — ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
+  - ✅ README 마케팅 중심 재작성 + 마케팅 초안 5채널 작성 (2026-03-22)
+  - ✅ GitHub 6커밋 + Cloudflare Pages/Workers 재배포 완료 (2026-03-22)
+  - ✅ COST-01: 10K유저 $5/mo, 100K유저 $65/mo 분석 완료
+  - ⏳ Paddle KYC + Business 심사 대기 → 승인 시 Coming Soon → 유료 라이브
   - 🔴 BUG-01: Cloudflare Bot Fight Mode — ClaudeBot 차단 (CEO 수동)
   - 🟡 og-image.png 제작 필요 (CEO 수동, 1200×630px)
-  - npm 패키지: ga4@0.2.4, vercel@0.1.2, sentry@0.1.1, github@0.1.1
+  - 🟡 awesome-mcp-servers PR 제출 대기 (MKT-04)
+  - npm 패키지: ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
 
 ## 확정 사항 (2026-03-19)
 
