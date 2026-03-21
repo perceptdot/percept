@@ -44,6 +44,9 @@
   - percept 에이전트가 Moltbook에서 피드백 수집
   - moltbook-skill / moltbook-mcp-server 연동 검토
   - ※ 인간 얼리어답터 → AI 에이전트로 방향 전환 (2026-03-20 CEO 결정)
+- [ ] **GROWTH-03** awesome-mcp-servers GitHub PR 제출 ⏸️ 대기 (CEO 결정 후 진행)
+- [ ] **GROWTH-04** Anthropic Discord #tools 채널 포스팅 ⏸️ 대기
+- [ ] **GROWTH-05** r/ClaudeAI Reddit 소개 포스트 ⏸️ 대기
 
 ---
 
