@@ -111,7 +111,8 @@
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 - ✅ **UX-01** 모바일 코드블록 최적화 — font-size 11px, -webkit-overflow-scrolling (그록 피드백, 2026-03-20)
 - [ ] **UX-02** Contact form 추가 (Tally 폼 — mailto 대체)
-- [ ] **UX-03** 히어로 섹션 데모 GIF 추가 (그록 피드백 최우선)
+- ✅ **UX-03** Output Preview 섹션 추가 완료 (2026-03-21) — percept_roi_summary + ga4_realtime + vercel_latest_status 실제 출력 예시, 터미널 UI 스타일
+- ✅ **UX-04** 피드백 3점 미만 공개 비노출 필터 추가 (2026-03-21) — GET /v1/feedbacks에서 rating >= 3만 반환
 - [ ] **BUG-01** Cloudflare Bot Fight Mode 완화 — 봇(Grok 등) 403 차단 문제
 - ✅ **BUG-02** 멀티 프로젝트 지원 — Option B 적용 완료 (2026-03-21): `.mcp.json` 서버명을 `ga4-k-saju` / `ga4-perceptdot`으로 분리. perceptdot GA4 Property ID 확보 후 두 번째 인스턴스 추가 가능. 중기: Option A (Named Profiles, v0.2.0) 검토
 - ✅ **BUG-03** ga4_realtime INVALID_ARGUMENT 버그 수정 (2026-03-21): `pagePath` → `unifiedPagePathScreen` dimension 변경. Realtime API는 pagePath 미지원.
