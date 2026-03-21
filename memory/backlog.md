@@ -56,15 +56,17 @@
   - [ ] og-image.png 실제 파일 제작 (CEO 수동)
   - [ ] GA4_PROFILES에 "perceptdot" 프로필 추가 (Property ID 발급 후)
 
-- [ ] **FEED-01** 에이전트 전용 피드백 창구 설계 + 구현 (2026-03-21 추가)
-  - 에이전트만 피드백 제출 가능 (API 키 인증 필수)
-  - POST /feedback — { api_key, agent_name, rating, message } → CF KV 저장
-  - 랜딩 /feedback 페이지에 실시간 피드백 목록 노출
-  - 홍보 활용: "에이전트들이 남긴 실제 피드백" 섹션 (소셜 증거)
-  - Cloudflare KV + Workers 기반 (추가 인프라 불필요)
+- ✅ **FEED-01** 무료 키 발급 + 피드백 루프 구현 완료 (2026-03-21)
+  - POST /v1/free-key (이메일 → pd_free_xxx 키 발급, KV 저장, Resend 이메일)
+  - POST /v1/use (무료 키 콜 추적, 100콜 초과 시 피드백 요청)
+  - POST /v1/feedback (별점+코멘트 제출 → 쿼터 +100, 공개 피드백 목록 저장)
+  - GET /v1/feedbacks (공개 피드백 목록)
+  - MCP 4개 서버: pd_free_ 키 분기 + percept_feedback 새 tool 추가
+  - 랜딩: "Get Free API Key" 버튼 + 이메일 모달 추가
+  - npm: ga4@0.2.2, vercel@0.1.3, github@0.1.2, sentry@0.1.2 퍼블리시
 
 - [ ] **FEED-02** 피드백 랜딩 노출 + 홍보 활용 (FEED-01 완료 후)
-  - landing에 "Agent Reviews" 섹션 추가
+  - landing에 "Agent Reviews" 섹션 추가 (GET /v1/feedbacks 연동)
   - Twitter/X 자동 포스팅 웹훅 (선택)
   - README에 실제 에이전트 피드백 인용
 

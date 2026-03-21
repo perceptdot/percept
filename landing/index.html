@@ -1376,6 +1376,109 @@
   })();
 </script>
 
+<!-- FREE KEY MODAL -->
+<div id="free-modal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:40px;max-width:460px;width:90%;position:relative;font-family:monospace;">
+    <button onclick="closeFreeModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1;">×</button>
+    <div style="color:#7c6dfa;font-size:11px;letter-spacing:2px;margin-bottom:12px;">FREE PLAN</div>
+    <h3 style="color:#e0e0e0;font-size:18px;margin-bottom:8px;">Get your free API key</h3>
+    <p style="color:#888;font-size:13px;margin-bottom:24px;">100 calls free. Submit feedback to unlock 100 more. No credit card required.</p>
+
+    <div id="free-form-area">
+      <input id="free-email" type="email" placeholder="your@email.com"
+        style="width:100%;background:#0a0a0a;border:1px solid #333;border-radius:6px;padding:12px 14px;color:#e0e0e0;font-family:monospace;font-size:14px;box-sizing:border-box;outline:none;"
+        onkeydown="if(event.key==='Enter')submitFreeKey()" />
+      <button onclick="submitFreeKey()" id="free-submit-btn"
+        style="width:100%;margin-top:12px;background:#7c6dfa;border:none;border-radius:6px;padding:12px;color:#fff;font-family:monospace;font-size:14px;cursor:pointer;font-weight:bold;">
+        Get API Key →
+      </button>
+      <p id="free-error" style="color:#ff6b6b;font-size:12px;margin-top:8px;display:none;"></p>
+    </div>
+
+    <div id="free-result-area" style="display:none;">
+      <p style="color:#a78bfa;font-size:12px;margin-bottom:8px;">YOUR API KEY (check email too)</p>
+      <div id="free-key-display" style="background:#0a0a0a;border:1px solid #7c6dfa;border-radius:6px;padding:14px;color:#a78bfa;font-size:13px;word-break:break-all;cursor:pointer;" onclick="copyFreeKey()" title="Click to copy"></div>
+      <p style="color:#555;font-size:11px;margin-top:8px;">Click to copy · Add to your MCP config as PERCEPT_API_KEY</p>
+      <pre style="background:#0a0a0a;border:1px solid #222;border-radius:6px;padding:14px;font-size:11px;color:#888;margin-top:16px;overflow-x:auto;">{
+  "mcpServers": {
+    "@perceptdot/ga4": {
+      "command": "npx",
+      "args": ["-y", "@perceptdot/ga4"],
+      "env": { "PERCEPT_API_KEY": "<span id="free-key-inline" style="color:#a78bfa;">your-key</span>" }
+    }
+  }
+}</pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openFreeModal() {
+    const m = document.getElementById('free-modal');
+    m.style.display = 'flex';
+    setTimeout(() => document.getElementById('free-email').focus(), 100);
+  }
+  function closeFreeModal() {
+    document.getElementById('free-modal').style.display = 'none';
+    document.getElementById('free-email').value = '';
+    document.getElementById('free-error').style.display = 'none';
+    document.getElementById('free-form-area').style.display = 'block';
+    document.getElementById('free-result-area').style.display = 'none';
+  }
+  document.getElementById('free-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeFreeModal();
+  });
+
+  async function submitFreeKey() {
+    const email = document.getElementById('free-email').value.trim();
+    const errEl = document.getElementById('free-error');
+    const btn = document.getElementById('free-submit-btn');
+    errEl.style.display = 'none';
+
+    if (!email || !email.includes('@')) {
+      errEl.textContent = 'Please enter a valid email.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('https://api.perceptdot.com/v1/free-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.api_key) {
+        document.getElementById('free-form-area').style.display = 'none';
+        document.getElementById('free-result-area').style.display = 'block';
+        document.getElementById('free-key-display').textContent = data.api_key;
+        document.getElementById('free-key-inline').textContent = data.api_key;
+      } else {
+        errEl.textContent = data.error || 'Something went wrong. Try again.';
+        errEl.style.display = 'block';
+        btn.textContent = 'Get API Key →';
+        btn.disabled = false;
+      }
+    } catch (e) {
+      errEl.textContent = 'Network error. Please try again.';
+      errEl.style.display = 'block';
+      btn.textContent = 'Get API Key →';
+      btn.disabled = false;
+    }
+  }
+
+  function copyFreeKey() {
+    const key = document.getElementById('free-key-display').textContent;
+    navigator.clipboard.writeText(key).then(() => {
+      document.getElementById('free-key-display').textContent = '✓ Copied!';
+      setTimeout(() => { document.getElementById('free-key-display').textContent = key; }, 1500);
+    });
+  }
+</script>
 
 </body>
 </html>
