@@ -145,6 +145,28 @@ function generateFreeKey(): string {
   return `pd_free_${hex}`;
 }
 
+/** Resend 내부 알림 (service@perceptdot.com으로) */
+async function sendInternalAlert(
+  resendApiKey: string,
+  subject: string,
+  text: string
+): Promise<void> {
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "perceptdot <service@perceptdot.com>",
+        to: ["service@perceptdot.com"],
+        subject,
+        text,
+      }),
+    });
+  } catch (e) {
+    console.error("Internal alert failed:", e);
+  }
+}
+
 /** Resend로 API 키 이메일 발송 */
 async function sendApiKeyEmail(
   resendApiKey: string,
@@ -286,8 +308,26 @@ app.post("/v1/free-key", async (c) => {
   await c.env.API_KEYS.put(`apikey:${email}`, JSON.stringify(record));
   await c.env.API_KEYS.put(`key:${apiKey}`, JSON.stringify(record));
 
-  // 이메일 발송
-  const emailResult = await sendApiKeyEmail(c.env.RESEND_API_KEY, email, apiKey, "free");
+  // 카운터 증가
+  const today = new Date().toISOString().split("T")[0];
+  const [prevFree, prevToday] = await Promise.all([
+    c.env.API_KEYS.get("stats:total_free"),
+    c.env.API_KEYS.get(`stats:today:${today}`),
+  ]);
+  await Promise.all([
+    c.env.API_KEYS.put("stats:total_free", String((parseInt(prevFree ?? "0")) + 1)),
+    c.env.API_KEYS.put(`stats:today:${today}`, String((parseInt(prevToday ?? "0")) + 1)),
+  ]);
+
+  // 이메일 발송 (사용자 + 내부 알림 병렬)
+  const [emailResult] = await Promise.all([
+    sendApiKeyEmail(c.env.RESEND_API_KEY, email, apiKey, "free"),
+    sendInternalAlert(
+      c.env.RESEND_API_KEY,
+      `[perceptdot] 🆕 Free key — ${email}`,
+      `New free key issued\nEmail: ${email}\nKey: ${apiKey}\nTime: ${new Date().toISOString()}`
+    ),
+  ]);
   if (!emailResult.ok) {
     console.error("Free key email failed:", emailResult.error);
   }
@@ -555,6 +595,18 @@ app.post("/v1/webhook/gumroad", async (c) => {
     return c.json({ error: "KV 저장 실패" }, 500);
   }
 
+  // 카운터 증가
+  const today = new Date().toISOString().split("T")[0];
+  const statKey = plan === "team" ? "stats:total_team" : "stats:total_pro";
+  const [prevPlan, prevToday] = await Promise.all([
+    c.env.API_KEYS.get(statKey),
+    c.env.API_KEYS.get(`stats:today:${today}`),
+  ]);
+  await Promise.all([
+    c.env.API_KEYS.put(statKey, String((parseInt(prevPlan ?? "0")) + 1)),
+    c.env.API_KEYS.put(`stats:today:${today}`, String((parseInt(prevToday ?? "0")) + 1)),
+  ]);
+
   const emailResult = await sendApiKeyEmail(c.env.RESEND_API_KEY, email, apiKey, plan);
   if (!emailResult.ok) console.error("Email send failed:", emailResult.error);
 
@@ -592,6 +644,51 @@ app.get("/v1/validate", async (c) => {
   }
 
   return c.json({ valid: true, plan: record.plan, email: record.email });
+});
+
+// ─── 마케팅 모니터링 통계 ──────────────────────────────────────────────────────
+
+/**
+ * GET /v1/stats?key={paid_api_key}
+ * 마케팅 모니터링용: 총 키 발급 수, 플랜별 분포, 오늘 신규, 피드백 통계
+ * 유료 키(pd_live_) 인증 필요
+ */
+app.get("/v1/stats", async (c) => {
+  const key = c.req.query("key");
+  if (!key) return c.json({ error: "key 파라미터가 필요합니다." }, 401);
+  const keyRaw = await c.env.API_KEYS.get(`key:${key}`);
+  if (!keyRaw) return c.json({ error: "Invalid key." }, 401);
+  const keyRecord = JSON.parse(keyRaw) as ApiKeyRecord;
+  if (keyRecord.plan === "free") return c.json({ error: "Pro/Team 키가 필요합니다." }, 403);
+
+  const today = new Date().toISOString().split("T")[0];
+  const [freeRaw, proRaw, teamRaw, todayRaw, feedRaw] = await Promise.all([
+    c.env.API_KEYS.get("stats:total_free"),
+    c.env.API_KEYS.get("stats:total_pro"),
+    c.env.API_KEYS.get("stats:total_team"),
+    c.env.API_KEYS.get(`stats:today:${today}`),
+    c.env.API_KEYS.get("feedbacks:list"),
+  ]);
+
+  const freeCount = parseInt(freeRaw ?? "0");
+  const proCount = parseInt(proRaw ?? "0");
+  const teamCount = parseInt(teamRaw ?? "0");
+  const todayCount = parseInt(todayRaw ?? "0");
+  const feedbacks: FeedbackRecord[] = feedRaw ? JSON.parse(feedRaw) : [];
+  const avgRating = feedbacks.length > 0
+    ? Math.round((feedbacks.reduce((a, f) => a + f.rating, 0) / feedbacks.length) * 10) / 10
+    : null;
+
+  return c.json({
+    total_keys: freeCount + proCount + teamCount,
+    free: freeCount,
+    pro: proCount,
+    team: teamCount,
+    today_new: todayCount,
+    total_feedbacks: feedbacks.length,
+    avg_rating: avgRating,
+    generated_at: new Date().toISOString(),
+  });
 });
 
 // ─── RSS 피드 ────────────────────────────────────────────────────────────────
