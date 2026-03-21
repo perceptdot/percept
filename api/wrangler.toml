@@ -5,13 +5,17 @@ compatibility_date = "2024-01-01"
 [vars]
 ENVIRONMENT = "production"
 
-# KV 네임스페이스: API 키 저장소
-# 생성 방법: npx wrangler kv namespace create "API_KEYS"
-# 또는 Cloudflare Dashboard → Workers → KV → Create namespace "API_KEYS"
 [[kv_namespaces]]
 binding = "API_KEYS"
 id = "ab9b493f77ae443197620421f259365b"
 
-# Custom domain: api.perceptdot.com
 [env.production]
-routes = [{ pattern = "api.perceptdot.com/*", custom_domain = true }]
+vars = { ENVIRONMENT = "production" }
+
+[[env.production.kv_namespaces]]
+binding = "API_KEYS"
+id = "ab9b493f77ae443197620421f259365b"
+
+[[env.production.routes]]
+pattern = "api.perceptdot.com"
+custom_domain = true
