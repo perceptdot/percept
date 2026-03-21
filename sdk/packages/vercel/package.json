@@ -1,6 +1,7 @@
 {
   "name": "@perceptdot/vercel",
-  "version": "0.1.5",
+  "mcpName": "io.github.perceptdot/vercel",
+  "version": "0.1.6",
   "description": "AI agent vision for Vercel deployments — with ROI measurement. perceptdot.com",
   "type": "module",
   "main": "dist/index.js",
