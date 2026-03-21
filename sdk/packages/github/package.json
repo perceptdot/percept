@@ -15,14 +15,17 @@
   },
   "keywords": [
     "mcp",
-    "github",
-    "repository",
-    "pull-requests",
-    "workflows",
+    "mcp-server",
+    "model-context-protocol",
+    "ai-agent",
+    "claude",
+    "cursor",
+    "windsurf",
+    "perceptdot",
     "roi",
-    "agent",
-    "percept",
-    "observability"
+    "observability",
+    "github",
+    "pull-request"
   ],
   "license": "MIT",
   "dependencies": {

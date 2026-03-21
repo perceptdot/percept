@@ -15,12 +15,17 @@
   },
   "keywords": [
     "mcp",
-    "vercel",
-    "deployment",
+    "mcp-server",
+    "model-context-protocol",
+    "ai-agent",
+    "claude",
+    "cursor",
+    "windsurf",
+    "perceptdot",
     "roi",
-    "agent",
-    "percept",
-    "observability"
+    "observability",
+    "vercel",
+    "deployment"
   ],
   "license": "MIT",
   "dependencies": {

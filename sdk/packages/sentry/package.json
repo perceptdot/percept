@@ -15,12 +15,17 @@
   },
   "keywords": [
     "mcp",
-    "sentry",
-    "error-tracking",
+    "mcp-server",
+    "model-context-protocol",
+    "ai-agent",
+    "claude",
+    "cursor",
+    "windsurf",
+    "perceptdot",
     "roi",
-    "agent",
-    "percept",
-    "observability"
+    "observability",
+    "sentry",
+    "error-monitoring"
   ],
   "license": "MIT",
   "dependencies": {
