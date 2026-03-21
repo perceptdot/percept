@@ -1,35 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
   <rect width="32" height="32" fill="#0a0a0a"/>
-  <!-- pixel eye: 8x8 grid scaled to 32x32 (each pixel = 4x4) -->
-  <!-- row 2: outer whites -->
-  <rect x="8"  y="8"  width="4" height="4" fill="#00ff88"/>
-  <rect x="12" y="8"  width="4" height="4" fill="#00ff88"/>
-  <rect x="16" y="8"  width="4" height="4" fill="#00ff88"/>
-  <rect x="20" y="8"  width="4" height="4" fill="#00ff88"/>
+  <!-- pixel eye: 8x8 grid scaled to 32x32 (each pixel = 4x4), purple palette -->
+  <!-- row 2: outer accent -->
+  <rect x="8"  y="8"  width="4" height="4" fill="#7c6dfa"/>
+  <rect x="12" y="8"  width="4" height="4" fill="#7c6dfa"/>
+  <rect x="16" y="8"  width="4" height="4" fill="#7c6dfa"/>
+  <rect x="20" y="8"  width="4" height="4" fill="#7c6dfa"/>
   <!-- row 3 -->
-  <rect x="4"  y="12" width="4" height="4" fill="#00ff88"/>
-  <rect x="8"  y="12" width="4" height="4" fill="#ffffff"/>
-  <rect x="12" y="12" width="4" height="4" fill="#ffffff"/>
-  <rect x="16" y="12" width="4" height="4" fill="#00ff88"/>
-  <rect x="20" y="12" width="4" height="4" fill="#ffffff"/>
-  <rect x="24" y="12" width="4" height="4" fill="#00ff88"/>
+  <rect x="4"  y="12" width="4" height="4" fill="#7c6dfa"/>
+  <rect x="8"  y="12" width="4" height="4" fill="#a78bfa"/>
+  <rect x="12" y="12" width="4" height="4" fill="#a78bfa"/>
+  <rect x="16" y="12" width="4" height="4" fill="#7c6dfa"/>
+  <rect x="20" y="12" width="4" height="4" fill="#a78bfa"/>
+  <rect x="24" y="12" width="4" height="4" fill="#7c6dfa"/>
   <!-- row 4: pupil row -->
-  <rect x="4"  y="16" width="4" height="4" fill="#00ff88"/>
-  <rect x="8"  y="16" width="4" height="4" fill="#ffffff"/>
+  <rect x="4"  y="16" width="4" height="4" fill="#7c6dfa"/>
+  <rect x="8"  y="16" width="4" height="4" fill="#a78bfa"/>
   <rect x="12" y="16" width="4" height="4" fill="#0a0a0a"/>
   <rect x="16" y="16" width="4" height="4" fill="#0a0a0a"/>
-  <rect x="20" y="16" width="4" height="4" fill="#ffffff"/>
-  <rect x="24" y="16" width="4" height="4" fill="#00ff88"/>
+  <rect x="20" y="16" width="4" height="4" fill="#a78bfa"/>
+  <rect x="24" y="16" width="4" height="4" fill="#7c6dfa"/>
   <!-- row 5 -->
-  <rect x="4"  y="20" width="4" height="4" fill="#00ff88"/>
-  <rect x="8"  y="20" width="4" height="4" fill="#ffffff"/>
-  <rect x="12" y="20" width="4" height="4" fill="#ffffff"/>
-  <rect x="16" y="20" width="4" height="4" fill="#00ff88"/>
-  <rect x="20" y="20" width="4" height="4" fill="#ffffff"/>
-  <rect x="24" y="20" width="4" height="4" fill="#00ff88"/>
+  <rect x="4"  y="20" width="4" height="4" fill="#7c6dfa"/>
+  <rect x="8"  y="20" width="4" height="4" fill="#a78bfa"/>
+  <rect x="12" y="20" width="4" height="4" fill="#a78bfa"/>
+  <rect x="16" y="20" width="4" height="4" fill="#7c6dfa"/>
+  <rect x="20" y="20" width="4" height="4" fill="#a78bfa"/>
+  <rect x="24" y="20" width="4" height="4" fill="#7c6dfa"/>
   <!-- row 6: bottom outline -->
-  <rect x="8"  y="24" width="4" height="4" fill="#00ff88"/>
-  <rect x="12" y="24" width="4" height="4" fill="#00ff88"/>
-  <rect x="16" y="24" width="4" height="4" fill="#00ff88"/>
-  <rect x="20" y="24" width="4" height="4" fill="#00ff88"/>
+  <rect x="8"  y="24" width="4" height="4" fill="#7c6dfa"/>
+  <rect x="12" y="24" width="4" height="4" fill="#7c6dfa"/>
+  <rect x="16" y="24" width="4" height="4" fill="#7c6dfa"/>
+  <rect x="20" y="24" width="4" height="4" fill="#7c6dfa"/>
 </svg>
