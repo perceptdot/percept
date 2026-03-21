@@ -125,6 +125,7 @@
 - ✅ **MKT-03** npm 키워드 최적화 + 버전 범프 퍼블리시 완료 (2026-03-22) — SEO 키워드 12개, ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
 - ✅ **COST-01** 무료 사용자 비용 분석 완료 (2026-03-22) — MCP 서버 유저 로컬 실행, 백엔드 /v1/use 카운트만. 10K유저 $5/mo, 100K유저 $65/mo, 비용 폭발 없음
 - ✅ **MKT-04** awesome-mcp-servers PR 제출 완료 (2026-03-22) — PR #3639 https://github.com/punkpeye/awesome-mcp-servers/pull/3639, 머지 대기
+- ⏳ **MKT-04b** Glama.ai 서버 등록 리뷰 대기 → 승인 후 awesome-mcp-servers PR #3639에 배지 추가
 - [ ] **MKT-05** og-image.png 제작 (CEO 수동, 1200×630px, SNS 공유용)
 - ✅ **QA-01** 사이트 전수 검사 + FAQ 베타 반영 완료 (2026-03-22) — FAQ 3개 교체, Output Preview/ROI통계바 수정, 한국어 주석 영어화, 6건 수정 + Pages 재배포
 
