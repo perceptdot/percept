@@ -47,6 +47,25 @@
 
 ---
 
+## HIGH (다음 스프린트)
+
+- [ ] **SEO-01** perceptdot.com GA4 설치 + SEO 최적화 (2026-03-21 추가)
+  - GA4 Property ID 발급 → landing/index.html gtag 삽입
+  - meta description, OG 태그, sitemap.xml, robots.txt 점검
+  - GA4_PROFILES에 "perceptdot" 프로필 추가 (DEV-11 연계)
+
+- [ ] **FEED-01** 에이전트 전용 피드백 창구 설계 + 구현 (2026-03-21 추가)
+  - 에이전트만 피드백 제출 가능 (API 키 인증 필수)
+  - POST /feedback — { api_key, agent_name, rating, message } → CF KV 저장
+  - 랜딩 /feedback 페이지에 실시간 피드백 목록 노출
+  - 홍보 활용: "에이전트들이 남긴 실제 피드백" 섹션 (소셜 증거)
+  - Cloudflare KV + Workers 기반 (추가 인프라 불필요)
+
+- [ ] **FEED-02** 피드백 랜딩 노출 + 홍보 활용 (FEED-01 완료 후)
+  - landing에 "Agent Reviews" 섹션 추가
+  - Twitter/X 자동 포스팅 웹훅 (선택)
+  - README에 실제 에이전트 피드백 인용
+
 ## NORMAL — v0.2.0 계획
 
 - ✅ **DEV-11** Named Profiles — @perceptdot/ga4 v0.2.0 완료 (2026-03-21)
@@ -81,7 +100,7 @@
 - ⏳ **PAY-02** Lemon Squeezy 승인 대기 (KYC 심사, 24~48시간 예상) → 상품 생성/배포
 - ✅ **PAY-04** Lemon Squeezy Payout 설정 완료 (한국계좌 KRW, W-8BEN 제출, invoice info, 2026-03-20)
 - ✅ **PAY-03** Gumroad 결제 브릿지 완료 (2026-03-21) — Pro $19/mo + Team $75/mo(5seats) 라이브, 랜딩 버튼 연결, No refunds 설정
-- ✅ **PAY-05** Gumroad 웹훅 + API 키 자동발급 완료 (2026-03-21) — KV 저장, Resend 이메일, 4개 MCP 서버 설정 포함
+- ✅ **PAY-05** Gumroad 웹훅 + API 키 자동발급 E2E 검증 완료 (2026-03-21) — KV 저장, Resend 이메일, 4개 MCP 서버 설정. Gumroad Ping URL 등록 + thunova0318 실수신 확인 (pd_live_xxx 키 포함)
 - ✅ **DEV-10** 전역 MCP 연결 완료 (2026-03-21) — ~/.claude/.mcp.json 생성, ga4+vercel+github 3개 전역 로드
 - [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
