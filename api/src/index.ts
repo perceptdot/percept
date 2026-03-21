@@ -134,7 +134,7 @@ async function sendApiKeyEmail(
   apiKey: string,
   plan: "pro" | "team"
 ): Promise<{ ok: boolean; error?: string }> {
-  const planLabel = plan === "team" ? "Team ($75/mo · 5 seats)" : "Pro ($19/mo)";
+  const planLabel = plan === "team" ? "Team ($99/mo · 10 seats)" : "Pro ($19/mo)";
   const mcpExample =
     plan === "team"
       ? `{
