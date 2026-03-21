@@ -52,7 +52,7 @@
 - [ ] **SEO-01** perceptdot.com GA4 설치 + SEO 최적화 (2026-03-21 추가)
   - ✅ sitemap.xml + robots.txt 생성 완료
   - ✅ og:image, twitter:image, canonical 메타 태그 추가 완료
-  - ✅ GA4 Property ID 발급 → landing/index.html gtag 삽입 완료 (G-982JCXJW0N, 2026-03-21)
+  - ✅ GA4 Property ID 발급 → landing/index.html gtag 삽입 완료 (G-982JCXJW0N, 스트림 ID: 14162535672, 2026-03-21)
   - [ ] og-image.png 실제 파일 제작 (CEO 수동)
   - [ ] GA4_PROFILES에 "perceptdot" 프로필 추가 (Property ID 발급 후)
 
