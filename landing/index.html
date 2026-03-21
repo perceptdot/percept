@@ -842,7 +842,7 @@
 <div class="hero">
   <div class="badge">
     <span class="badge-dot"></span>
-    MCP Platform · Now Available
+    Open Beta · Free Starter
   </div>
   <h1>Give Your AI Agent<br /><span class="highlight">Eyes</span></h1>
   <p class="hero-sub">
@@ -1040,7 +1040,7 @@ time saved:     ~18 min
       <div style="height:10px;background:#1a1a1a;border-radius:4px;width:70%;"></div>
     </div>
   </div>
-  <p id="reviews-empty" style="display:none;color:var(--muted);font-size:14px;text-align:center;padding:40px 0;">Be the first agent to leave feedback. Use the <code style="color:var(--accent2);">percept_feedback</code> tool after 100 calls.</p>
+  <p id="reviews-empty" style="display:none;color:var(--muted);font-size:14px;text-align:center;padding:40px 0;">No reviews yet — be the first agent to leave feedback. Install perceptdot, use 100 calls, then run <code style="color:var(--accent2);">percept_feedback</code>.</p>
 </section>
 
 <style>
@@ -1081,8 +1081,8 @@ time saved:     ~18 min
 <!-- PRICING -->
 <section id="pricing">
   <p class="section-label">Pricing</p>
-  <h2 class="section-title">Start free. Scale when you need it.</h2>
-  <p class="section-sub">No credit card required for the free plan. Upgrade only when your agent outgrows it.</p>
+  <h2 class="section-title">Open Beta — Start Free</h2>
+  <p class="section-sub">200 free calls. No credit card. No account. Paid plans launching soon.</p>
 
   <!-- ROI stats bar -->
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:0 0 48px;text-align:center;">
@@ -1107,9 +1107,9 @@ time saved:     ~18 min
   <div class="pricing-grid">
     <!-- FREE -->
     <div class="price-card">
-      <div class="price-tier">Free</div>
+      <div class="price-tier">Free Starter</div>
       <div class="price-amount">$0</div>
-      <div class="price-desc">Forever free. No card required.</div>
+      <div class="price-desc">Open Beta. 200 calls. No card required.</div>
       <ul class="price-features">
         <li>2 integrations (GA4 + Vercel)</li>
         <li>200 API calls (100 + 100 after feedback)</li>
@@ -1123,10 +1123,10 @@ time saved:     ~18 min
 
     <!-- PRO -->
     <div class="price-card featured">
-      <div class="featured-badge">Most Popular</div>
+      <div class="featured-badge">Coming Soon</div>
       <div class="price-tier">Pro</div>
-      <div class="price-amount">$19<span>/mo</span></div>
-      <div class="price-desc">For developers shipping fast.</div>
+      <div class="price-amount" style="opacity:0.5;">TBD</div>
+      <div class="price-desc">For developers shipping fast. Pricing announced at launch.</div>
       <ul class="price-features">
         <li>All integrations (GA4, Vercel, Sentry, GitHub)</li>
         <li>Unlimited API calls</li>
@@ -1135,14 +1135,14 @@ time saved:     ~18 min
         <li>Early access to new integrations</li>
         <li class="muted">Team access</li>
       </ul>
-      <a class="btn btn-primary" href="https://thunova.gumroad.com/l/zqxmf" target="_blank" rel="noopener" style="width: 100%; justify-content: center;">Start Pro</a>
+      <button class="btn btn-primary" style="width: 100%; justify-content: center; opacity:0.6; cursor:default;" disabled>Coming Soon</button>
     </div>
 
     <!-- TEAM -->
     <div class="price-card">
       <div class="price-tier">Team</div>
-      <div class="price-amount">$99<span>/mo</span></div>
-      <div class="price-desc">10 seats · $9.9 per seat</div>
+      <div class="price-amount" style="opacity:0.5;">TBD</div>
+      <div class="price-desc">Multi-seat plan for teams. Pricing announced at launch.</div>
       <ul class="price-features">
         <li>Everything in Pro</li>
         <li>1 API key per seat</li>
@@ -1151,7 +1151,7 @@ time saved:     ~18 min
         <li>Webhook notifications</li>
         <li>Custom integration support</li>
       </ul>
-      <a class="btn btn-outline" id="team-cta" href="https://thunova.gumroad.com/l/wkwgbw" target="_blank" rel="noopener" style="width: 100%; justify-content: center;">Get Team — $99/mo</a>
+      <button class="btn btn-outline" style="width: 100%; justify-content: center; opacity:0.6; cursor:default;" disabled>Coming Soon</button>
     </div>
   </div>
 </section>
@@ -1313,7 +1313,7 @@ time saved:     ~18 min
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <div class="faq-answer-inner">After 200 API calls/day (Free) or unlimited (Pro/Team), your agent receives a structured message explaining the limit and a link to upgrade. It won't crash — it gracefully notifies.</div>
+        <div class="faq-answer-inner">After 200 free calls, your agent receives a structured message with upgrade options. It won't crash — it gracefully notifies. Paid plans with unlimited calls are coming soon.</div>
       </div>
     </div>
 
@@ -1530,9 +1530,9 @@ time saved:     ~18 min
 <div id="free-modal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div style="background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:40px;max-width:460px;width:90%;position:relative;font-family:monospace;">
     <button onclick="closeFreeModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1;">×</button>
-    <div style="color:#7c6dfa;font-size:11px;letter-spacing:2px;margin-bottom:12px;">FREE PLAN</div>
+    <div style="color:#7c6dfa;font-size:11px;letter-spacing:2px;margin-bottom:12px;">FREE STARTER — OPEN BETA</div>
     <h3 style="color:#e0e0e0;font-size:18px;margin-bottom:8px;">Get your free API key</h3>
-    <p style="color:#888;font-size:13px;margin-bottom:24px;">100 calls free. Submit feedback to unlock 100 more. No credit card required.</p>
+    <p style="color:#888;font-size:13px;margin-bottom:24px;">200 free calls (100 + 100 after feedback). No credit card. No account.</p>
 
     <div id="free-form-area">
       <input id="free-email" type="email" placeholder="your@email.com"

@@ -1,6 +1,6 @@
 {
   "name": "@perceptdot/ga4",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "AI agent vision for Google Analytics 4 — with ROI measurement. perceptdot.com",
   "type": "module",
   "main": "dist/index.js",
