@@ -1,6 +1,6 @@
 {
   "name": "@perceptdot/sentry",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "perceptdot MCP server for Sentry error tracking",
   "type": "module",
   "main": "dist/index.js",
