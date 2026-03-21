@@ -30,10 +30,16 @@
   - ✅ README 마케팅 중심 재작성 + 마케팅 초안 5채널 작성 (2026-03-22)
   - ✅ GitHub 6커밋 + Cloudflare Pages/Workers 재배포 완료 (2026-03-22)
   - ✅ COST-01: 10K유저 $5/mo, 100K유저 $65/mo 분석 완료
-  - ⏳ Paddle KYC + Business 심사 대기 → 승인 시 Coming Soon → 유료 라이브
+  - ✅ awesome-mcp-servers PR #3639 제출 완료 (2026-03-22)
+  - ✅ Glama.ai MCP 서버 등록 제출 완료 (리뷰 대기)
+  - ✅ Paddle KYC 이름 불일치 답신 발송 (CheonKyu Jang → Sorina Lee/THUNOVA 설명 + Account Settings 변경 요청)
+  - ✅ 랜딩 푸터 사업자번호 라인 제거 (국제 SaaS 불필요)
+  - ⏳ Paddle KYC 답변 대기 (1~2 영업일)
+  - ⏳ Glama 서버 리뷰 승인 대기 → 승인 후 PR #3639에 배지 추가
   - 🔴 BUG-01: Cloudflare Bot Fight Mode — ClaudeBot 차단 (CEO 수동)
   - 🟡 og-image.png 제작 필요 (CEO 수동, 1200×630px)
-  - 🟡 awesome-mcp-servers PR 제출 대기 (MKT-04)
+  - 🟡 마케팅 포스팅 시작 필요: Twitter → Reddit → HN
+  - 🟡 외부 설치 유저 0명 (현재 KV에 내부/테스트 키만 존재)
   - npm 패키지: ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
 
 ## 확정 사항 (2026-03-19)
@@ -89,9 +95,10 @@ percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
 ✅ 사람이 헷갈리면 → FAQ로 설명 (사이트 UI 복잡하게 만들지 않음)
 ```
 
-**결제**: Lemon Squeezy (K-사주 + perceptdot 동일 계정, 2026-03-20 CEO 확정)
-- 한국 개인사업자(THUNOVA) 직접 사용 가능
-- 달러 수취, 세금 대행, 이메일 매직링크 구독 관리
+**결제**: 임시 Gumroad → 정식 **Paddle** (2026-03-21 CEO 확정)
+- Paddle KYC 심사 중 (Sorina Lee / THUNOVA)
+- 승인 시 K-사주 + perceptdot 동시 Gumroad→Paddle 전환
+- Glama.ai: thunova0318@gmail.com (MCP 서버 디렉토리)
 
 ## 계정 관리 (2026-03-20 기준)
 
