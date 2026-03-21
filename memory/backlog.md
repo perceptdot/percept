@@ -113,6 +113,7 @@
 - [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 - ✅ **UX-01** 모바일 코드블록 최적화 — font-size 11px, -webkit-overflow-scrolling (그록 피드백, 2026-03-20)
+- [ ] **DOCS-01** Gitbook 사용자 가이드 — Team 플랜 론칭 시 검토 (지금은 불필요)
 - [ ] **UX-02** Contact form 추가 (Tally 폼 — mailto 대체)
 - ✅ **UX-03** Output Preview 섹션 추가 완료 (2026-03-21) — percept_roi_summary + ga4_realtime + vercel_latest_status 실제 출력 예시, 터미널 UI 스타일
 - ✅ **UX-04** 피드백 3점 미만 공개 비노출 필터 추가 (2026-03-21) — GET /v1/feedbacks에서 rating >= 3만 반환
