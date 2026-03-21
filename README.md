@@ -35,7 +35,7 @@ Cost saved this session: ~$0.037
 Cost saved this month:   ~$1.12
 
 → You are on the Free plan (200 calls/mo).
-  Upgrade to Pro for unlimited calls: https://perceptdot.com/#pricing
+  Pro and Team plans coming soon: https://perceptdot.com/#pricing
 ──────────────────────────────────────────
 ```
 
@@ -184,7 +184,7 @@ npm install -g @perceptdot/sentry
 │                             │                               │
 │                             │ "Saved 1,240 tokens today.    │
 │                             │  You're on Free (200/mo).     │
-│                             │  Upgrade: perceptdot.com"     │
+│                             │  Pro coming soon: perceptdot.com" │
 └─────────────────────────────┼───────────────────────────────┘
                               │
                               ▼
@@ -228,11 +228,11 @@ This means:
 | Calls / month | 200 | Unlimited | Unlimited |
 | ROI reports | Session only | Session + monthly | Session + monthly |
 | Support | Community | Email | Priority |
-| Price | $0 | $19 / mo | $99 / mo (up to 10 seats) |
+| Price | $0 | Coming Soon | Coming Soon |
 
-Start free. Upgrade when the agent tells you to.
+Start free. Pro and Team plans launching soon.
 
-[Get started free](https://perceptdot.com/#pricing) | [Pro $19/mo](https://perceptdot.com/#pricing) | [Team $99/mo](https://perceptdot.com/#pricing)
+[Get started free](https://perceptdot.com/#pricing) | [Pro (coming soon)](https://perceptdot.com/#pricing) | [Team (coming soon)](https://perceptdot.com/#pricing)
 
 ---
 
