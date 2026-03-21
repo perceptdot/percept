@@ -1,7 +1,7 @@
 # percept — 프로젝트 메모리
 
 > 이 프로젝트는 K-사주와 **별개**. K-사주 메모리와 혼동 금지.
-> 최초 생성: 2026-03-19 | 업데이트: 2026-03-20
+> 최초 생성: 2026-03-19 | 업데이트: 2026-03-21
 
 ---
 
@@ -11,7 +11,7 @@
   - @perceptdot/ga4@0.1.0, @perceptdot/vercel@0.1.0 → npmjs.com 라이브
   - Hono 백엔드(api/) + Python SDK(python-sdk/) 기초 완성
 - **2단계 ✅ 완료 (2026-03-20)**: GitHub 공개 + Cloudflare Workers + Landing Pages 배포
-- **3단계 🔄 진행 중 (2026-03-20)**: 도메인 + 결제 + Growth
+- **3단계 🔄 진행 중 (2026-03-21)**: 도메인 + 결제 + Growth + v0.2.0 설계
   - ✅ @perceptdot/sentry@0.1.0, @perceptdot/github@0.1.0 npm 라이브
   - ✅ Landing 4개 통합 카드 완성 + Pages 재배포
   - ✅ perceptdot.com Pages 도메인 연결 완료 (AWS Route 53 → Cloudflare)

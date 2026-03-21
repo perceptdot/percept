@@ -1,6 +1,6 @@
 # percept — 백로그
 
-> 업데이트: 2026-03-20
+> 업데이트: 2026-03-21
 
 ---
 
@@ -47,6 +47,16 @@
 
 ---
 
+## NORMAL — v0.2.0 계획
+
+- ✅ **DEV-11** Named Profiles — @perceptdot/ga4 v0.2.0 완료 (2026-03-21)
+  - `GA4_PROFILES` + `GA4_DEFAULT_PROFILE` env var (하위 호환: GA4_PROPERTY_ID 유지)
+  - 모든 tool에 optional `project` 파라미터 추가
+  - .mcp.json 업데이트 (ga4-k-saju → @perceptdot/ga4, Named Profiles 방식)
+  - npm @perceptdot/ga4@0.2.0 퍼블리시 완료
+  - perceptdot GA4 Property ID 확보 시 profiles에 추가만 하면 됨
+  - [ ] **DEV-11b** 같은 패턴을 vercel/github/sentry에도 적용 (후순위)
+
 ## NORMAL
 
 - ✅ **DEV-01** @percept/ga4 MCP 서버 구현 완료 (2026-03-19)
@@ -71,12 +81,16 @@
 - ⏳ **PAY-02** Lemon Squeezy 승인 대기 (KYC 심사, 24~48시간 예상) → 상품 생성/배포
 - ✅ **PAY-04** Lemon Squeezy Payout 설정 완료 (한국계좌 KRW, W-8BEN 제출, invoice info, 2026-03-20)
 - ✅ **PAY-03** Gumroad 결제 브릿지 완료 (2026-03-21) — Pro $19/mo + Team $75/mo(5seats) 라이브, 랜딩 버튼 연결, No refunds 설정
+- ✅ **PAY-05** Gumroad 웹훅 + API 키 자동발급 완료 (2026-03-21) — KV 저장, Resend 이메일, 4개 MCP 서버 설정 포함
+- ✅ **DEV-10** 전역 MCP 연결 완료 (2026-03-21) — ~/.claude/.mcp.json 생성, ga4+vercel+github 3개 전역 로드
 - [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 - ✅ **UX-01** 모바일 코드블록 최적화 — font-size 11px, -webkit-overflow-scrolling (그록 피드백, 2026-03-20)
 - [ ] **UX-02** Contact form 추가 (Tally 폼 — mailto 대체)
 - [ ] **UX-03** 히어로 섹션 데모 GIF 추가 (그록 피드백 최우선)
 - [ ] **BUG-01** Cloudflare Bot Fight Mode 완화 — 봇(Grok 등) 403 차단 문제
+- ✅ **BUG-02** 멀티 프로젝트 지원 — Option B 적용 완료 (2026-03-21): `.mcp.json` 서버명을 `ga4-k-saju` / `ga4-perceptdot`으로 분리. perceptdot GA4 Property ID 확보 후 두 번째 인스턴스 추가 가능. 중기: Option A (Named Profiles, v0.2.0) 검토
+- ✅ **BUG-03** ga4_realtime INVALID_ARGUMENT 버그 수정 (2026-03-21): `pagePath` → `unifiedPagePathScreen` dimension 변경. Realtime API는 pagePath 미지원.
 
 ---
 

@@ -53,14 +53,47 @@ function getRoiSummary(): string {
   return lines.join("\n");
 }
 
-// ─── 환경 변수 검증 ────────────────────────────────────────────────────────────
-const propertyId = process.env.GA4_PROPERTY_ID;
-if (!propertyId) {
+// ─── 환경 변수 검증 (v0.2.0: Named Profiles) ──────────────────────────────────
+// Named Profiles: GA4_PROFILES={"k-saju":"528574308","perceptdot":"XXXX"}
+//                 GA4_DEFAULT_PROFILE=k-saju
+// Legacy fallback: GA4_PROPERTY_ID=528574308
+const profilesRaw = process.env.GA4_PROFILES;
+const defaultProfile = process.env.GA4_DEFAULT_PROFILE;
+const legacyPropertyId = process.env.GA4_PROPERTY_ID;
+
+let profiles: Record<string, string> = {};
+if (profilesRaw) {
+  try {
+    profiles = JSON.parse(profilesRaw);
+  } catch {
+    process.stderr.write(
+      '[perceptdot/ga4] ERROR: GA4_PROFILES JSON 파싱 실패.\n' +
+      '예시: GA4_PROFILES=\'{"k-saju":"528574308","perceptdot":"XXXX"}\'\n'
+    );
+    process.exit(1);
+  }
+} else if (legacyPropertyId) {
+  profiles = { default: legacyPropertyId };
+} else {
   process.stderr.write(
-    "[perceptdot/ga4] ERROR: GA4_PROPERTY_ID 환경 변수가 필요합니다.\n" +
-      "설정 방법: GA4 > 관리 > 속성 설정 > 속성 ID\n"
+    "[perceptdot/ga4] ERROR: GA4_PROFILES 또는 GA4_PROPERTY_ID 환경 변수가 필요합니다.\n" +
+    'Named Profiles: GA4_PROFILES=\'{"k-saju":"528574308"}\'\n' +
+    "Legacy: GA4_PROPERTY_ID=528574308\n"
   );
   process.exit(1);
+}
+
+function resolvePropertyId(project?: string): string {
+  const key = project ?? defaultProfile ?? Object.keys(profiles)[0];
+  const id = profiles[key];
+  if (!id) {
+    const available = Object.keys(profiles).join(", ");
+    throw new McpError(
+      ErrorCode.InvalidParams,
+      `GA4 프로필 '${key}'를 찾을 수 없습니다. 사용 가능: ${available}`
+    );
+  }
+  return id;
 }
 
 // ─── GA4 클라이언트 초기화 ─────────────────────────────────────────────────────
@@ -81,7 +114,7 @@ try {
 
 // ─── MCP 서버 ─────────────────────────────────────────────────────────────────
 const server = new Server(
-  { name: "@perceptdot/ga4", version: "0.1.0" },
+  { name: "@perceptdot/ga4", version: "0.2.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -94,7 +127,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         "수동 대비 ~450 토큰 절감. 배포 직후, 마케팅 이벤트 중 사용 권장.",
       inputSchema: {
         type: "object",
-        properties: {},
+        properties: {
+          project: {
+            type: "string",
+            description: `조회할 프로젝트 프로필명. 미지정 시 기본값 사용. 사용 가능: ${Object.keys(profiles).join(", ")}`,
+          },
+        },
         required: [],
       },
     },
@@ -115,6 +153,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             description: "종료일 (YYYY-MM-DD 또는 'today', 'yesterday')",
             default: "today",
           },
+          project: {
+            type: "string",
+            description: `조회할 프로젝트 프로필명. 미지정 시 기본값 사용. 사용 가능: ${Object.keys(profiles).join(", ")}`,
+          },
         },
         required: [],
       },
@@ -133,6 +175,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             description: "반환할 이벤트 수 (최대 20)",
             default: 10,
           },
+          project: {
+            type: "string",
+            description: `조회할 프로젝트 프로필명. 미지정 시 기본값 사용. 사용 가능: ${Object.keys(profiles).join(", ")}`,
+          },
         },
         required: [],
       },
@@ -147,6 +193,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           start_date: { type: "string", default: "7daysAgo" },
           end_date: { type: "string", default: "today" },
           limit: { type: "number", default: 10 },
+          project: {
+            type: "string",
+            description: `조회할 프로젝트 프로필명. 미지정 시 기본값 사용. 사용 가능: ${Object.keys(profiles).join(", ")}`,
+          },
         },
         required: [],
       },
@@ -177,10 +227,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     // 실시간 데이터
     if (name === "ga4_realtime") {
+      const propertyId = resolvePropertyId((args as Record<string, string>)?.project);
       const [response] = await analyticsClient.runRealtimeReport({
         property: `properties/${propertyId}`,
         metrics: [{ name: "activeUsers" }],
-        dimensions: [{ name: "pagePath" }],
+        dimensions: [{ name: "unifiedPagePathScreen" }],
         limit: 10,
       });
 
@@ -217,8 +268,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     // 기간별 개요
     if (name === "ga4_overview") {
-      const startDate = (args as Record<string, string>)?.start_date ?? "7daysAgo";
-      const endDate = (args as Record<string, string>)?.end_date ?? "today";
+      const a = args as Record<string, string>;
+      const startDate = a?.start_date ?? "7daysAgo";
+      const endDate = a?.end_date ?? "today";
+      const propertyId = resolvePropertyId(a?.project);
 
       const [response] = await analyticsClient.runReport({
         property: `properties/${propertyId}`,
@@ -265,6 +318,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const startDate = (a?.start_date as string) ?? "7daysAgo";
       const endDate = (a?.end_date as string) ?? "today";
       const limit = Math.min(Number(a?.limit ?? 10), 20);
+      const propertyId = resolvePropertyId(a?.project as string | undefined);
 
       const [response] = await analyticsClient.runReport({
         property: `properties/${propertyId}`,
@@ -307,6 +361,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const startDate = (a?.start_date as string) ?? "7daysAgo";
       const endDate = (a?.end_date as string) ?? "today";
       const limit = Math.min(Number(a?.limit ?? 10), 20);
+      const propertyId = resolvePropertyId(a?.project as string | undefined);
 
       const [response] = await analyticsClient.runReport({
         property: `properties/${propertyId}`,
@@ -353,4 +408,4 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
-process.stderr.write("[perceptdot/ga4] v0.1.0 실행 중 — perceptdot.com\n");
+process.stderr.write("[perceptdot/ga4] v0.2.0 실행 중 — perceptdot.com\n");
