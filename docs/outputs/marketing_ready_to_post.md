@@ -310,8 +310,49 @@ Source: https://github.com/perceptdot
 
 ---
 
+## 7. Product Hunt 런칭 (준비 후 실행)
+
+**URL:** https://www.producthunt.com/posts/new
+
+**Tagline (60자 이내):**
+```
+MCP servers that give AI agents direct access to GA4, Vercel, GitHub, Sentry
+```
+
+**Description:**
+```
+perceptdot gives your AI coding agent (Claude Code, Cursor, Windsurf) direct read access to external services via MCP.
+
+No more being your agent's eyeballs — copying data from GA4, checking Vercel deploys, scrolling Sentry errors.
+
+4 MCP servers:
+• @perceptdot/ga4 — Realtime analytics, top pages, events
+• @perceptdot/vercel — Deployment status, project list
+• @perceptdot/github — Open PRs, issues, CI workflows
+• @perceptdot/sentry — Unresolved production errors
+
+Every call tracks ROI automatically. The agent proves its own value to you.
+
+60-second setup. No account. No dashboard. API key only.
+
+Open beta — 200 calls/month, free.
+```
+
+**Topics:** `MCP`, `Developer Tools`, `AI`, `Analytics`, `DevOps`
+
+### PH 런칭 체크리스트
+- [x] og-image.png (1200×630px)
+- [x] 랜딩 페이지 라이브
+- [ ] Maker 프로필 설정 (producthunt.com 계정)
+- [ ] 스크린샷 3~5장 (터미널에서 MCP 실제 사용 장면)
+- [ ] First Comment 준비 (배경 스토리 + CTA)
+- [ ] 런칭일 결정 (화~목 US 오전 추천)
+
+---
+
 ## CEO ACTION CHECKLIST
 
+- [ ] Product Hunt Maker 프로필 설정 + 런칭 준비
 - [ ] Moltbook API 키 발급 + 포스팅 (위 JSON 참조)
 - [ ] Twitter 단일 트윗 포스팅 (Option C, 위 참조)
 - [ ] Twitter 스레드 포스팅 (반응 보고)

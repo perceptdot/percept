@@ -49,6 +49,11 @@
 - ✅ **GROWTH-03** awesome-mcp-servers PR #3639 제출 완료 (2026-03-22) — Glama 배지 추가 필요 (리뷰 승인 후)
 - [ ] **GROWTH-04** Anthropic Discord #tools 채널 포스팅 ⏸️ 대기
 - [ ] **GROWTH-05** r/ClaudeAI Reddit 소개 포스트 ⏸️ 대기
+- [ ] **GROWTH-06** Product Hunt 런칭 — MCP 생태계 초기 선점 (2026-03-22 추가)
+  - PH 런칭은 1회성 → 준비 완벽히 하고 실행
+  - 필요: og-image ✅, 랜딩 ✅, 태그라인, 스크린샷/데모, Maker 프로필
+  - 타이밍: 마케팅 채널(Twitter/Reddit) 반응 확인 후 or 동시 진행
+  - 담당: Growth + DevRel 협업
 
 ---
 
