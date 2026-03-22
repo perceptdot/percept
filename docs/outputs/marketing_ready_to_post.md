@@ -1,7 +1,7 @@
 # perceptdot — Marketing Ready to Post
 
-> Updated: 2026-03-22 01:40 KST
-> Status: ALL FINALIZED — 3단계 런칭 스택 전략
+> Updated: 2026-03-22 (PIVOT-05 반영)
+> Status: ALL FINALIZED — 3단계 런칭 스택 전략 + @perceptdot/core 피벗 반영
 
 ---
 
@@ -10,7 +10,7 @@
 | Channel | Stage | Status | Action |
 |---------|-------|--------|--------|
 | awesome-mcp-servers PR | - | ✅ SUBMITTED | [PR #3639](https://github.com/punkpeye/awesome-mcp-servers/pull/3639) — 승인 대기 |
-| GitHub README | - | ✅ PUSHED | 베타 반영 완료 |
+| GitHub README | - | ✅ PUSHED | PIVOT-05 반영 완료 (core 추가, "Your Agent's App Store" 포지셔닝) |
 | og-image.png | - | ✅ DONE | 1200×630px, landing/ 배치 |
 | **DevHunt** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
 | **BetaList** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
@@ -48,12 +48,23 @@
 
 ---
 
-## 1. Twitter/X Single Tweet (276자)
+## 1. Twitter/X Single Tweet (280자 이내)
 
+```
+Your AI agent installs its own tools now.
+
+npx -y @perceptdot/core → scans your project → recommends exactly which MCP servers to install.
+
+Your agent's app store. One line. No config.
+
+perceptdot.com
+```
+
+**[대안 — 기존 human clipboard 앵글 유지]**
 ```
 You are your AI agent's eyeballs. Every time it asks "what's the traffic?" and you open GA4 to copy-paste numbers — that's you being a human clipboard.
 
-perceptdot gives agents direct access. GA4, Vercel, GitHub, Sentry. 60 seconds. No dashboard. Open beta.
+perceptdot fixes that. One install: npx -y @perceptdot/core — your agent discovers the rest.
 
 perceptdot.com
 ```
@@ -86,29 +97,27 @@ You're a human clipboard.
 
 ### Tweet 3
 ```
-I built perceptdot — MCP servers that give AI agents direct access to external services.
+I built perceptdot — starting with @perceptdot/core.
 
-GA4. Vercel. GitHub. Sentry.
+One line: npx -y @perceptdot/core
 
-The agent reads them itself. No dashboard. No copy-paste. No you.
-
-60 seconds to set up. One JSON config. Done.
+Your agent scans your project and tells you exactly which MCP servers to install. GA4. Vercel. GitHub. Stripe. Postgres. Your agent's app store.
 ```
 
 ### Tweet 4
 ```
-"@perceptdot/ga4": {
-  "command": "npx",
-  "args": ["@perceptdot/ga4"]
-}
+percept_discover result:
 
-That's the entire setup. Your Claude Code / Cursor agent can now:
-- Check realtime users
-- Read top pages
-- Pull event counts
-- Monitor bounce rates
+Project: /my-app
+Signals: 3 deps, 5 env vars
+Recommendations:
+  @perceptdot/ga4  (GA4_PROPERTY_ID found)   ~450 tokens/call
+  PostgreSQL MCP   (DATABASE_URL found)       ~300 tokens/call
+  Stripe MCP       (STRIPE_SECRET_KEY found)  ~400 tokens/call
 
-~450 tokens saved per call.
+Total: ~1,150 tokens saved per call across 3 servers.
+
+Zero manual research. The agent just knows.
 ```
 
 ### Tweet 5
@@ -142,6 +151,9 @@ That's what we're building at perceptdot.
 ```
 Open beta — 200 calls/month. No credit card. No account.
 
+Start here: npx -y @perceptdot/core
+
+Then install what your project needs:
 npx @perceptdot/ga4
 npx @perceptdot/vercel
 npx @perceptdot/github
@@ -149,7 +161,7 @@ npx @perceptdot/sentry
 
 perceptdot.com
 
-Give your agent eyes. #MCP #ClaudeCode #AIAgent #DevTools
+Your agent's app store. #MCP #ClaudeCode #AIAgent #DevTools
 ```
 
 ---
@@ -165,9 +177,13 @@ I gave my Claude Code agent eyes. It now reads GA4, Vercel, and GitHub on its ow
 ```
 I've been using Claude Code full-time on a side project (Korean fortune-telling app, long story). After weeks of the same loop — "check GA4 for me," copy numbers, paste, "did it deploy?" — I got tired of being the agent's eyeballs.
 
-So I built **perceptdot**: MCP servers that let your agent directly read external services. No copy-paste. The agent just... sees.
+So I built **perceptdot**: starting with `@perceptdot/core` — your agent's app store.
 
-**What it does:**
+One line gets you started: `npx -y @perceptdot/core`
+
+The agent scans your project (package.json, .env, config files) and tells you exactly which MCP servers to install — with ready-made JSON configs to copy. No manual browsing of registries.
+
+**Then the service servers give your agent direct read access:**
 
 - `@perceptdot/ga4` — Realtime users, top pages, events, bounce rate. Saves ~450 tokens per call vs. pasting a screenshot.
 - `@perceptdot/vercel` — Deployment status, project list, latest deploy. Ends the "did it deploy?" interruptions.
@@ -199,7 +215,7 @@ The idea: if the agent can prove its own ROI, you never need to justify the tool
 
 It's in open beta — 200 free calls/month, no credit card. Enter your email at perceptdot.com and you get an API key immediately.
 
-- npm: `@perceptdot/ga4`, `@perceptdot/vercel`, `@perceptdot/github`, `@perceptdot/sentry`
+- npm: `@perceptdot/core` (start here), `@perceptdot/ga4`, `@perceptdot/vercel`, `@perceptdot/github`, `@perceptdot/sentry`
 - Site: [perceptdot.com](https://perceptdot.com)
 - GitHub: [github.com/perceptdot](https://github.com/perceptdot)
 
@@ -277,14 +293,20 @@ Anyone else doing MCP integrations in Cursor? Curious what services people want 
 
 **Title:**
 ```
-Show HN: Perceptdot – MCP servers that give AI agents direct access to GA4, Vercel, GitHub
+Show HN: Perceptdot – Your agent's app store. One install, agent discovers the rest.
 ```
 
 **Body:**
 ```
-I kept hitting the same wall using Claude Code and Cursor: the agent can write code, but it can't see anything outside the codebase. It can't check if a deploy succeeded. It can't read analytics. It can't see production errors. So I become the agent's eyes — copying data from dashboards, pasting into context, burning tokens on information transfer.
+I kept hitting the same wall using Claude Code and Cursor: the agent can write code, but it can't see anything outside the codebase. And there are 11,000+ MCP servers now — but the agent has no way to know which ones are relevant to this specific project.
 
-Perceptdot is a set of MCP servers that solve this. Each one connects an external service (GA4, Vercel, GitHub, Sentry) directly to the agent via the Model Context Protocol.
+So I built two things:
+
+1. `@perceptdot/core` — a discovery layer. One line (`npx -y @perceptdot/core`), and your agent scans your project (package.json, .env, config files) and recommends exactly which MCP servers to install, with ready-made JSON configs. Your agent's app store.
+
+2. The service servers — `@perceptdot/ga4`, `@perceptdot/vercel`, `@perceptdot/github`, `@perceptdot/sentry` — that give your agent direct read access to external services. No copy-paste from dashboards.
+
+Perceptdot is both the discovery layer and the integration layer.
 
 Technical details:
 
@@ -319,8 +341,8 @@ Source: https://github.com/perceptdot
 ```json
 {
   "submolt": "tools",
-  "title": "perceptdot — MCP servers that give agents direct read access to GA4, Vercel, GitHub, Sentry",
-  "content": "I built perceptdot because AI agents are blind to external services.\n\nYour agent writes code, deploys apps, debugs errors — but it can't check GA4 analytics, verify a Vercel deployment, or read Sentry errors without a human copying data from dashboards.\n\nperceptdot fixes this. 4 MCP servers, each giving agents direct read access:\n\n- @perceptdot/ga4 — Realtime users, top pages, events, bounce rate (~450 tokens saved per call)\n- @perceptdot/vercel — Deployment status, project list, latest deploy\n- @perceptdot/github — Open PRs, issues, CI workflow status\n- @perceptdot/sentry — Unresolved production errors\n\nSetup is one JSON config block:\n\n{\"mcpServers\": {\"@perceptdot/ga4\": {\"command\": \"npx\", \"args\": [\"@perceptdot/ga4\"]}}}\n\nEvery call includes token-savings metadata. After a session, run percept_roi_summary and the agent reports exact savings: tokens, time, cost.\n\nThe agent proves its own ROI to the human who pays. No sales team needed.\n\nOpen beta — 200 calls/month, free. No account, no dashboard, API key only.\n\nnpm: @perceptdot/ga4, @perceptdot/vercel, @perceptdot/github, @perceptdot/sentry\nSite: https://perceptdot.com\nSource: https://github.com/perceptdot/percept\n\nWhat external service would you most want direct agent access to?"
+  "title": "perceptdot — Your agent's app store. One install, it discovers the rest.",
+  "content": "I built perceptdot because AI agents are blind to external services — and there are now 11,000+ MCP servers with no way to know which are relevant.\n\nSo I built two layers:\n\n1. @perceptdot/core — Your agent's app store. One line: npx -y @perceptdot/core\nYour agent scans the project (package.json, .env, configs) and auto-recommends which MCP servers to install. percept_discover returns ready-to-copy JSON configs. Zero manual registry browsing.\n\n2. Service servers — direct read access:\n- @perceptdot/ga4 — Realtime users, top pages, events, bounce rate (~450 tokens saved per call)\n- @perceptdot/vercel — Deployment status, project list, latest deploy\n- @perceptdot/github — Open PRs, issues, CI workflow status\n- @perceptdot/sentry — Unresolved production errors\n\nEvery call includes token-savings metadata. After a session, run percept_roi_summary and the agent reports exact savings: tokens, time, cost.\n\nThe agent proves its own ROI to the human who pays. No sales team needed.\n\nOpen beta — 200 calls/month, free. No account, no dashboard.\n\nnpm: @perceptdot/core, @perceptdot/ga4, @perceptdot/vercel, @perceptdot/github, @perceptdot/sentry\nSite: https://perceptdot.com\nSource: https://github.com/perceptdot/percept\n\nWhat external service would you most want your agent to discover automatically?"
 }
 ```
 
@@ -338,16 +360,16 @@ Source: https://github.com/perceptdot
 
 **Tagline (60자 이내):**
 ```
-MCP servers that give AI agents direct access to GA4, Vercel, GitHub, Sentry
+One install. Your agent discovers the rest. MCP servers + discovery layer.
 ```
 
 **Description:**
 ```
-perceptdot gives your AI coding agent (Claude Code, Cursor, Windsurf) direct read access to external services via MCP.
+perceptdot gives your AI coding agent (Claude Code, Cursor, Windsurf) two things:
 
-No more being your agent's eyeballs — copying data from GA4, checking Vercel deploys, scrolling Sentry errors.
+1. @perceptdot/core — Your agent's app store. Scans your project and auto-recommends which MCP servers to install. One line: npx -y @perceptdot/core
 
-4 MCP servers:
+2. Service servers — Direct read access to external services:
 • @perceptdot/ga4 — Realtime analytics, top pages, events
 • @perceptdot/vercel — Deployment status, project list
 • @perceptdot/github — Open PRs, issues, CI workflows

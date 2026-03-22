@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>perceptdot — Give Your AI Agent Eyes</title>
-  <meta name="description" content="perceptdot — the first B2A2H (Business → Agent → Human) platform. AI agents connect to GA4, Vercel, Sentry, GitHub, measure ROI, and report savings automatically." />
-  <meta property="og:title" content="perceptdot — Give Your AI Agent Eyes" />
-  <meta property="og:description" content="The first B2A2H platform. AI agents evaluate tools, measure ROI, and recommend to humans. Coined by perceptdot." />
+  <title>perceptdot — Your Agent's App Store</title>
+  <meta name="description" content="perceptdot — the agent's app store. One install. Your agent discovers and connects to GA4, Vercel, Sentry, GitHub, and more — automatically." />
+  <meta property="og:title" content="perceptdot — Your Agent's App Store" />
+  <meta property="og:description" content="One install. Your agent discovers the rest. The first agent-native discovery + ROI layer for MCP servers." />
   <meta property="og:url" content="https://perceptdot.com" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://perceptdot.com/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="perceptdot — Give Your AI Agent Eyes" />
-  <meta name="twitter:description" content="The first B2A2H platform. AI agents evaluate tools, measure ROI, and recommend to humans. Coined by perceptdot." />
+  <meta name="twitter:title" content="perceptdot — Your Agent's App Store" />
+  <meta name="twitter:description" content="One install. Your agent discovers the rest. The first agent-native discovery + ROI layer for MCP servers." />
   <meta name="twitter:image" content="https://perceptdot.com/og-image.png" />
   <link rel="canonical" href="https://perceptdot.com" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -845,17 +845,18 @@
     <span class="badge-dot"></span>
     Open Beta · Free Starter
   </div>
-  <h1>Give Your AI Agent<br /><span class="highlight">Eyes</span></h1>
+  <h1>Your Agent's<br /><span class="highlight">App Store</span></h1>
   <p class="hero-sub">
-    perceptdot connects Claude Code, Cursor, and Windsurf to your real-world services — GA4, Vercel, Sentry, GitHub — so your agent can see what's happening, measure ROI, and report back automatically.
+    One install. Your agent discovers the rest. perceptdot auto-scans your project, recommends the right MCP servers, and connects to GA4, Vercel, Sentry, GitHub — measuring ROI at every step.
   </p>
   <div class="hero-actions">
     <a class="btn btn-primary" href="#install">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12l10 10 10-10"/></svg>
-      Install from npm
+      npx -y @perceptdot/core
     </a>
     <a class="btn btn-outline" href="#how-it-works">See how it works</a>
   </div>
+  <p style="margin-top: 16px; font-size: 12px; color: var(--muted); font-family: var(--mono);">npx -y @perceptdot/core &nbsp;→&nbsp; agent discovers 15+ MCP servers instantly</p>
 </div>
 
 <!-- WORKS WITH -->
@@ -884,8 +885,8 @@
     <div class="step">
       <div class="step-num">Step 01</div>
       <span class="step-icon">🔌</span>
-      <h3>Install perceptdot MCP</h3>
-      <p>Add perceptdot to your Claude Code or Cursor config in under 60 seconds. No signup required for the free tier.</p>
+      <h3>Install @perceptdot/core</h3>
+      <p>Run <code style="font-size:12px;color:var(--accent2);">npx -y @perceptdot/core</code> — your agent's app store. It scans your project and recommends the right MCP servers in seconds.</p>
     </div>
     <div class="arrow-connector"></div>
     <div class="step">
@@ -1010,6 +1011,32 @@ time saved:     ~18 min
     </div>
   </div>
 
+  <!-- percept_discover output -->
+  <div style="margin-top:32px;">
+    <p style="font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);font-weight:600;margin-bottom:16px;">percept_discover — project scan output</p>
+    <div style="background:#0d0d0d;border:1px solid var(--accent);border-radius:10px;overflow:hidden;">
+      <div style="background:#161616;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+        <span style="width:10px;height:10px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+        <span style="color:#7c6dfa;font-size:11px;margin-left:8px;font-family:monospace;font-weight:600;">percept_discover</span>
+      </div>
+      <pre style="margin:0;padding:20px;font-size:12px;line-height:1.7;overflow-x:auto;font-family:monospace;color:#ccc;">{
+  <span style="color:#86efac;">"project"</span>: <span style="color:#fca5a5;">"/my-app"</span>,
+  <span style="color:#86efac;">"signals_detected"</span>: {
+    <span style="color:#86efac;">"dependencies"</span>: <span style="color:#7dd3fc;">3</span>,
+    <span style="color:#86efac;">"env_vars"</span>: <span style="color:#7dd3fc;">5</span>,
+    <span style="color:#86efac;">"config_files"</span>: <span style="color:#7dd3fc;">2</span>
+  },
+  <span style="color:#86efac;">"recommendations"</span>: [
+    { <span style="color:#86efac;">"server"</span>: <span style="color:#fca5a5;">"PostgreSQL Database"</span>, <span style="color:#86efac;">"reason"</span>: <span style="color:#fca5a5;">"DATABASE_URL found"</span> },
+    { <span style="color:#86efac;">"server"</span>: <span style="color:#fca5a5;">"Stripe Payments"</span>, <span style="color:#86efac;">"reason"</span>: <span style="color:#fca5a5;">"STRIPE_SECRET_KEY found"</span> }
+  ],
+  <span style="color:#86efac;">"total_potential_savings"</span>: <span style="color:#a78bfa;">"~700 tokens/call across 2 servers"</span>
+}</pre>
+    </div>
+  </div>
+
   <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:32px;">
     All of this in a single conversation turn. No copy-paste. No tab switching.
   </p>
@@ -1018,10 +1045,22 @@ time saved:     ~18 min
 <!-- FEATURES -->
 <section id="features" style="border-top: 1px solid var(--border);">
   <p class="section-label">Features</p>
-  <h2 class="section-title">Everything your agent needs<br />to see the full picture</h2>
-  <p class="section-sub">Built as lightweight MCP servers. Each integration is independent — install only what you need.</p>
+  <h2 class="section-title">Discover. Connect. Measure.<br />All from one install.</h2>
+  <p class="section-sub">Start with <code style="font-size:13px;color:var(--accent2);">@perceptdot/core</code> — your agent auto-discovers what it needs. Then connect individual MCP servers, each with built-in ROI tracking.</p>
 
   <div class="features-grid">
+    <!-- Core discovery cards — full width top row -->
+    <div class="feature-card" style="border-color: var(--accent); background: linear-gradient(135deg, #0f0d1f 0%, #111111 100%); position: relative;">
+      <div style="position:absolute;top:-10px;left:20px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:99px;">Start Here</div>
+      <span class="feature-icon">🔍</span>
+      <h3><code style="font-size:14px;color:var(--accent2);">percept_discover</code></h3>
+      <p>Auto-scan your project. Get MCP server recommendations instantly — based on your dependencies, env vars, and config files.</p>
+    </div>
+    <div class="feature-card" style="border-color: var(--accent2);">
+      <span class="feature-icon">🧭</span>
+      <h3><code style="font-size:14px;color:var(--accent2);">percept_recommend</code></h3>
+      <p>Search 15+ curated MCP servers by keyword or category. Your agent finds what it needs, you just say yes.</p>
+    </div>
     <div class="feature-card">
       <span class="feature-icon">📈</span>
       <h3>GA4 Integration</h3>
@@ -1137,8 +1176,8 @@ time saved:     ~18 min
       <div style="font-size:12px;color:#666;margin-top:4px;">agent setup time</div>
     </div>
     <div style="background:#111;border:1px solid #222;border-radius:12px;padding:20px 28px;min-width:160px;">
-      <div style="font-size:28px;font-weight:700;color:#a78bfa;">4</div>
-      <div style="font-size:12px;color:#666;margin-top:4px;">live integrations</div>
+      <div style="font-size:28px;font-weight:700;color:#a78bfa;">15+</div>
+      <div style="font-size:12px;color:#666;margin-top:4px;">curated MCP servers</div>
     </div>
   </div>
 
@@ -1198,12 +1237,22 @@ time saved:     ~18 min
 <section id="install">
   <p class="section-label">Install</p>
   <h2 class="section-title">Up and running in 60 seconds</h2>
-  <p class="section-sub">perceptdot ships as standard MCP servers. Install the packages, add the config, and your agent gains new senses.</p>
+  <p class="section-sub">Start with <code style="font-size:14px;color:var(--accent2);">@perceptdot/core</code> — your agent's app store entry point. It discovers what your project needs, then you add individual servers.</p>
+
+  <!-- Core install highlight -->
+  <div style="background: linear-gradient(135deg, #0f0d1f 0%, #111111 100%); border: 1px solid var(--accent); border-radius: 14px; padding: 28px 32px; margin-top: 40px; margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+    <div>
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);font-weight:700;margin-bottom:8px;">Start Here — Install Core First</div>
+      <div style="font-family: var(--mono); font-size: 18px; color: var(--text); font-weight: 600;">npx -y @perceptdot/core</div>
+      <div style="font-size: 13px; color: var(--muted); margin-top: 8px;">Auto-discovers MCP servers for your project. No config needed.</div>
+    </div>
+    <button class="copy-btn" style="padding: 10px 20px; font-size: 13px;" onclick="copyText(this, 'npx -y @perceptdot/core')">Copy</button>
+  </div>
 
   <div class="install-block">
     <!-- Step 1 -->
     <div>
-      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">1 — Install the packages</p>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">2 — Install individual servers (optional)</p>
       <div class="code-block">
         <div class="code-header">
           <span class="code-header-title">Terminal</span>
@@ -1215,7 +1264,7 @@ time saved:     ~18 min
 
     <!-- Step 2 -->
     <div>
-      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">2 — Add to Claude Code config</p>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">3 — Add to Claude Code config</p>
       <div class="code-block">
         <div class="code-header">
           <span class="code-header-title">~/.claude/claude_desktop_config.json</span>
@@ -1223,6 +1272,10 @@ time saved:     ~18 min
         </div>
         <pre><code id="cmd-config"><span class="token">{</span>
   <span class="key">"mcpServers"</span><span class="token">:</span> <span class="token">{</span>
+    <span class="key">"perceptdot-core"</span><span class="token">:</span> <span class="token">{</span>
+      <span class="key">"command"</span><span class="token">:</span> <span class="string">"npx"</span><span class="token">,</span>
+      <span class="key">"args"</span><span class="token">:</span> <span class="token">[</span><span class="string">"-y"</span><span class="token">,</span> <span class="string">"@perceptdot/core"</span><span class="token">]</span>
+    <span class="token">},</span>
     <span class="key">"perceptdot-ga4"</span><span class="token">:</span> <span class="token">{</span>
       <span class="key">"command"</span><span class="token">:</span> <span class="string">"npx"</span><span class="token">,</span>
       <span class="key">"args"</span><span class="token">:</span> <span class="token">[</span><span class="string">"@perceptdot/ga4"</span><span class="token">]</span>
@@ -1246,12 +1299,14 @@ time saved:     ~18 min
 
     <!-- Step 3 -->
     <div style="grid-column: 1 / -1;">
-      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">3 — Ask your agent anything</p>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">4 — Ask your agent anything</p>
       <div class="code-block">
         <div class="code-header">
           <span class="code-header-title">Example prompts</span>
         </div>
         <pre><code><span class="comment"># In Claude Code or Cursor:</span>
+
+<span class="string">"Scan my project and recommend the right MCP servers."</span>
 
 <span class="string">"How many users visited the site today? What pages are they landing on?"</span>
 
@@ -1425,6 +1480,17 @@ time saved:     ~18 min
   function copyCode(btn, id) {
     const el = document.getElementById(id);
     const text = el ? el.innerText : '';
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function copyText(btn, text) {
     navigator.clipboard.writeText(text).then(() => {
       btn.textContent = 'Copied!';
       btn.classList.add('copied');

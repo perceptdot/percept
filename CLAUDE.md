@@ -227,6 +227,9 @@ CEO → CPO → PM → Dev/Research (병렬)
 9. MVP 원칙: 한 번에 하나의 @perceptdot/{서비스} 완성
 10. 보고서/커밋 한글, 간결하게
 11. 업무 완료 후 backlog.md + MEMORY.md + daily 보고서 갱신 필수
+12. [API 키 절대 규칙] .env/*.env 파일 Read 시 값(value) 절대 출력 금지.
+    "키 N개 확인" 또는 "KEY_NAME ✅" 형태로만 보고.
+    값이 필요하면 코드에 직접 주입하고 화면에 노출하지 않는다. 위반 시 즉시 사과 + 키 재발급 요청.
 ```
 
 ---

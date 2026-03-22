@@ -49,7 +49,11 @@
     - 데스크탑 작업 시: .env 설정 → 마케팅 트윗 포스팅
   - 🟡 마케팅 포스팅 시작 필요: Twitter → Reddit → HN
   - 🟡 외부 설치 유저 0명 (현재 KV에 내부/테스트 키만 존재)
-  - npm 패키지: ga4@0.2.6, vercel@0.1.6, github@0.1.5, sentry@0.1.5
+  - ✅ **PIVOT-01 승인 + PIVOT-02 완료** (2026-03-22 세션 10)
+    - @perceptdot/core@0.1.0 npm 퍼블리시 완료
+    - 4 tools: percept_discover, percept_recommend, percept_installed, percept_roi_summary
+    - 15 curated servers, SIGNAL_MAP 자동 추천, K_saju 테스트 통과
+  - npm 패키지: core@0.1.0, ga4@0.2.6, vercel@0.1.6, github@0.1.5, sentry@0.1.5
 
 ## B2A2H 확장 BM 리서치 결론 (2026-03-22 CPO)
 
@@ -122,7 +126,7 @@
 
 ## 미결 CEO 결정사항
 - ✅ 첫 번째 통합 서비스: GA4 + Vercel 병렬 (2026-03-19 결정)
-- PIVOT-01 전략 피벗 승인 여부 (세션 8 제안, CEO 결정 대기)
+- ✅ PIVOT-01 전략 피벗 승인 완료 (2026-03-22 CEO 승인, core@0.1.0 퍼블리시 완료)
 
 ## Moltbook 전략 (2026-03-20 CEO 확정)
 - **얼리어답터 = AI 에이전트** (인간 20명 → 방향 전환)

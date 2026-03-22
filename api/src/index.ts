@@ -7,11 +7,292 @@ import { logger } from "hono/logger";
 interface Env {
   /** Cloudflare KV: API 키 저장소 */
   API_KEYS: KVNamespace;
+  /** Cloudflare KV: 추천 로그 저장소 */
+  RECOMMEND_LOG: KVNamespace;
   /** Resend API 키 (wrangler secret) */
   RESEND_API_KEY: string;
   /** Gumroad 웹훅 시크릿 (선택) */
   GUMROAD_WEBHOOK_SECRET?: string;
 }
+
+// ─── Registry 타입 ────────────────────────────────────────────────────────────
+
+interface CuratedServer {
+  name: string;
+  package: string;
+  description: string;
+  category: string;
+  keywords: string[];
+  env_required: string[];
+  setup_snippet: Record<string, unknown>;
+  tokens_saved_per_call: number;
+  is_perceptdot: boolean;
+}
+
+interface RecommendLogPayload {
+  project_signals: string[];
+  recommended_servers: string[];
+  installed_servers: string[];
+}
+
+// ─── Curated Database (서버사이드 권위 소스) ──────────────────────────────────
+
+const REGISTRY_VERSION = "0.3.0";
+const REGISTRY_UPDATED_AT = "2026-03-22T00:00:00.000Z";
+
+const CURATED_DB: CuratedServer[] = [
+  {
+    name: "GA4 Analytics",
+    package: "@perceptdot/ga4",
+    description: "Read GA4 analytics directly — realtime users, top pages, events, bounce rate. ~450 tokens saved per call vs manual dashboard copy-paste.",
+    category: "analytics",
+    keywords: ["google analytics", "ga4", "pageviews", "sessions", "realtime", "bounce rate"],
+    env_required: ["GA4_PROPERTY_ID", "GOOGLE_SERVICE_ACCOUNT_KEY"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@perceptdot/ga4"],
+      env: { GA4_PROPERTY_ID: "YOUR_PROPERTY_ID", GOOGLE_SERVICE_ACCOUNT_KEY: "YOUR_JSON" },
+    },
+    tokens_saved_per_call: 450,
+    is_perceptdot: true,
+  },
+  {
+    name: "Vercel Deployments",
+    package: "@perceptdot/vercel",
+    description: "Check deployment status, project list, latest deploy result. ~200 tokens saved per call. Ends 'did it deploy?' interruptions.",
+    category: "deployment",
+    keywords: ["vercel", "deploy", "deployment", "ci", "cd", "hosting"],
+    env_required: ["VERCEL_TOKEN"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@perceptdot/vercel"],
+      env: { VERCEL_TOKEN: "YOUR_TOKEN" },
+    },
+    tokens_saved_per_call: 200,
+    is_perceptdot: true,
+  },
+  {
+    name: "GitHub PRs & Issues",
+    package: "@perceptdot/github",
+    description: "Open PRs with review status, issues, CI workflow runs. ~400 tokens saved per call vs browsing GitHub manually.",
+    category: "devops",
+    keywords: ["github", "pull request", "pr", "issues", "ci", "workflow", "actions"],
+    env_required: ["GITHUB_TOKEN", "GITHUB_OWNER", "GITHUB_REPO"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@perceptdot/github"],
+      env: { GITHUB_TOKEN: "YOUR_TOKEN", GITHUB_OWNER: "owner", GITHUB_REPO: "repo" },
+    },
+    tokens_saved_per_call: 400,
+    is_perceptdot: true,
+  },
+  {
+    name: "Sentry Errors",
+    package: "@perceptdot/sentry",
+    description: "Unresolved production errors directly from Sentry. ~500 tokens saved per call vs navigating Sentry dashboard.",
+    category: "monitoring",
+    keywords: ["sentry", "errors", "exceptions", "monitoring", "production", "bugs"],
+    env_required: ["SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@perceptdot/sentry"],
+      env: { SENTRY_AUTH_TOKEN: "YOUR_TOKEN", SENTRY_ORG: "org", SENTRY_PROJECT: "project" },
+    },
+    tokens_saved_per_call: 500,
+    is_perceptdot: true,
+  },
+  {
+    name: "PostgreSQL Database",
+    package: "@modelcontextprotocol/server-postgres",
+    description: "Read-only access to PostgreSQL databases. Query tables, inspect schemas.",
+    category: "database",
+    keywords: ["postgres", "postgresql", "database", "sql", "prisma", "drizzle"],
+    env_required: ["DATABASE_URL"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-postgres", "postgresql://user:pass@host/db"],
+    },
+    tokens_saved_per_call: 300,
+    is_perceptdot: false,
+  },
+  {
+    name: "SQLite Database",
+    package: "@modelcontextprotocol/server-sqlite",
+    description: "Read and write SQLite databases. Run queries, manage schemas.",
+    category: "database",
+    keywords: ["sqlite", "database", "sql", "local db"],
+    env_required: [],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-sqlite", "--db-path", "./database.db"],
+    },
+    tokens_saved_per_call: 250,
+    is_perceptdot: false,
+  },
+  {
+    name: "Brave Search",
+    package: "@modelcontextprotocol/server-brave-search",
+    description: "Web and local search using Brave Search API.",
+    category: "search",
+    keywords: ["search", "web search", "brave", "internet"],
+    env_required: ["BRAVE_API_KEY"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-brave-search"],
+      env: { BRAVE_API_KEY: "YOUR_KEY" },
+    },
+    tokens_saved_per_call: 300,
+    is_perceptdot: false,
+  },
+  {
+    name: "Slack",
+    package: "@modelcontextprotocol/server-slack",
+    description: "Read channels, post messages, manage Slack workspace.",
+    category: "communication",
+    keywords: ["slack", "messaging", "chat", "channels", "team communication"],
+    env_required: ["SLACK_BOT_TOKEN", "SLACK_TEAM_ID"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-slack"],
+      env: { SLACK_BOT_TOKEN: "xoxb-YOUR_TOKEN", SLACK_TEAM_ID: "YOUR_TEAM_ID" },
+    },
+    tokens_saved_per_call: 350,
+    is_perceptdot: false,
+  },
+  {
+    name: "Puppeteer Browser",
+    package: "@modelcontextprotocol/server-puppeteer",
+    description: "Browser automation — navigate pages, take screenshots, interact with web elements.",
+    category: "browser",
+    keywords: ["puppeteer", "browser", "automation", "screenshot", "playwright"],
+    env_required: [],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-puppeteer"],
+    },
+    tokens_saved_per_call: 400,
+    is_perceptdot: false,
+  },
+  {
+    name: "Supabase",
+    package: "@supabase/mcp-server-supabase",
+    description: "Manage Supabase projects — database, auth, storage, edge functions.",
+    category: "backend",
+    keywords: ["supabase", "database", "auth", "storage", "edge functions", "postgres"],
+    env_required: ["SUPABASE_ACCESS_TOKEN"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@supabase/mcp-server-supabase"],
+      env: { SUPABASE_ACCESS_TOKEN: "YOUR_TOKEN" },
+    },
+    tokens_saved_per_call: 350,
+    is_perceptdot: false,
+  },
+  {
+    name: "Notion",
+    package: "@notionhq/notion-mcp-server",
+    description: "Search, read, and update Notion pages and databases.",
+    category: "productivity",
+    keywords: ["notion", "notes", "pages", "database", "wiki", "docs"],
+    env_required: ["NOTION_TOKEN"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@notionhq/notion-mcp-server"],
+      env: { OPENAPI_MCP_HEADERS: '{"Authorization":"Bearer YOUR_TOKEN","Notion-Version":"2022-06-28"}' },
+    },
+    tokens_saved_per_call: 300,
+    is_perceptdot: false,
+  },
+  {
+    name: "Linear Issues",
+    package: "@linear/mcp-server",
+    description: "Manage Linear issues, projects, and cycles.",
+    category: "project-management",
+    keywords: ["linear", "issues", "tickets", "sprint", "project management"],
+    env_required: ["LINEAR_API_KEY"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@linear/mcp-server"],
+      env: { LINEAR_API_KEY: "YOUR_KEY" },
+    },
+    tokens_saved_per_call: 300,
+    is_perceptdot: false,
+  },
+  {
+    name: "Stripe Payments",
+    package: "@stripe/agent-toolkit",
+    description: "Manage Stripe customers, payments, subscriptions, and invoices.",
+    category: "payments",
+    keywords: ["stripe", "payments", "billing", "subscriptions", "invoices"],
+    env_required: ["STRIPE_SECRET_KEY"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@stripe/agent-toolkit", "--tools=all"],
+      env: { STRIPE_SECRET_KEY: "sk_YOUR_KEY" },
+    },
+    tokens_saved_per_call: 400,
+    is_perceptdot: false,
+  },
+  {
+    name: "Cloudflare Workers",
+    package: "@cloudflare/mcp-server-cloudflare",
+    description: "Manage Cloudflare Workers, KV, R2, and D1.",
+    category: "infrastructure",
+    keywords: ["cloudflare", "workers", "kv", "r2", "d1", "edge", "wrangler"],
+    env_required: ["CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@cloudflare/mcp-server-cloudflare"],
+      env: { CLOUDFLARE_ACCOUNT_ID: "YOUR_ID", CLOUDFLARE_API_TOKEN: "YOUR_TOKEN" },
+    },
+    tokens_saved_per_call: 350,
+    is_perceptdot: false,
+  },
+  {
+    name: "Docker",
+    package: "@modelcontextprotocol/server-docker",
+    description: "Manage Docker containers, images, volumes, and networks.",
+    category: "infrastructure",
+    keywords: ["docker", "containers", "images", "compose", "devops"],
+    env_required: [],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-docker"],
+    },
+    tokens_saved_per_call: 300,
+    is_perceptdot: false,
+  },
+  {
+    name: "AWS",
+    package: "@aws/mcp-server-aws",
+    description: "Interact with AWS services — S3, Lambda, EC2, CloudWatch, and more.",
+    category: "infrastructure",
+    keywords: ["aws", "amazon", "s3", "lambda", "ec2", "cloudwatch", "infrastructure"],
+    env_required: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@aws/mcp-server-aws"],
+      env: { AWS_ACCESS_KEY_ID: "YOUR_KEY", AWS_SECRET_ACCESS_KEY: "YOUR_SECRET", AWS_REGION: "us-east-1" },
+    },
+    tokens_saved_per_call: 400,
+    is_perceptdot: false,
+  },
+  {
+    name: "Netlify",
+    package: "@netlify/mcp-server",
+    description: "Manage Netlify sites, deployments, and serverless functions.",
+    category: "deployment",
+    keywords: ["netlify", "deploy", "hosting", "serverless", "functions"],
+    env_required: ["NETLIFY_AUTH_TOKEN"],
+    setup_snippet: {
+      command: "npx",
+      args: ["-y", "@netlify/mcp-server"],
+      env: { NETLIFY_AUTH_TOKEN: "YOUR_TOKEN" },
+    },
+    tokens_saved_per_call: 200,
+    is_perceptdot: false,
+  },
+];
 
 // ─── 타입 정의 ────────────────────────────────────────────────────────────────
 
@@ -768,6 +1049,144 @@ app.get("/rss/changelog", (c) => {
 </rss>`;
 
   return c.text(xml, 200, { "Content-Type": "application/rss+xml; charset=utf-8" });
+});
+
+// ─── Registry: 큐레이션 목록 ─────────────────────────────────────────────────
+
+/**
+ * GET /v1/registry/curated
+ * 공개 API — 인증 불필요
+ * 큐레이션된 MCP 서버 전체 목록 반환
+ */
+app.get("/v1/registry/curated", (c) => {
+  return c.json({
+    servers: CURATED_DB,
+    version: REGISTRY_VERSION,
+    updated_at: REGISTRY_UPDATED_AT,
+    total: CURATED_DB.length,
+  });
+});
+
+// ─── Registry: 검색 ───────────────────────────────────────────────────────────
+
+/**
+ * GET /v1/registry/search?q=keyword&category=analytics
+ * 공개 API — 인증 불필요
+ * 큐레이션 DB에서 name, description, category, keywords 필드 검색
+ */
+app.get("/v1/registry/search", (c) => {
+  const q = (c.req.query("q") ?? "").toLowerCase().trim();
+  const category = (c.req.query("category") ?? "").toLowerCase().trim();
+
+  let results = CURATED_DB as CuratedServer[];
+
+  if (category) {
+    results = results.filter((s) => s.category === category);
+  }
+
+  if (q) {
+    results = results.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.description.toLowerCase().includes(q) ||
+        s.category.toLowerCase().includes(q) ||
+        s.package.toLowerCase().includes(q) ||
+        s.keywords.some((k) => k.toLowerCase().includes(q))
+    );
+  }
+
+  // perceptdot 서버 우선, 그 다음 tokens_saved 내림차순
+  results = [...results].sort((a, b) => {
+    if (a.is_perceptdot && !b.is_perceptdot) return -1;
+    if (!a.is_perceptdot && b.is_perceptdot) return 1;
+    return b.tokens_saved_per_call - a.tokens_saved_per_call;
+  });
+
+  return c.json({
+    query: q || null,
+    category: category || null,
+    results,
+    total: results.length,
+  });
+});
+
+// ─── Recommend: 추천 이벤트 로그 ─────────────────────────────────────────────
+
+/**
+ * POST /v1/recommend/log
+ * 인증 필요 (Authorization: Bearer {api_key} 또는 body.api_key)
+ * 어떤 프로젝트에서 어떤 서버가 추천됐는지 KV에 기록
+ * Body: { project_signals, recommended_servers, installed_servers }
+ */
+app.post("/v1/recommend/log", async (c) => {
+  // ── API 키 인증 ──
+  const authHeader = c.req.header("Authorization");
+  let apiKey: string | null = null;
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    apiKey = authHeader.slice(7).trim();
+  }
+
+  if (!apiKey) {
+    // body에서도 허용 (MCP 클라이언트 편의)
+    try {
+      const body = await c.req.json<RecommendLogPayload & { api_key?: string }>();
+      apiKey = body.api_key ?? null;
+      // body를 다시 읽을 수 없으므로 body 저장
+      const { project_signals, recommended_servers, installed_servers } = body;
+
+      if (!apiKey) {
+        return c.json({ error: "Authorization header 또는 api_key 필드가 필요합니다." }, 401);
+      }
+
+      const keyRaw = await c.env.API_KEYS.get(`key:${apiKey}`);
+      if (!keyRaw) return c.json({ error: "Invalid API key." }, 401);
+
+      // 로그 저장
+      const logKey = `recommend:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
+      const logEntry = {
+        project_signals: project_signals ?? [],
+        recommended_servers: recommended_servers ?? [],
+        installed_servers: installed_servers ?? [],
+        api_key_prefix: apiKey.slice(0, 12),
+        timestamp: new Date().toISOString(),
+      };
+
+      await c.env.RECOMMEND_LOG.put(logKey, JSON.stringify(logEntry), {
+        expirationTtl: 60 * 60 * 24 * 90, // 90일 보관
+      });
+
+      return c.json({ logged: true });
+    } catch {
+      return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+    }
+  }
+
+  // Authorization 헤더로 키가 전달된 경우
+  const keyRaw = await c.env.API_KEYS.get(`key:${apiKey}`);
+  if (!keyRaw) return c.json({ error: "Invalid API key." }, 401);
+
+  let body: RecommendLogPayload;
+  try {
+    body = await c.req.json<RecommendLogPayload>();
+  } catch {
+    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+  }
+
+  const logKey = `recommend:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
+  const logEntry = {
+    project_signals: body.project_signals ?? [],
+    recommended_servers: body.recommended_servers ?? [],
+    installed_servers: body.installed_servers ?? [],
+    api_key_prefix: apiKey.slice(0, 12),
+    timestamp: new Date().toISOString(),
+  };
+
+  await c.env.RECOMMEND_LOG.put(logKey, JSON.stringify(logEntry), {
+    expirationTtl: 60 * 60 * 24 * 90, // 90일 보관
+  });
+
+  return c.json({ logged: true });
 });
 
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────

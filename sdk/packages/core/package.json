@@ -1,0 +1,37 @@
+{
+  "name": "@perceptdot/core",
+  "mcpName": "io.github.perceptdot/core",
+  "version": "0.1.0",
+  "description": "B2A2H MCP server — AI agent's app store. Auto-discover, recommend, and install MCP servers for any project. perceptdot.com",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "@perceptdot/core": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp", "mcp-server", "model-context-protocol", "ai-agent", "claude", "cursor", "windsurf",
+    "perceptdot", "roi", "b2a2h", "agent-commerce", "token-savings",
+    "discover", "recommend", "app-store", "mcp-registry", "auto-install",
+    "agent-discovery", "tool-discovery", "mcp-marketplace"
+  ],
+  "author": "perceptdot <service@perceptdot.com>",
+  "license": "MIT",
+  "homepage": "https://perceptdot.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/perceptdot/percept"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
+  }
+}

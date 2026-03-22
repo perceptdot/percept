@@ -1,20 +1,41 @@
 # perceptdot Marketing Drafts
 
-> Created: 2026-03-21 | Updated: 2026-03-22
-> Status: Draft v2 — Beta 전환 반영
+> Created: 2026-03-21 | Updated: 2026-03-22 (PIVOT-05: @perceptdot/core 피벗 반영)
+> Status: Draft v3 — "Your Agent's App Store" 피벗 반영
 > Target: Global (English)
 
 ---
 
 ## 1. Reddit r/ClaudeAI Post
 
-**Title:** I built a B2A2H platform — where Claude Code evaluates tools, measures ROI, and tells YOU to keep paying
+**Title:** I built a B2A2H platform — your agent's app store. One install, it discovers the rest.
 
 **Body:**
 
 I've been using Claude Code full-time for a side project (Korean fortune-telling app, long story). After weeks of the same loop — "check GA4 for me," copy-paste numbers, "now check if Vercel deployed" — I got tired of being my agent's eyeballs.
 
-So I built **perceptdot**: MCP servers that let your agent directly read external services. No dashboard. No copy-paste. The agent just... sees.
+But there was a second problem: there are 11,000+ MCP servers now. The agent has no idea which ones are relevant to this specific project.
+
+So I built **perceptdot** — starting with `@perceptdot/core`:
+
+```bash
+npx -y @perceptdot/core
+```
+
+One command. Your agent scans your project (package.json, .env, config files) and auto-recommends which MCP servers to install. I'm calling it your agent's app store.
+
+The discovery output looks like this:
+
+```
+Project: /my-app
+Signals: 3 deps, 5 env vars
+Recommendations:
+  @perceptdot/ga4  (GA4_PROPERTY_ID found)   ~450 tokens/call
+  PostgreSQL MCP   (DATABASE_URL found)       ~300 tokens/call
+  Stripe MCP       (STRIPE_SECRET_KEY found)  ~400 tokens/call
+```
+
+Then the service servers give the agent direct read access:
 
 **What it does:**
 
@@ -48,11 +69,11 @@ The idea is simple: if the agent can prove its own ROI, you never need to justif
 
 It's in open beta right now. 200 free calls/month — just enter your email on the site and you get an API key instantly. No credit card, no account.
 
-- npm: `@perceptdot/ga4`, `@perceptdot/vercel`, `@perceptdot/github`, `@perceptdot/sentry`
+- npm: `@perceptdot/core` (start here), `@perceptdot/ga4`, `@perceptdot/vercel`, `@perceptdot/github`, `@perceptdot/sentry`
 - Site: [perceptdot.com](https://perceptdot.com)
 - GitHub: [github.com/perceptdot](https://github.com/perceptdot)
 
-Would love feedback from anyone using MCP servers with Claude Code. What services would you want your agent to see next?
+Would love feedback from anyone using MCP servers with Claude Code. What services would you want your agent to discover and install automatically?
 
 ---
 
@@ -137,21 +158,34 @@ Anyone else doing MCP integrations in Cursor? Curious what services people want 
 
 ## 3. Hacker News "Show HN" Post
 
-**Title:** Show HN: B2A2H – When AI agents sell tools to humans instead of the other way around
+**Title:** Show HN: Perceptdot – Your agent's app store. One install, agent discovers the rest.
 
 **Body:**
 
-I've been thinking about a shift in how developer tools get sold.
+I've been thinking about two problems at once:
 
-Today, every SaaS follows B2H (business-to-human): company markets to a human, human evaluates, human buys, human configures. But AI agents are now the ones actually using these tools. The human just approves the credit card.
+**Problem 1**: AI agents are blind to external services. Claude Code can write code, but it can't check if a deploy succeeded, read analytics, or see production errors without a human copy-pasting data from dashboards.
 
-I'm calling this B2A2H: Business → Agent → Human.
+**Problem 2**: There are 11,000+ MCP servers. The agent has no way to know which ones are relevant to a specific project.
 
-The idea: a tool publishes itself where agents can find it (npm, MCP registry). An agent discovers it, installs it, uses it, measures how much time/tokens it saved — then reports to the human: "This tool saved $23 this month. It costs $19. Keep it." The human clicks "yes." Done.
+I built perceptdot to solve both.
 
-No sales team. No onboarding flow. No dashboard. The agent IS the user. The human IS the customer. They're different people (well, one isn't a person at all).
+**Layer 1: `@perceptdot/core` — discovery.** One command: `npx -y @perceptdot/core`. Your agent calls `percept_discover`, which scans the project (package.json, .env, config files) and recommends exactly which MCP servers to install — with ready-made JSON configs. Your agent's app store.
 
-I built perceptdot as the first implementation of this model. It's a set of MCP servers (GA4, Vercel, GitHub, Sentry) that:
+Example output:
+```
+Project: /my-app
+Signals: 3 deps, 5 env vars, 2 configs
+Recommendations:
+  @perceptdot/ga4    (GA4_PROPERTY_ID found)   ~450 tokens/call
+  PostgreSQL MCP     (DATABASE_URL found)       ~300 tokens/call
+  Stripe MCP         (STRIPE_SECRET_KEY found)  ~400 tokens/call
+Savings: ~1,150 tokens/call across 3 servers
+```
+
+**Layer 2: service servers.** `@perceptdot/ga4`, `@perceptdot/vercel`, `@perceptdot/github`, `@perceptdot/sentry` — each gives the agent direct read access to that service. Each call also tracks token savings.
+
+The broader model I'm calling B2A2H: Business → Agent → Human. An agent discovers it, installs it, uses it, measures ROI — then reports to the human: "This tool saved $23 this month. It costs $19. Keep it." The human clicks yes. Done.
 
 1. Give agents direct read access to external services
 2. Track token savings on every call (`tokens_saved_estimate` field)
@@ -218,32 +252,31 @@ You're a human clipboard.
 
 **Tweet 3 (Solution):**
 
-I built perceptdot — MCP servers that give AI agents direct access to external services.
+I built perceptdot — starting with @perceptdot/core.
 
-GA4. Vercel. GitHub. Sentry.
+Your agent's app store.
 
-The agent reads them itself. No dashboard. No copy-paste. No you.
+```
+npx -y @perceptdot/core
+```
 
-60 seconds to set up. One JSON config. Done.
+Agent scans your project. Finds GA4, Vercel, Postgres, Stripe signals. Returns: "Install these 3 MCP servers." With configs ready to copy.
+
+Then the servers give direct read access. No dashboard. No you.
 
 **Tweet 4 (How it works):**
 
-```json
-"@perceptdot/ga4": {
-  "command": "npx",
-  "args": ["@perceptdot/ga4"]
-}
+percept_discover result:
+
+```
+Signals: GA4_PROPERTY_ID, DATABASE_URL, STRIPE_SECRET_KEY
+→ @perceptdot/ga4     ~450 tokens/call
+→ PostgreSQL MCP      ~300 tokens/call
+→ Stripe MCP          ~400 tokens/call
+Total: ~1,150 tokens saved per call
 ```
 
-That's the entire setup.
-
-Now your Claude Code / Cursor agent can:
-- Check realtime users
-- Read top pages
-- Pull event counts
-- Monitor bounce rates
-
-Directly. ~450 tokens saved per call.
+Zero manual research. Your agent just knows what it needs.
 
 **Tweet 5 (The ROI angle):**
 
@@ -276,6 +309,10 @@ That's what we're building at perceptdot.
 
 Open beta — 200 calls/month. No credit card. No account.
 
+Start here (agent's app store):
+npx -y @perceptdot/core
+
+Then install what your project needs:
 npx @perceptdot/ga4
 npx @perceptdot/vercel
 npx @perceptdot/github
@@ -283,7 +320,7 @@ npx @perceptdot/sentry
 
 perceptdot.com
 
-Give your agent eyes.
+Your agent's app store.
 
 #MCP #ClaudeCode #AIAgent #DevTools #Cursor
 
@@ -323,12 +360,15 @@ perceptdot.com
 
 ## Notes for CEO
 
-### 현재 상태 (2026-03-22)
+### 현재 상태 (2026-03-22 PIVOT-05)
+- **피벗**: "MCP 서버 제공자" → "에이전트 발견+ROI 레이어" (@perceptdot/core 출시)
+- **포지셔닝**: "Your Agent's App Store"
+- **핵심 메시지**: "One install. Your agent discovers the rest."
 - **사이트**: Open Beta · Free Starter (perceptdot.com)
 - **가격**: Pro/Team Coming Soon (TBD), 무료 200 calls/month
 - **CTA**: "Get Free API Key" (이메일 입력 → 즉시 발급)
 - **리뷰**: 실제 피드백 올 때까지 섹션 자동 숨김
-- **npm**: ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
+- **npm**: core@0.1.0 (NEW), ga4@0.2.6, vercel@0.1.6, github@0.1.5, sentry@0.1.5
 
 ### Posting order recommendation (B2A2H 선점 우선):
 1. **Twitter "B2A2H Definition" tweet (Tweet 0)** — 용어 선점 최우선. 지금 즉시.

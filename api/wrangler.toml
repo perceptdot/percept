@@ -9,12 +9,20 @@ ENVIRONMENT = "production"
 binding = "API_KEYS"
 id = "ab9b493f77ae443197620421f259365b"
 
+[[kv_namespaces]]
+binding = "RECOMMEND_LOG"
+id = "4a1073d7cd884888a3b933d8813cbd06"
+
 [env.production]
 vars = { ENVIRONMENT = "production" }
 
 [[env.production.kv_namespaces]]
 binding = "API_KEYS"
 id = "ab9b493f77ae443197620421f259365b"
+
+[[env.production.kv_namespaces]]
+binding = "RECOMMEND_LOG"
+id = "4a1073d7cd884888a3b933d8813cbd06"
 
 [[env.production.routes]]
 pattern = "api.perceptdot.com"

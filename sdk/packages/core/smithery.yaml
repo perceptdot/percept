@@ -1,0 +1,14 @@
+# Smithery configuration — @perceptdot/core
+# AI agent's app store: auto-discover, recommend, and install MCP servers
+# https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |-
+    config => ({
+      command: 'npx',
+      args: ['-y', '@perceptdot/core']
+    })

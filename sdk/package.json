@@ -2,11 +2,13 @@
   "name": "@percept/root",
   "private": true,
   "workspaces": [
+    "packages/core",
     "packages/ga4",
     "packages/vercel"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
+    "dev:core": "npm run dev --workspace=packages/core",
     "dev:ga4": "npm run dev --workspace=packages/ga4",
     "dev:vercel": "npm run dev --workspace=packages/vercel"
   }

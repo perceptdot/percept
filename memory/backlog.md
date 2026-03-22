@@ -90,17 +90,15 @@
 
 ## CRITICAL — 전략 피벗 (2026-03-22 세션 8 · CEO 결정 대기)
 
-- [ ] **PIVOT-01** 전략 피벗 승인 — "MCP 서버 제공자" → "에이전트 발견+ROI 레이어" (CEO 결정 대기)
-  - CEO 통찰: 에이전트 자율성 충분, 문제는 발견 경로
-  - CPO 비교 분석: AFTER 9승 1패
-  - 상세: docs/outputs/cpo_20260322.md §9
-- [ ] **PIVOT-02** Phase 1: @perceptdot/core 개발 (1~2일, Dev 담당, 백엔드 변경 없음)
-  - sdk/packages/core/ 생성 (ga4 패턴 따름)
-  - percept_discover: 로컬 파일 분석 → SIGNAL_MAP 매핑
-  - percept_recommend: 큐레이션 DB + Registry API 직접 호출
-  - percept_installed: .mcp.json 읽기
-  - curated-db.ts: perceptdot 4개 + 외부 ~20개 하드코딩
-  - npm publish @perceptdot/core@0.1.0
+- ✅ **PIVOT-01** 전략 피벗 승인 완료 (2026-03-22 CEO 승인) — "MCP 서버 제공자" → "에이전트 발견+ROI 레이어"
+  - CPO 비교 분석: AFTER 9승 1패, TAM 5.5배, 36mo ARR 10.2배
+  - 상세: docs/outputs/cpo_pivot_analysis_20260322.md
+- ✅ **PIVOT-02** Phase 1: @perceptdot/core@0.1.0 npm 퍼블리시 완료 (2026-03-22)
+  - 4 tools: percept_discover, percept_recommend, percept_installed, percept_roi_summary
+  - 15 curated servers (perceptdot 4 + 외부 11)
+  - SIGNAL_MAP: package.json deps + .env vars + config files → 자동 추천
+  - K_saju 테스트: Stripe + PostgreSQL 2개 정상 추천
+  - smithery.yaml + workspace 등록 완료
 - [ ] **PIVOT-03** Phase 2: 백엔드 Registry 프록시 (1일, Dev 담당)
   - GET /v1/registry/curated, GET /v1/registry/search, POST /v1/recommend/log
   - core@0.2.0: 백엔드 프록시 사용 전환
