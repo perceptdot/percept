@@ -238,4 +238,15 @@ research_YYYYMMDD.md — 리서치 결과
 
 ---
 
+## 작업 환경 기록 규칙 (2026-03-22 CEO 지시)
+
+```
+모든 문서(daily, backlog, MEMORY, outputs)에 작업 세션 기록 시:
+- 모바일 Claude 작업: "모바일 Claude" 명시
+- 데스크탑 Claude 작업: "데스크탑 Claude" 명시
+- 세션 헤더 형식: ## 세션 N (HH:MM KST · 모바일/데스크탑 Claude)
+```
+
+---
+
 *이 문서는 CEO 승인 없이 수정 불가.*

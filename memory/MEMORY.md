@@ -31,6 +31,8 @@
   - ✅ GitHub 6커밋 + Cloudflare Pages/Workers 재배포 완료 (2026-03-22)
   - ✅ COST-01: 10K유저 $5/mo, 100K유저 $65/mo 분석 완료
   - ✅ awesome-mcp-servers PR #3639 제출 완료 (2026-03-22)
+  - ✅ og-image.png 제작 완료 (2026-03-22 01:17 KST · 모바일 Claude)
+  - ✅ Moltbook 포스팅 초안 + API 조사 완료 (2026-03-22 01:17 KST · 모바일 Claude) — 실행 보류
   - ✅ Glama.ai MCP 서버 등록 제출 완료 (리뷰 대기)
   - ✅ Paddle KYC 이름 불일치 답신 발송 (CheonKyu Jang → Sorina Lee/THUNOVA 설명 + Account Settings 변경 요청)
   - ✅ 랜딩 푸터 사업자번호 라인 제거 (국제 SaaS 불필요)
@@ -133,6 +135,7 @@ percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
 - 속도 우선
 - 백로그는 `memory/backlog.md`에서 관리
 - 배포 의무: 코드 수정 후 배포 여부 반드시 명시
+- **작업 환경 구분 기록 필수** (2026-03-22 CEO 지시): 모바일 Claude / 데스크탑 Claude 명시
 
 ## QA 원칙 (2026-03-21 CEO 확정)
 - **⚠️ 최우선**: QA는 반드시 우리 MCP 서버(@perceptdot/ga4, vercel, sentry, github)를 직접 사용하면서 진행
