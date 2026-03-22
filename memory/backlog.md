@@ -87,11 +87,21 @@
   - CEO 통찰: 에이전트 자율성 충분, 문제는 발견 경로
   - CPO 비교 분석: AFTER 9승 1패
   - 상세: docs/outputs/cpo_20260322.md §9
-- [ ] **PIVOT-02** percept_recommend tool 설계 + PRD 작성 (PIVOT-01 승인 후, PM 담당)
-  - MCP Registry API 연동, 프로젝트 분석 기반 추천
-- [ ] **PIVOT-03** percept_discover tool 설계 (PIVOT-01 승인 후, Dev 담당)
-  - package.json/.env 분석 → 필요한 MCP 서버 자동 추천
-- [ ] **PIVOT-04** 자체 MCP 서버 큐레이션 DB 구축 (Registry API 불안정 대비)
+- [ ] **PIVOT-02** Phase 1: @perceptdot/core 개발 (1~2일, Dev 담당, 백엔드 변경 없음)
+  - sdk/packages/core/ 생성 (ga4 패턴 따름)
+  - percept_discover: 로컬 파일 분석 → SIGNAL_MAP 매핑
+  - percept_recommend: 큐레이션 DB + Registry API 직접 호출
+  - percept_installed: .mcp.json 읽기
+  - curated-db.ts: perceptdot 4개 + 외부 ~20개 하드코딩
+  - npm publish @perceptdot/core@0.1.0
+- [ ] **PIVOT-03** Phase 2: 백엔드 Registry 프록시 (1일, Dev 담당)
+  - GET /v1/registry/curated, GET /v1/registry/search, POST /v1/recommend/log
+  - core@0.2.0: 백엔드 프록시 사용 전환
+- [ ] **PIVOT-04** Phase 3: 랜딩 페이지 업데이트 (0.5일, DevRel+Dev)
+  - Hero "Your Agent's App Store", Feature 카드 2개 교체
+  - Output Preview에 percept_discover 예시 추가
+- [ ] **PIVOT-05** Phase 4: README + 마케팅 초안 업데이트 (0.5일, DevRel)
+  - "One install. Your agent discovers the rest."
 
 ---
 
