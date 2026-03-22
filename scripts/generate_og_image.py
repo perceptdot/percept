@@ -37,24 +37,23 @@ eye_h = 8 * eye_px  # 176
 eye_start_x = 70
 eye_start_y = (H - eye_h) // 2 - 10
 
-for row_i, row in enumerate(eye_map):
-    for col_i, val in enumerate(row):
-        c = colors[val]
-        if c:
-            x0 = eye_start_x + col_i * eye_px
-            y0 = eye_start_y + row_i * eye_px
-            draw.rectangle([x0, y0, x0 + eye_px - 1, y0 + eye_px - 1], fill=c)
+cx = eye_start_x + eye_w // 2
+cy = eye_start_y + eye_h // 2
 
-# --- Subtle glow behind eye ---
-for r in range(120, 0, -2):
-    alpha_color = (ACCENT[0], ACCENT[1], ACCENT[2])
-    opacity = max(3, int(8 * (1 - r / 120)))
-    glow_color = tuple(min(255, BG[i] + opacity) for i in range(3))
-    cx = eye_start_x + eye_w // 2
-    cy = eye_start_y + eye_h // 2
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=glow_color)
+# --- Glow effect using brand color #c4b5fd (p-glow) ---
+from PIL import ImageFilter
+glow_layer = Image.new("RGB", (W, H), BG)
+glow_draw = ImageDraw.Draw(glow_layer)
+GLOW = (196, 181, 253)  # --p-glow: #c4b5fd
+for r in range(110, 0, -1):
+    t = 1 - r / 110
+    gc = tuple(int(BG[i] + (GLOW[i] - BG[i]) * t * 0.35) for i in range(3))
+    glow_draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=gc)
+glow_blurred = glow_layer.filter(ImageFilter.GaussianBlur(radius=18))
+img.paste(glow_blurred, (0, 0))
+draw = ImageDraw.Draw(img)
 
-# Redraw eye on top of glow
+# Draw logo pixels on top of glow
 for row_i, row in enumerate(eye_map):
     for col_i, val in enumerate(row):
         c = colors[val]
