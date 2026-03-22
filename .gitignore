@@ -2,6 +2,9 @@ node_modules/
 dist/
 .env
 .env.local
+*.env
+api_keys/
+marketing_sns/
 .wrangler/
 *.log
 .DS_Store
