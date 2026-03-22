@@ -33,6 +33,8 @@
   - ✅ awesome-mcp-servers PR #3639 제출 완료 (2026-03-22)
   - ✅ og-image.png 제작 완료 (2026-03-22 01:17 KST · 모바일 Claude)
   - ✅ Moltbook 포스팅 초안 + API 조사 완료 (2026-03-22 01:17 KST · 모바일 Claude) — 실행 보류
+  - ✅ 3단계 런칭 스택 전략 수립 (2026-03-22 01:40 KST · 모바일 Claude) — 12개 채널 확보
+  - ✅ Growth 런칭 실행 계획서 작성 (docs/outputs/growth_20260322.md)
   - ✅ Glama.ai MCP 서버 등록 제출 완료 (리뷰 대기)
   - ✅ Paddle KYC 이름 불일치 답신 발송 (CheonKyu Jang → Sorina Lee/THUNOVA 설명 + Account Settings 변경 요청)
   - ✅ 랜딩 푸터 사업자번호 라인 제거 (국제 SaaS 불필요)

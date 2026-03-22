@@ -1,28 +1,50 @@
 # perceptdot — Marketing Ready to Post
 
-> Updated: 2026-03-22
-> Status: ALL FINALIZED — Copy-paste and post
+> Updated: 2026-03-22 01:40 KST
+> Status: ALL FINALIZED — 3단계 런칭 스택 전략
 
 ---
 
 ## STATUS BOARD
 
-| Channel | Status | Action |
-|---------|--------|--------|
-| awesome-mcp-servers PR | ✅ SUBMITTED | [PR #3639](https://github.com/punkpeye/awesome-mcp-servers/pull/3639) — 승인 대기 |
-| Twitter/X Single Tweet | ✅ READY | 아래 복사 → 포스팅 |
-| Twitter/X Thread | ✅ READY | 아래 복사 → 포스팅 |
-| Reddit r/ClaudeAI | ✅ READY | 아래 복사 → 포스팅 |
-| Reddit r/cursor | ✅ READY | 아래 복사 → 포스팅 |
-| Hacker News | ✅ READY | 아래 복사 → 포스팅 |
-| GitHub README | ✅ PUSHED | 베타 반영 완료 |
+| Channel | Stage | Status | Action |
+|---------|-------|--------|--------|
+| awesome-mcp-servers PR | - | ✅ SUBMITTED | [PR #3639](https://github.com/punkpeye/awesome-mcp-servers/pull/3639) — 승인 대기 |
+| GitHub README | - | ✅ PUSHED | 베타 반영 완료 |
+| og-image.png | - | ✅ DONE | 1200×630px, landing/ 배치 |
+| **DevHunt** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
+| **BetaList** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
+| **TAAFT** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
+| **AlternativeTo** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
+| **Launching Next** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
+| **Microlaunch** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
+| Twitter/X Single Tweet | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
+| Twitter/X Thread | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
+| Reddit r/ClaudeAI | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
+| Reddit r/cursor | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
+| Reddit r/webdev, r/SideProject | 2단계 | 🔲 TODO | 초안 작성 필요 |
+| Hacker News | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
+| Moltbook | 2단계 | ✅ READY | API 키 발급 후 포스팅 |
+| Anthropic Discord | 2단계 | 🔲 TODO | 초안 작성 필요 |
+| Indie Hackers | 2단계 | 🔲 TODO | 빌드인퍼블릭 스토리 필요 |
+| Smol Launch | 2단계 | 🔲 TODO | 주간 포맷, 개발자 특화 |
+| **Product Hunt** | 3단계 | 🔲 PREP | 1회성 올인 — 준비 완벽 시 실행 |
 
-### 추천 포스팅 순서
-1. **Twitter 단일 트윗** — hook 테스트 (지금)
-2. **Twitter 스레드** — 단일 반응 있으면 (같은 날 or 다음날)
-3. **Reddit r/ClaudeAI** — 트위터 후 1~2일 뒤
-4. **Reddit r/cursor** — r/ClaudeAI 후 1~2일 뒤
-5. **Hacker News** — 화/수 오전 US time
+### 3단계 런칭 스택 전략 (CEO 2026-03-22 지시)
+
+```
+1단계 — 즉시 등록 (부담 없음, 복수 동시)
+  DevHunt + BetaList + TAAFT + AlternativeTo + Launching Next + Microlaunch
+  → 장기 발견 + SEO 백링크 + 얼리어답터 유입
+
+2단계 — 반응 확인 후 순차 실행
+  Twitter → Reddit → HN → Moltbook → Discord → Indie Hackers → Smol Launch
+  → 커뮤니티 반응 측정 + 피드백 수집
+
+3단계 — 올인 (1~2단계 반응 확인 후)
+  Product Hunt 런칭 (1회성, 화~목 US 오전)
+  → 스크린샷 5장 + First Comment + 런칭일 최적화
+```
 
 ---
 
@@ -350,14 +372,111 @@ Open beta — 200 calls/month, free.
 
 ---
 
+## 8. 1단계 플랫폼 등록 정보 (즉시 실행)
+
+### DevHunt
+- **URL**: https://devhunt.org/submit
+- **제출 내용**: GitHub repo URL + 설명
+- **카테고리**: Developer Tools / MCP
+- **설명**: PH tagline과 동일 사용
+
+### BetaList
+- **URL**: https://betalist.com/submit
+- **제출 내용**: URL + tagline + 설명 + 로고
+- **특징**: 얼리어답터 수집, 이메일 대기리스트 형성
+- **설명**:
+```
+perceptdot — MCP servers that give AI agents direct access to GA4, Vercel, GitHub, and Sentry. Built-in ROI tracking. 60-second setup. Open beta — 200 calls/month free.
+```
+
+### There's An AI For That (TAAFT)
+- **URL**: https://theresanaiforthat.com/submit/
+- **카테고리**: Developer Tools / AI Agent Tools
+- **설명**: PH description 사용
+- **효과**: AI 도구 검색 시 장기 노출
+
+### AlternativeTo
+- **URL**: https://alternativeto.net/manage-app/
+- **대안 등록**: "Composio" 대안으로 등록
+- **태그**: MCP, Developer Tools, AI, Analytics
+- **효과**: "Composio alternative" 검색 시 perceptdot 노출
+
+### Launching Next
+- **URL**: https://www.launchingnext.com/submit/
+- **제출 내용**: URL + 설명 + 스크린샷
+- **특징**: 큐레이션 디렉토리, 스팸 적음
+
+### Microlaunch
+- **URL**: https://microlaunch.net/submit
+- **특징**: 월간 노출, 장기 발견 (PH의 24시간 압박 없음)
+
+---
+
+## 9. 2단계 추가 채널 (초안 필요)
+
+### Reddit r/webdev
+```
+Title: Built MCP servers that let AI agents read GA4, Vercel, GitHub, Sentry — no more copy-pasting dashboards
+
+Body: [r/cursor 초안과 동일 구조, "Cursor" → "your AI agent" 변경]
+```
+
+### Reddit r/SideProject
+```
+Title: I built perceptdot — MCP servers that give AI coding agents direct access to external services
+
+Body: [r/ClaudeAI 초안 기반, "side project" 앵글 강조]
+```
+
+### Indie Hackers
+```
+Title: How I built perceptdot: MCP servers that give AI agents eyes
+
+Angle: 빌드인퍼블릭 스토리
+- K-사주(한국 사주 앱) 개발하며 Claude Code 풀타임 사용
+- "인간 클립보드" 문제 발견
+- 3일 만에 MVP → npm 퍼블리시 → 오픈 베타
+- B2A2H 모델: 에이전트가 추천, 사람은 결제만
+- 수치: 10K유저 서버비 $5/mo, 무료 베타로 검증 중
+```
+
+### Smol Launch
+- **URL**: https://smollaunch.com
+- **형식**: 주간 포맷, PH description 사용
+
+---
+
 ## CEO ACTION CHECKLIST
 
-- [ ] Product Hunt Maker 프로필 설정 + 런칭 준비
-- [ ] Moltbook API 키 발급 + 포스팅 (위 JSON 참조)
-- [ ] Twitter 단일 트윗 포스팅 (Option C, 위 참조)
-- [ ] Twitter 스레드 포스팅 (반응 보고)
-- [ ] Reddit r/ClaudeAI 포스팅
-- [ ] Reddit r/cursor 포스팅
-- [ ] Hacker News Show HN 포스팅 (화/수 오전 US time)
-- [ ] awesome-mcp-servers PR 머지 대기 ([#3639](https://github.com/punkpeye/awesome-mcp-servers/pull/3639))
-- [x] og-image.png 제작 (1200x630px, SNS 공유용) ✅ 완료
+### 1단계 — 즉시 (계정 생성 + 등록)
+- [ ] DevHunt 등록
+- [ ] BetaList 등록
+- [ ] TAAFT 등록
+- [ ] AlternativeTo 등록 (Composio 대안)
+- [ ] Launching Next 등록
+- [ ] Microlaunch 등록
+
+### 2단계 — 순차 포스팅
+- [ ] Twitter 단일 트윗 (Option C)
+- [ ] Twitter 스레드 (반응 보고)
+- [ ] Reddit r/ClaudeAI
+- [ ] Reddit r/cursor
+- [ ] Reddit r/webdev
+- [ ] Reddit r/SideProject
+- [ ] Hacker News Show HN (화/수 US 오전)
+- [ ] Moltbook API 키 발급 + 포스팅
+- [ ] Anthropic Discord #tools
+- [ ] Indie Hackers 빌드인퍼블릭 포스트
+- [ ] Smol Launch 등록
+
+### 3단계 — Product Hunt 올인
+- [ ] Maker 프로필 설정
+- [ ] 스크린샷 3~5장 준비
+- [ ] First Comment 작성
+- [ ] 런칭일 결정 (화~목 US 오전)
+- [ ] 런칭 실행
+
+### 완료
+- [x] og-image.png (1200×630px) ✅
+- [x] awesome-mcp-servers PR #3639 제출 ✅
+- [x] 마케팅 초안 전채널 완성 ✅

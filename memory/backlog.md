@@ -49,11 +49,35 @@
 - ✅ **GROWTH-03** awesome-mcp-servers PR #3639 제출 완료 (2026-03-22) — Glama 배지 추가 필요 (리뷰 승인 후)
 - [ ] **GROWTH-04** Anthropic Discord #tools 채널 포스팅 ⏸️ 대기
 - [ ] **GROWTH-05** r/ClaudeAI Reddit 소개 포스트 ⏸️ 대기
-- [ ] **GROWTH-06** Product Hunt 런칭 — MCP 생태계 초기 선점 (2026-03-22 추가)
-  - PH 런칭은 1회성 → 준비 완벽히 하고 실행
-  - 필요: og-image ✅, 랜딩 ✅, 태그라인, 스크린샷/데모, Maker 프로필
-  - 타이밍: 마케팅 채널(Twitter/Reddit) 반응 확인 후 or 동시 진행
-  - 담당: Growth + DevRel 협업
+- [ ] **GROWTH-06** 런칭 플랫폼 다단계 전략 (2026-03-22 CEO 지시 — 최적·최고 홍보)
+  - 담당: Growth (실행) + DevRel (콘텐츠) + CPO (감독)
+  - **1단계 — 즉시 등록 (복수 가능, 부담 없음)**
+    - [ ] DevHunt 등록 (개발자 도구 전용 PH, MCP/CLI 정확 타겟)
+    - [ ] BetaList 등록 (베타 제품 전용, 얼리어답터 모집)
+    - [ ] There's An AI For That (TAAFT) 등록 (AI 도구 디렉토리, 월 수백만 방문)
+    - [ ] AlternativeTo 등록 ("Composio 대안" 검색 노출)
+    - [ ] Launching Next 등록 (큐레이션 스타트업 디렉토리)
+    - [ ] Microlaunch 등록 (월간 노출, 장기 발견)
+  - **2단계 — 반응 확인 후 실행**
+    - [ ] Hacker News Show HN (화/수 US 오전, 초안 ready)
+    - [ ] Reddit r/ClaudeAI + r/cursor + r/webdev + r/SideProject
+    - [ ] Twitter/X 단일 트윗 → 스레드 (반응 보고)
+    - [ ] Moltbook 포스팅 (API 키 발급 후)
+    - [ ] Anthropic Discord #tools
+    - [ ] Indie Hackers (빌드인퍼블릭 스토리)
+    - [ ] Smol Launch (주간 포맷, 개발자 특화)
+  - **3단계 — 올인 (준비 완벽 시, 1회성)**
+    - [ ] Product Hunt 런칭 (Maker 프로필 + 스크린샷 5장 + First Comment)
+    - 필요: og-image ✅, 랜딩 ✅, 태그라인 ✅, 스크린샷/데모, 런칭일(화~목)
+  - **공통 준비물**
+    - [x] og-image.png (1200×630px)
+    - [x] 랜딩 페이지 라이브 (perceptdot.com)
+    - [x] npm 4개 서버 퍼블리시
+    - [x] GitHub 공개 repo
+    - [x] 마케팅 초안 5채널 (docs/outputs/marketing_ready_to_post.md)
+    - [ ] 스크린샷 3~5장 (터미널 MCP 실사용 장면) — Dev 담당
+    - [ ] 데모 GIF or 30초 영상 (선택, 효과 극대화)
+    - [ ] 각 플랫폼별 프로필/계정 생성 — CEO 수동
 
 ---
 
