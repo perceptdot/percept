@@ -14,8 +14,134 @@
   <meta name="twitter:title" content="perceptdot — Your Agent's App Store" />
   <meta name="twitter:description" content="One install. Your agent discovers the rest. The first agent-native discovery + ROI layer for MCP servers." />
   <meta name="twitter:image" content="https://perceptdot.com/og-image.png" />
+  <meta name="keywords" content="MCP server, AI agent, Claude Code, agent observability, ROI measurement, Vercel monitoring, GA4 analytics, GitHub integration, Sentry errors, developer tools, Model Context Protocol, agent app store" />
+  <meta property="og:site_name" content="perceptdot" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:site" content="@perceptdot" />
   <link rel="canonical" href="https://perceptdot.com" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "perceptdot",
+    "url": "https://perceptdot.com",
+    "logo": "https://perceptdot.com/favicon.svg",
+    "description": "AI agent external service visibility and ROI measurement platform",
+    "email": "service@perceptdot.com",
+    "sameAs": [
+      "https://github.com/perceptdot/percept",
+      "https://www.npmjs.com/org/perceptdot",
+      "https://x.com/perceptdot"
+    ],
+    "knowsAbout": ["MCP server monitoring", "AI agent observability", "ROI measurement", "Model Context Protocol", "B2A2H"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "perceptdot",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "description": "Your agent's app store. One install — your agent discovers and connects to GA4, Vercel, Sentry, GitHub, and more automatically.",
+    "url": "https://perceptdot.com",
+    "downloadUrl": "https://www.npmjs.com/package/@perceptdot/core",
+    "softwareVersion": "0.1.0",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free Starter — 200 calls/month, all integrations"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "perceptdot",
+      "url": "https://perceptdot.com"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I need to create an account?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Click 'Get Free API Key' above, enter your email, and you'll receive a key instantly. Paste it into your agent's MCP config and you're done. No passwords, no dashboards, no credit card."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does my AI agent use perceptdot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Install @perceptdot/core — your agent runs percept_discover to scan your project and get MCP server recommendations. Then install individual servers like @perceptdot/ga4 for direct tool access. No human in the loop."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which AI agents are supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Any MCP-compatible client: Claude Code, Cursor, Windsurf, Cline, and more. If it speaks MCP, it works with perceptdot."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens when the beta ends?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your Free Starter key keeps working. When Pro and Team plans launch, you'll get the option to upgrade for unlimited calls and all integrations. No forced migration, no data loss."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many calls do I get for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "200 calls per month (100 on signup + 100 after your first feedback). Each tool call counts as one call. percept_discover, percept_recommend, and percept_roi_summary are always free and unlimited."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does perceptdot store my analytics data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. perceptdot calls your services (GA4, Vercel, etc.) directly and returns data to your agent. Nothing is stored on our servers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is @perceptdot/core?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your agent's app store. One install (npx @perceptdot/core) gives your agent percept_discover (scans your project for needed tools) and percept_recommend (searches 15+ curated MCP servers). Discovery calls are free and unlimited."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can my agent automatically report ROI to me?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Call percept_roi_summary at any time and your agent will summarize tokens saved, cost avoided, and time recovered — in plain language you can share with your team."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What services does perceptdot currently support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "@perceptdot/core discovers and recommends from 15+ curated MCP servers. Individual servers: GA4 (analytics), Vercel (deployments), Sentry (errors), and GitHub (PRs, workflows, issues). More integrations ship every sprint."
+        }
+      }
+    ]
+  }
+  </script>
   <link rel="shortcut icon" href="/favicon.svg" />
   <link rel="alternate" type="application/rss+xml" title="perceptdot — Changelog" href="https://perceptdot-api.perceptdot.workers.dev/rss/changelog" />
   <link rel="alternate" type="application/rss+xml" title="perceptdot — Agent Feedback" href="https://perceptdot-api.perceptdot.workers.dev/rss/feedback" />
@@ -820,6 +946,7 @@
 <body>
 
 <!-- NAV -->
+<header>
 <nav>
   <div class="nav-logo">
     <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;flex-shrink:0;" aria-hidden="true">
@@ -843,7 +970,9 @@
     <a class="btn btn-primary" href="#install">Get Started Free</a>
   </div>
 </nav>
+</header>
 
+<main>
 <!-- HERO -->
 <div class="hero">
   <div class="badge">
@@ -1447,6 +1576,8 @@ time saved:     ~18 min
 
   </div>
 </section>
+
+</main>
 
 <!-- FOOTER -->
 <footer>
