@@ -42,6 +42,11 @@
   - ⏳ Glama 서버 리뷰 승인 대기 → 승인 후 PR #3639에 배지 추가
   - 🔴 BUG-01: Cloudflare Bot Fight Mode — ClaudeBot 차단 (CEO 수동)
   - 🟡 og-image.png 제작 필요 (CEO 수동, 1200×630px)
+  - ✅ X (Twitter) API 앱 "perceptdot" 생성 완료 (2026-03-22 02:50 KST · 모바일 Claude)
+    - App ID: 32625109, Free tier, Read and Write 권한
+    - 키 6개 확보: API Key, API Secret, Bearer Token, Access Token, Access Token Secret, Client ID + Client Secret
+    - ⚠️ 키 3개 대화 노출 → Regenerate 필요
+    - 데스크탑 작업 시: .env 설정 → 마케팅 트윗 포스팅
   - 🟡 마케팅 포스팅 시작 필요: Twitter → Reddit → HN
   - 🟡 외부 설치 유저 0명 (현재 KV에 내부/테스트 키만 존재)
   - npm 패키지: ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4

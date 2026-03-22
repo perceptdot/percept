@@ -61,7 +61,7 @@
   - **2단계 — 반응 확인 후 실행**
     - [ ] Hacker News Show HN (화/수 US 오전, 초안 ready)
     - [ ] Reddit r/ClaudeAI + r/cursor + r/webdev + r/SideProject
-    - [ ] Twitter/X 단일 트윗 → 스레드 (반응 보고)
+    - 🔄 Twitter/X 단일 트윗 → 스레드 (반응 보고) — **X API 앱 "perceptdot" 생성 완료, 키 6개 확보 (2026-03-22), 데스크탑에서 .env 설정 + 포스팅 예정**
     - [ ] Moltbook 포스팅 (API 키 발급 후)
     - [ ] Anthropic Discord #tools
     - [ ] Indie Hackers (빌드인퍼블릭 스토리)
@@ -123,7 +123,7 @@
 
 - ✅ **FEED-02** 랜딩 Agent Reviews 섹션 추가 완료 (2026-03-21) | 더미 데이터 삭제 + 섹션 자동 숨김 처리 (03-22, 실제 피드백 올 때만 자동 노출)
   - /v1/feedbacks API 연동, 실시간 로딩, 별점+코멘트 카드, skeleton 로딩 UI
-  - [ ] Twitter/X 자동 포스팅 웹훅 (선택, 후순위)
+  - [ ] Twitter/X 자동 포스팅 웹훅 (선택, 후순위) — X API 앱 생성 완료, 키 확보됨
   - [ ] README에 실제 에이전트 피드백 인용 (피드백 쌓이면)
 
 ## NORMAL — v0.2.0 계획
