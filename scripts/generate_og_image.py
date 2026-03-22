@@ -16,19 +16,19 @@ DARK2 = (26, 26, 26)      # #1a1a1a
 img = Image.new("RGB", (W, H), BG)
 draw = ImageDraw.Draw(img)
 
-# --- Site header logo: diamond shape with glow (dark border tiles = invisible) ---
-# 0=empty, 1=empty(dark blends with bg), 2=#7c6dfa(main), 3=#c4b5fd(light)
+# --- Brand logo (pixel-logo.html 기준 정확한 픽셀맵) ---
+# 0=empty, 1=#3d3566(dark outer), 2=#7c6dfa(primary), 3=#c4b5fd(glow center)
 eye_map = [
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,2,2,0,0,0],
-    [0,0,2,2,2,2,0,0],
-    [0,2,2,3,3,2,2,0],
-    [0,2,2,3,3,2,2,0],
-    [0,0,2,2,2,2,0,0],
-    [0,0,0,2,2,0,0,0],
-    [0,0,0,0,0,0,0,0],
+    [0,0,1,1,1,1,0,0],
+    [0,1,1,2,2,1,1,0],
+    [1,1,2,2,2,2,1,1],
+    [1,2,2,3,3,2,2,1],
+    [1,2,2,3,3,2,2,1],
+    [1,1,2,2,2,2,1,1],
+    [0,1,1,2,2,1,1,0],
+    [0,0,1,1,1,1,0,0],
 ]
-colors = {0: None, 1: None, 2: (124,109,250), 3: (196,181,253)}
+colors = {0: None, 1: (61,53,102), 2: (124,109,250), 3: (196,181,253)}
 
 # Large eye: each pixel = 22px, positioned center-left
 eye_px = 22
@@ -40,16 +40,19 @@ eye_start_y = (H - eye_h) // 2 - 10
 cx = eye_start_x + eye_w // 2
 cy = eye_start_y + eye_h // 2
 
-# --- Glow effect using brand color #c4b5fd (p-glow) ---
+# --- Glow: 중앙 p3 픽셀 기준 (box-shadow: 0 0 6px 1px rgba(196,181,253,0.7)) ---
 from PIL import ImageFilter
+GLOW = (196, 181, 253)  # #c4b5fd
 glow_layer = Image.new("RGB", (W, H), BG)
 glow_draw = ImageDraw.Draw(glow_layer)
-GLOW = (196, 181, 253)  # --p-glow: #c4b5fd
-for r in range(110, 0, -1):
-    t = 1 - r / 110
-    gc = tuple(int(BG[i] + (GLOW[i] - BG[i]) * t * 0.35) for i in range(3))
-    glow_draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=gc)
-glow_blurred = glow_layer.filter(ImageFilter.GaussianBlur(radius=18))
+# p3 픽셀 중심: 그리드 (3,3)~(4,4)
+p3_cx = eye_start_x + 3 * eye_px + eye_px  # 중앙 x
+p3_cy = eye_start_y + 3 * eye_px + eye_px  # 중앙 y
+for r in range(80, 0, -1):
+    t = (1 - r / 80) ** 1.5
+    gc = tuple(int(BG[i] + (GLOW[i] - BG[i]) * t * 0.55) for i in range(3))
+    glow_draw.ellipse([p3_cx - r, p3_cy - r, p3_cx + r, p3_cy + r], fill=gc)
+glow_blurred = glow_layer.filter(ImageFilter.GaussianBlur(radius=14))
 img.paste(glow_blurred, (0, 0))
 draw = ImageDraw.Draw(img)
 
