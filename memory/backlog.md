@@ -68,7 +68,7 @@
   - **2단계 — 반응 확인 후 실행**
     - [ ] Hacker News Show HN (화/수 US 오전, 초안 ready)
     - [ ] Reddit r/ClaudeAI + r/cursor + r/webdev + r/SideProject
-    - 🔄 Twitter/X 단일 트윗 → 스레드 (반응 보고) — **X API 앱 "perceptdot" 생성 완료, 키 6개 확보 (2026-03-22), 데스크탑에서 .env 설정 + 포스팅 예정**
+    - ✅ Twitter/X 3/3 스레드 포스팅 완료 (2026-03-22) — "human clipboard" 후킹, x.com 수동 포스팅
     - [ ] Moltbook 포스팅 (API 키 발급 후)
     - [ ] Anthropic Discord #tools
     - [ ] Indie Hackers (빌드인퍼블릭 스토리)
