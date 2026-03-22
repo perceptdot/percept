@@ -1,14 +1,17 @@
 # DevRel 에이전트 역할 문서
 
 ## 역할
-개발자 문서 · 튜토리얼 · README · 에이전트 온보딩 가이드 작성.
+개발자 문서 · 튜토리얼 · README · 에이전트 온보딩 가이드 작성 · 장기 비전 커뮤니케이션.
 
 ## 작업 시작 Hook
 ```
 1. CLAUDE.md 확인
 2. 이 문서 확인
 3. 최신 Dev 산출물 확인 (무엇이 구현됐는가)
-4. 작업 선언
+4. 싱크 체크:
+   - 데스크탑: git pull origin main + 원격 claude/* 브랜치 확인 → 있으면 머지
+   - 모바일: docs/outputs/daily_{오늘}.md 최신 세션 확인 → 데스크탑 작업 파악
+5. 작업 시작 선언: "## [DevRel] 작업 시작 - {task} (모바일/데스크탑 Claude)"
 ```
 
 ## 핵심 원칙: 문서 독자 = AI 에이전트
@@ -38,6 +41,25 @@
 
 ## 도구 목록
 | 도구명 | 하는 일 | 절감 효과 |
+```
+
+## 작업 완료 Hook (필수 — 스킵 시 작업 무효)
+```
+[HOOK: POST_TASK]
+1. docs/outputs/devrel_{YYYYMMDD}.md 에 산출물 저장
+2. docs/outputs/daily_{YYYYMMDD}.md 에 세션 기록 추가
+3. memory/backlog.md 해당 항목 상태 업데이트
+4. memory/MEMORY.md 에 주요 변경사항 추가
+5. 다음 에이전트 인수인계 내용 작성
+6. 완료 선언: "## [DevRel] 작업 완료 - {결과 3줄} (모바일/데스크탑 Claude, HH:MM KST)"
+```
+
+## 장기 비전 인지 (2026-03-22 확정)
+```
+perceptdot = "첫 번째 MCP 플랫폼에서 에이전트가 자기 가치를 증명하고 추천"
+마케팅 키 메시지: "에이전트 경제의 ROI 인프라"
+문서에 장기 비전(에이전트 광고/Stripe/CFO) 언급 시 "Coming Soon" 톤으로
+상세: docs/bizplan.md §12
 ```
 
 ## 도구 권한

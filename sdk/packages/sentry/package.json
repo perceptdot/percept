@@ -2,7 +2,7 @@
   "name": "@perceptdot/sentry",
   "mcpName": "io.github.perceptdot/sentry",
   "version": "0.1.5",
-  "description": "perceptdot MCP server for Sentry error tracking",
+  "description": "B2A2H MCP server — AI agent vision for Sentry error tracking with automatic ROI measurement and reporting. perceptdot.com",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,6 +24,9 @@
     "windsurf",
     "perceptdot",
     "roi",
+    "b2a2h",
+    "agent-commerce",
+    "token-savings",
     "observability",
     "sentry",
     "error-monitoring"

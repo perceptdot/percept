@@ -14,7 +14,10 @@
 2. docs/agents/{내 역할}.md 읽기
 3. docs/bizplan.md 관련 섹션 확인
 4. memory/backlog.md 현재 우선순위 확인
-5. 작업 시작 선언: "## [에이전트명] 작업 시작 - {task}"
+5. 싱크 체크:
+   - 데스크탑: git pull origin main + 원격 claude/* 브랜치 확인 → 있으면 머지
+   - 모바일: docs/outputs/daily_{오늘}.md 최신 세션 확인 → 데스크탑 작업 파악
+6. 작업 시작 선언: "## [에이전트명] 작업 시작 - {task} (모바일/데스크탑 Claude)"
 ```
 
 **작업 완료 후**
@@ -22,7 +25,7 @@
 [HOOK: POST_TASK]
 1. 산출물을 docs/outputs/{에이전트명}_{날짜}.md 에 저장
 2. 다음 에이전트에게 인수인계 내용 작성
-3. 작업 완료 선언: "## [에이전트명] 작업 완료 - {결과 요약 3줄}"
+3. 작업 완료 선언: "## [에이전트명] 작업 완료 - {결과 요약 3줄} (모바일/데스크탑 Claude, HH:MM KST)"
 ```
 
 ---
@@ -234,6 +237,48 @@ CEO → CPO → PM → Dev/Research (병렬)
 daily_YYYYMMDD.md    — 일일 보고 (같은 날 덮어쓰기)
 strategy_YYYYMMDD.md — 전략/기획
 research_YYYYMMDD.md — 리서치 결과
+```
+
+---
+
+## 작업 환경 기록 규칙 (2026-03-22 CEO 지시)
+
+```
+모든 문서(daily, backlog, MEMORY, outputs)에 작업 세션 기록 시:
+- 모바일 Claude 작업: "모바일 Claude" 명시
+- 데스크탑 Claude 작업: "데스크탑 Claude" 명시
+- 세션 헤더 형식: ## 세션 N (HH:MM KST · 모바일/데스크탑 Claude)
+```
+
+---
+
+## 모바일/데스크탑 싱크 규칙 (2026-03-22 CEO 지시)
+
+```
+[동시 작업 금지]
+- 같은 시간에 모바일 + 데스크탑 동시 세션 열지 않음
+- 한쪽 작업 완료 → 기록 → 다른 쪽 시작
+
+[데스크탑 시작 시]
+1. git pull origin main
+2. git branch -r | grep claude/  → 모바일 브랜치 확인
+3. 있으면 머지: git merge origin/claude/xxx
+4. docs/outputs/daily_{오늘}.md 최신 세션 확인
+5. 머지 완료된 claude/* 브랜치 정리
+
+[모바일 시작 시]
+1. docs/outputs/daily_{오늘}.md 최신 세션 확인 → 데스크탑 작업 파악
+2. memory/backlog.md + MEMORY.md 확인
+3. (모바일은 git pull 불필요 — 세션 시작 시 최신 repo 자동 반영)
+
+[충돌 방지]
+- backlog.md / MEMORY.md 수정: append-only 원칙 (기존 줄 수정 최소화, 새 줄 추가 위주)
+- daily 보고서: 세션 번호로 구분 (세션 1, 세션 2...) → 같은 파일 다른 섹션
+- 코드 수정: 같은 파일 동시 수정 금지 → daily에 수정 예정 파일 명시
+
+[필수 기록]
+- 모든 작업은 daily 보고서에 기록 필수 (코드만 수정하고 daily 안 쓰면 싱크 불가)
+- POST_TASK Hook 스킵 금지 — 기록 없는 작업은 없는 작업
 ```
 
 ---

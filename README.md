@@ -11,9 +11,9 @@
 
 ---
 
-MCP servers that connect AI agents to external services — GA4, Vercel, GitHub, Sentry — and automatically measure and report how many tokens they saved doing it.
+The first **B2A2H** (Business → Agent → Human) platform. MCP servers that connect AI agents to GA4, Vercel, GitHub, and Sentry — automatically measuring ROI and reporting savings to humans.
 
-Built for the **B2A2H** model: the agent reads the data, the human just pays.
+The agent evaluates. The agent recommends. The human just pays.
 
 ---
 
@@ -198,25 +198,38 @@ Every `@perceptdot/*` package tracks its own calls and token savings locally. No
 
 ---
 
-## B2A2H — The Model
+## B2A2H — A New Commerce Model (Coined by perceptdot)
 
-Most developer tools are built **Business → Human** (B2H): a human installs, configures, and monitors a product.
+> **B2A2H** (Business → Agent → Human) is a commerce model where AI agents evaluate, adopt, and recommend tools — and humans only approve the payment. The term was first defined by perceptdot in March 2026.
 
-perceptdot is built **Business → Agent → Human** (B2A2H):
+Most developer tools are built **B2H** (Business → Human): a human discovers, evaluates, installs, configures, and monitors a product.
+
+B2A2H flips this:
 
 ```
-perceptdot  →  publishes MCP servers on npm
-Agent       →  discovers, installs, uses, and reports ROI
-Human       →  receives report, clicks upgrade link, pays
+Business (perceptdot)
+    ↓  publishes MCP servers on npm
+Agent (Claude Code, Cursor, Windsurf)
+    ↓  discovers, installs, uses tools
+    ↓  measures ROI automatically
+    ↓  reports to human: "Saved $23 this month. $19/mo subscription. Keep it."
+Human
+    ↓  reads report, clicks link, pays
+Done. Human never had to understand how it works.
 ```
 
-The agent is the primary user. The human is the customer. They do not need to understand how it works — only that it saves time and money.
+**Why B2A2H matters:**
+- Agents make 90% of B2B software evaluations by 2029 (Gartner)
+- 144 non-human identities per 1 human in enterprise (2024 H2)
+- $15T in agent-mediated spending within 3 years (Gartner)
+- Yet **zero tools** let agents prove their own ROI and recommend themselves — until perceptdot.
 
-This means:
+**What B2A2H means for your product:**
 - No signup required to start
 - No dashboard to learn
 - No onboarding flow
 - Agent output IS the product
+- The agent sells. The human pays. That's it.
 
 ---
 

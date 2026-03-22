@@ -9,7 +9,10 @@
 2. 이 문서 확인
 3. memory/backlog.md 확인
 4. CPO 최신 산출물 확인
-5. 작업 선언
+5. 싱크 체크:
+   - 데스크탑: git pull origin main + 원격 claude/* 브랜치 확인 → 있으면 머지
+   - 모바일: docs/outputs/daily_{오늘}.md 최신 세션 확인 → 데스크탑 작업 파악
+6. 작업 시작 선언: "## [PM] 작업 시작 - {task} (모바일/데스크탑 Claude)"
 ```
 
 ## 주요 책임
@@ -26,9 +29,27 @@
 - [ ] DevRel: {태스크} — 완료 기준: {기준}
 ```
 
+## 작업 완료 Hook (필수 — 스킵 시 작업 무효)
+```
+[HOOK: POST_TASK]
+1. docs/outputs/pm_{YYYYMMDD}.md 에 산출물 저장
+2. docs/outputs/daily_{YYYYMMDD}.md 에 세션 기록 추가
+3. memory/backlog.md 해당 항목 상태 업데이트
+4. memory/MEMORY.md 에 주요 결정사항 추가
+5. 다음 에이전트 인수인계 내용 작성
+6. 완료 선언: "## [PM] 작업 완료 - {결과 3줄} (모바일/데스크탑 Claude, HH:MM KST)"
+```
+
+## 장기 비전 인지 (2026-03-22 확정)
+```
+MCP 서버(씨앗) → ROI 데이터 축적(Q2) → 에이전트 경제 인프라(Q3~)
+PM은 백로그에서 VISION-* 태스크도 관리. 상세: docs/bizplan.md §12
+```
+
 ## 우선순위 원칙
 ```
 1. CEO 결정 블로킹 항목 최우선
 2. ROI 측정 기능이 연결 기능보다 우선
 3. 한 번에 하나의 통합만 완성
+4. 장기 비전 VISION-* 태스크는 Q2부터 스프린트에 포함 ← 2026-03-22 추가
 ```

@@ -39,10 +39,11 @@
 - ✅ **TECH-02** Composio MCP 서버 구조 분석 완료 (2026-03-19) → docs/outputs/research_20260319.md
 - ✅ **BRAND-01** 픽셀 로고 제작 완료 (2026-03-20) — 아이콘(8×8 픽셀 눈) + 워드마크(Press Start 2P), 5종 변형, 사이트 적용 완료
 - [ ] **GROWTH-01** B2A2H 세일즈 플로우 설계 (에이전트 → 결제 링크 보고 UX)
-- 🔄 **GROWTH-02** Moltbook 전략 실행 — 에이전트 피드백 수집 + 홍보 채널 활용
-  - ✅ Moltbook 에이전트 등록 완료 (2026-03-22) — pending_claim 상태
+- 🔄 **GROWTH-02** Moltbook 전략 실행 — 에이전트 등록 완료 + 포스팅 초안 완료 (2026-03-22)
+  - ✅ Moltbook 에이전트 등록 완료 — pending_claim 상태
   - ✅ API Key: moltbook_sk_LIL54qRyJCOyAWi6Y3fPdc87ngiSFweU
   - ✅ skill.md 확인 완료 — API base: https://www.moltbook.com/api/v1
+  - ✅ 포스팅 초안 작성 완료 → docs/outputs/marketing_ready_to_post.md
   - [ ] CEO 클레임 (트윗 인증, 코드: ocean-D2WD)
   - [ ] **클레임 후 에이전트가 API로 직접 홍보 포스트 작성** (CEO 지시: "읽고 글쓰게 할걸")
     - POST /posts로 submolt에 포스트 작성
@@ -55,6 +56,81 @@
 - ✅ **GROWTH-03** awesome-mcp-servers PR #3639 제출 완료 (2026-03-22) — Glama 배지 추가 필요 (리뷰 승인 후)
 - [ ] **GROWTH-04** Anthropic Discord #tools 채널 포스팅 ⏸️ 대기
 - [ ] **GROWTH-05** r/ClaudeAI Reddit 소개 포스트 ⏸️ 대기
+- [ ] **GROWTH-06** 런칭 플랫폼 다단계 전략 (2026-03-22 CEO 지시 — 최적·최고 홍보)
+  - 담당: Growth (실행) + DevRel (콘텐츠) + CPO (감독)
+  - **1단계 — 즉시 등록 (복수 가능, 부담 없음)**
+    - [ ] DevHunt 등록 (개발자 도구 전용 PH, MCP/CLI 정확 타겟)
+    - [ ] BetaList 등록 (베타 제품 전용, 얼리어답터 모집)
+    - [ ] There's An AI For That (TAAFT) 등록 (AI 도구 디렉토리, 월 수백만 방문)
+    - [ ] AlternativeTo 등록 ("Composio 대안" 검색 노출)
+    - [ ] Launching Next 등록 (큐레이션 스타트업 디렉토리)
+    - [ ] Microlaunch 등록 (월간 노출, 장기 발견)
+  - **2단계 — 반응 확인 후 실행**
+    - [ ] Hacker News Show HN (화/수 US 오전, 초안 ready)
+    - [ ] Reddit r/ClaudeAI + r/cursor + r/webdev + r/SideProject
+    - 🔄 Twitter/X 단일 트윗 → 스레드 (반응 보고) — **X API 앱 "perceptdot" 생성 완료, 키 6개 확보 (2026-03-22), 데스크탑에서 .env 설정 + 포스팅 예정**
+    - [ ] Moltbook 포스팅 (API 키 발급 후)
+    - [ ] Anthropic Discord #tools
+    - [ ] Indie Hackers (빌드인퍼블릭 스토리)
+    - [ ] Smol Launch (주간 포맷, 개발자 특화)
+  - **3단계 — 올인 (준비 완벽 시, 1회성)**
+    - [ ] Product Hunt 런칭 (Maker 프로필 + 스크린샷 5장 + First Comment)
+    - 필요: og-image ✅, 랜딩 ✅, 태그라인 ✅, 스크린샷/데모, 런칭일(화~목)
+  - **공통 준비물**
+    - [x] og-image.png (1200×630px)
+    - [x] 랜딩 페이지 라이브 (perceptdot.com)
+    - [x] npm 4개 서버 퍼블리시
+    - [x] GitHub 공개 repo
+    - [x] 마케팅 초안 5채널 (docs/outputs/marketing_ready_to_post.md)
+    - [ ] 스크린샷 3~5장 (터미널 MCP 실사용 장면) — Dev 담당
+    - [ ] 데모 GIF or 30초 영상 (선택, 효과 극대화)
+    - [ ] 각 플랫폼별 프로필/계정 생성 — CEO 수동
+
+---
+
+## CRITICAL — 전략 피벗 (2026-03-22 세션 8 · CEO 결정 대기)
+
+- [ ] **PIVOT-01** 전략 피벗 승인 — "MCP 서버 제공자" → "에이전트 발견+ROI 레이어" (CEO 결정 대기)
+  - CEO 통찰: 에이전트 자율성 충분, 문제는 발견 경로
+  - CPO 비교 분석: AFTER 9승 1패
+  - 상세: docs/outputs/cpo_20260322.md §9
+- [ ] **PIVOT-02** Phase 1: @perceptdot/core 개발 (1~2일, Dev 담당, 백엔드 변경 없음)
+  - sdk/packages/core/ 생성 (ga4 패턴 따름)
+  - percept_discover: 로컬 파일 분석 → SIGNAL_MAP 매핑
+  - percept_recommend: 큐레이션 DB + Registry API 직접 호출
+  - percept_installed: .mcp.json 읽기
+  - curated-db.ts: perceptdot 4개 + 외부 ~20개 하드코딩
+  - npm publish @perceptdot/core@0.1.0
+- [ ] **PIVOT-03** Phase 2: 백엔드 Registry 프록시 (1일, Dev 담당)
+  - GET /v1/registry/curated, GET /v1/registry/search, POST /v1/recommend/log
+  - core@0.2.0: 백엔드 프록시 사용 전환
+- [ ] **PIVOT-04** Phase 3: 랜딩 페이지 업데이트 (0.5일, DevRel+Dev)
+  - Hero "Your Agent's App Store", Feature 카드 2개 교체
+  - Output Preview에 percept_discover 예시 추가
+- [ ] **PIVOT-05** Phase 4: README + 마케팅 초안 업데이트 (0.5일, DevRel)
+  - "One install. Your agent discovers the rest."
+
+---
+
+## HIGH — B2A2H 확장 BM (2026-03-22 CPO 리서치)
+
+- [ ] **BM-01** 에이전트 ROI 벤치마크 플랫폼 — /v1/use 집계 → /v1/benchmark 엔드포인트 (v0.3.0 목표)
+  - "상위 N%" 비교, 업계 평균 대비 성과 보고
+  - 기존 인프라 100% 재활용, 난이도 낮음
+- [ ] **BM-02** MCP 빌링 인프라 (white-label) — 다른 MCP 서버에 perceptdot 결제 레이어 제공 (Q2)
+  - 레브쉐어 10~15%, 11,000+ MCP 서버 5% 미만 유료화 = 거대 공백
+- [ ] **BM-03** ACP/UCP 에이전트 커머스 연동 — 에이전트 인라인 결제 중개 (Q3)
+  - OpenAI ACP + Google UCP, 개발자 도구 커머스
+
+## HIGH — 장기 비전 (2026-03-22 CPO+CEO 확정)
+
+- [ ] **VISION-01** 장기 방향 최종 선택 — Q3 데이터 기반 (에이전트 광고 네트워크 / 에이전트 Stripe / CFO 에이전트)
+  - MCP 서버 = 씨앗 (데이터 수집기), 진짜 사업 = 데이터 위의 인프라
+  - 상세: docs/bizplan.md §12
+- [ ] **VISION-02** x402/Coinbase AgentKit 연동 PoC — 에이전트 자율결제 인프라 (Q3~Q4)
+  - HTTP 402 네이티브 결제 또는 크립토 월렛 통합
+- [ ] **VISION-03** Composio 채널 파트너십 제안 — 유저 100명 이후
+  - Composio = 연결(3,000+ 앱), percept = ROI 측정. 보완 관계
 
 ---
 
@@ -78,7 +154,7 @@
 
 - ✅ **FEED-02** 랜딩 Agent Reviews 섹션 추가 완료 (2026-03-21) | 더미 데이터 삭제 + 섹션 자동 숨김 처리 (03-22, 실제 피드백 올 때만 자동 노출)
   - /v1/feedbacks API 연동, 실시간 로딩, 별점+코멘트 카드, skeleton 로딩 UI
-  - [ ] Twitter/X 자동 포스팅 웹훅 (선택, 후순위)
+  - [ ] Twitter/X 자동 포스팅 웹훅 (선택, 후순위) — X API 앱 생성 완료, 키 확보됨
   - [ ] README에 실제 에이전트 피드백 인용 (피드백 쌓이면)
 
 ## NORMAL — v0.2.0 계획
@@ -134,7 +210,7 @@
 - ✅ **COST-01** 무료 사용자 비용 분석 완료 (2026-03-22) — MCP 서버 유저 로컬 실행, 백엔드 /v1/use 카운트만. 10K유저 $5/mo, 100K유저 $65/mo, 비용 폭발 없음
 - ✅ **MKT-04** awesome-mcp-servers PR 제출 완료 (2026-03-22) — PR #3639 https://github.com/punkpeye/awesome-mcp-servers/pull/3639, 머지 대기
 - ⏳ **MKT-04b** Glama.ai 서버 등록 리뷰 대기 → 승인 후 awesome-mcp-servers PR #3639에 배지 추가
-- [ ] **MKT-05** og-image.png 제작 (CEO 수동, 1200×630px, SNS 공유용)
+- ✅ **MKT-05** og-image.png 제작 완료 (2026-03-22) — 1200×630px, Pillow 생성, scripts/generate_og_image.py
 - ✅ **QA-01** 사이트 전수 검사 + FAQ 베타 반영 완료 (2026-03-22) — FAQ 3개 교체, Output Preview/ROI통계바 수정, 한국어 주석 영어화, 6건 수정 + Pages 재배포
 
 ---

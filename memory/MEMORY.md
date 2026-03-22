@@ -31,6 +31,10 @@
   - ✅ GitHub 6커밋 + Cloudflare Pages/Workers 재배포 완료 (2026-03-22)
   - ✅ COST-01: 10K유저 $5/mo, 100K유저 $65/mo 분석 완료
   - ✅ awesome-mcp-servers PR #3639 제출 완료 (2026-03-22)
+  - ✅ og-image.png 제작 완료 (2026-03-22 01:17 KST · 모바일 Claude)
+  - ✅ Moltbook 포스팅 초안 + API 조사 완료 (2026-03-22 01:17 KST · 모바일 Claude) — 실행 보류
+  - ✅ 3단계 런칭 스택 전략 수립 (2026-03-22 01:40 KST · 모바일 Claude) — 12개 채널 확보
+  - ✅ Growth 런칭 실행 계획서 작성 (docs/outputs/growth_20260322.md)
   - ✅ Glama.ai MCP 서버 등록 제출 완료 (리뷰 대기)
   - ✅ Paddle KYC 이름 불일치 답신 발송 (CheonKyu Jang → Sorina Lee/THUNOVA 설명 + Account Settings 변경 요청)
   - ✅ 랜딩 푸터 사업자번호 라인 제거 (국제 SaaS 불필요)
@@ -38,9 +42,59 @@
   - ⏳ Glama 서버 리뷰 승인 대기 → 승인 후 PR #3639에 배지 추가
   - 🔴 BUG-01: Cloudflare Bot Fight Mode — ClaudeBot 차단 (CEO 수동)
   - 🟡 og-image.png 제작 필요 (CEO 수동, 1200×630px)
+  - ✅ X (Twitter) API 앱 "perceptdot" 생성 완료 (2026-03-22 02:50 KST · 모바일 Claude)
+    - App ID: 32625109, Free tier, Read and Write 권한
+    - 키 6개 확보: API Key, API Secret, Bearer Token, Access Token, Access Token Secret, Client ID + Client Secret
+    - ⚠️ 키 3개 대화 노출 → Regenerate 필요
+    - 데스크탑 작업 시: .env 설정 → 마케팅 트윗 포스팅
   - 🟡 마케팅 포스팅 시작 필요: Twitter → Reddit → HN
   - 🟡 외부 설치 유저 0명 (현재 KV에 내부/테스트 키만 존재)
   - npm 패키지: ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
+
+## B2A2H 확장 BM 리서치 결론 (2026-03-22 CPO)
+
+- **시장 검증**: OpenAI ACP + Google UCP 출시 → B2A2H 모델 메인스트림 진입 확인
+- **핵심 수치**: Gartner 3년 내 B2B 90% 에이전트 경유, $15T 규모
+- **경쟁 공백**: 옵저버빌리티 도구 전부 개발자→개발자 판매. 에이전트 자가추천 = perceptdot 유일
+- **1순위 확장**: BM-01 벤치마크 플랫폼 (/v1/benchmark, v0.3.0)
+- **2순위 확장**: BM-02 MCP 빌링 인프라 (white-label, Q2)
+- **3순위 확장**: BM-03 ACP 연동 (에이전트 인라인 결제, Q3)
+- **보고서**: docs/outputs/cpo_20260322.md
+
+## 장기 비전 확정 (2026-03-22 CPO+CEO)
+
+**"MCP 서버는 씨앗, 진짜 사업은 데이터 위에 세운다"**
+
+- **진화 경로**: MCP 서버 (현재) → ROI 데이터 축적 (Q2) → 에이전트 경제 인프라 (Q3~)
+- **Google 비유**: 검색엔진(씨앗) → 데이터 축적 → 광고 회사(진짜 사업)
+- **후보 3개** (Q3 데이터 기반 택1):
+  1. 에이전트 광고 네트워크 — ROI 증명 기반 도구 추천, CPA/레브쉐어
+  2. 에이전트용 Stripe — B2A2H 결제 인프라 SDK, 거래 수수료 4%
+  3. CFO 에이전트 — 에이전트 비용 최적화, 절감 수수료 10~20%
+- **"B2A2H" 용어는 퍼블릭 담론에 미존재** → perceptdot이 카테고리 정의
+- **시장 규모**: AI 에이전트 $236B (2034, WEF), B2B 에이전트 경유 $15T (Gartner)
+- **포지셔닝**: MCP 서버 + ROI 측정 + 에이전트 자가추천 결합 = 경쟁자 0
+- **에이전트 자율결제 인프라**: x402, Coinbase AgentKit — 향후 통합 후보
+- **상세 리서치**: docs/bizplan.md §12~§13
+
+---
+
+## 경쟁사/보완사 워치리스트 (2026-03-22 추가)
+
+| 이름 | 분류 | 무엇 | 장기 겹침 위험 | 모니터링 |
+|---|---|---|---|---|
+| Composio | 보완 | 3,000+ 앱 연결 | 낮음 (연결만) | 주 1회 |
+| Smithery/Glama | 채널 | MCP 마켓플레이스 | 없음 | 월 1회 |
+| AgentOps/LangSmith | 간접 경쟁 | 옵저버빌리티 | 중간 (에이전트 자가추천 추가 시) | 주 1회 |
+| **Spix** | **보완/잠재 경쟁** | 에이전트 통신 (전화/이메일/음성) | **중간** (B2A2H 보고 채널 겹침) | 월 1회 |
+| 21st.dev | 벤치마크 | MCP 유료화 성공 사례 | 낮음 | 월 1회 |
+
+- Spix (spix.sh, GitHub: Spix-HQ, bluman1/Michael Ogundare)
+  - 26 tools, Deepgram+Claude Haiku+Cartesia, ~500ms 레이턴시
+  - 위협: 에이전트→사람 보고를 통신 채널(이메일/전화)로 대체 가능
+  - 기회: percept(측정) + Spix(전달) 통합 시 시너지
+
+---
 
 ## 확정 사항 (2026-03-19)
 
@@ -143,11 +197,47 @@ percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
 - 속도 우선
 - 백로그는 `memory/backlog.md`에서 관리
 - 배포 의무: 코드 수정 후 배포 여부 반드시 명시
+- **작업 환경 구분 기록 필수** (2026-03-22 CEO 지시): 모바일 Claude / 데스크탑 Claude 명시
 
 ## QA 원칙 (2026-03-21 CEO 확정)
 - **⚠️ 최우선**: QA는 반드시 우리 MCP 서버(@perceptdot/ga4, vercel, sentry, github)를 직접 사용하면서 진행
 - 실제로 써봐야 불편한 점 발견 가능 → 개선 우선순위 결정
 - QA 중 발견된 UX 불편사항은 backlog에 즉시 기록 (BUG 또는 UX 태그)
+
+## 전략 피벗 검토 (2026-03-22 세션 8 · 모바일 Claude · CEO 결정 대기)
+
+**CEO 통찰**: "에이전트가 Moltbook에 글 쓸 정도면 도구 추천도 할 수 있다"
+**CPO 검증**: 맞음. 에이전트 자율성 충분. 문제는 "발견 경로"가 없는 것.
+
+**피벗 방향**: "MCP 서버 제공자" → "에이전트의 도구 발견+ROI 레이어"
+- percept_recommend: MCP Registry API 검색 → 프로젝트에 필요한 MCP 서버 추천
+- percept_discover: 프로젝트 분석(package.json 등) → 자동 추천
+- percept가 "에이전트의 앱스토어" 역할
+
+**MCP 자동 발견 현황 (리서치 팩트)**:
+- 모든 MCP 클라이언트: 자동 발견/추천/설치 기능 없음
+- 에이전트→에이전트 바이럴 사례: 전 세계 0건
+- 부품 존재: Registry API 라이브, PulseMCP 제안, Smithery CLI — 아무도 미조립
+
+**10축 비교**: AFTER(피벗) 9승 1패. 실행 난이도만 BEFORE 유리.
+**상세**: docs/outputs/cpo_20260322.md §9
+
+**CEO 결정 대기**: 피벗 승인 여부
+
+## CEO 결의 (2026-03-22 세션 9 · 데스크탑 Claude)
+
+**"이 사업을 반드시 성공해야 한다"** — CEO 직접 선언
+
+CEO 지시사항:
+1. 기존 마케팅 진행상황 + 대처방안 마련
+2. 피벗 시 시장상황 조사 + 경쟁사/유사 서비스 전수 파악
+3. 강점/차별점/킬링포인트 명확화
+4. 제품 품질 보증 + 플랫폼 관리 계획 구체화
+5. "돌다리도 두들겨보고 가자" — 리스크 최소화 원칙
+
+**CEO 원문**: "너무 많은 생각을 하는 건가?" → CPO 판단: 아님. 이 단계에서 철저한 검증이 맞음.
+
+---
 
 ## 별도 파일
 - `memory/backlog.md` — 전체 백로그
