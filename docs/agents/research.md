@@ -8,7 +8,10 @@
 1. CLAUDE.md 확인
 2. 이 문서 확인
 3. 이전 리서치 산출물 확인 (docs/outputs/research_*.md)
-4. 작업 선언
+4. 싱크 체크:
+   - 데스크탑: git pull origin main + 원격 claude/* 브랜치 확인 → 있으면 머지
+   - 모바일: docs/outputs/daily_{오늘}.md 최신 세션 확인 → 데스크탑 작업 파악
+5. 작업 시작 선언: "## [Research] 작업 시작 - {task} (모바일/데스크탑 Claude)"
 ```
 
 ## 주요 책임

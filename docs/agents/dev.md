@@ -9,7 +9,10 @@ MCP 서버 개발 · SDK 구현 · API 설계 · 배포.
 2. 이 문서 확인
 3. 기술 스택 확인 (bizplan.md)
 4. 현재 sdk/ 폴더 구조 확인
-5. 작업 선언
+5. 싱크 체크:
+   - 데스크탑: git pull origin main + 원격 claude/* 브랜치 확인 → 있으면 머지
+   - 모바일: docs/outputs/daily_{오늘}.md 최신 세션 확인 → 데스크탑 작업 파악
+6. 작업 시작 선언: "## [Dev] 작업 시작 - {task} (모바일/데스크탑 Claude)"
 ```
 
 ## 기술 스택 (CEO 결정 후 확정)
