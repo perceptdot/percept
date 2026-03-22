@@ -211,6 +211,15 @@
 - ✅ **MKT-04** awesome-mcp-servers PR 제출 완료 (2026-03-22) — PR #3639 https://github.com/punkpeye/awesome-mcp-servers/pull/3639, 머지 대기
 - ⏳ **MKT-04b** Glama.ai 서버 등록 리뷰 대기 → 승인 후 awesome-mcp-servers PR #3639에 배지 추가
 - ✅ **MKT-05** og-image.png 제작 완료 (2026-03-22) — 1200×630px, Pillow 생성, scripts/generate_og_image.py
+- [ ] **SEO-02** 나무위키 레퍼런스 SEO 최적화 — 사람 대상 검색 유입 강화
+  - 나무위키 "MCP (프로토콜)" / "AI 에이전트" 등 관련 문서에 perceptdot 레퍼런스 추가
+  - 한국어 검색 노출 극대화 (네이버/구글 한국어)
+  - 나무위키 백링크 → 도메인 권위 상승
+- [ ] **SEO-03** AI 에이전트 대상 SEO 최적화 — llms.txt / AI 크롤러 최적화
+  - llms.txt 생성 (perceptdot.com/llms.txt) — AI 모델이 읽는 표준 포맷
+  - AI 크롤러 허용 설정 (robots.txt에 GPTBot, ClaudeBot, Bingbot 등 허용)
+  - README/npm description에 에이전트가 검색·추천할 키워드 강화
+  - MCP 디렉토리(Glama, Smithery 등) 등록 확대
 - ✅ **QA-01** 사이트 전수 검사 + FAQ 베타 반영 완료 (2026-03-22) — FAQ 3개 교체, Output Preview/ROI통계바 수정, 한국어 주석 영어화, 6건 수정 + Pages 재배포
 
 ---
