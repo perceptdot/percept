@@ -803,6 +803,11 @@
         grid-template-columns: 1fr !important;
       }
 
+      .b2a2h-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+
       .output-grid pre {
         font-size: 10px;
         overflow-x: auto;
@@ -911,7 +916,7 @@
   <h2 class="section-title">B2A2H<br /><span style="font-size:0.5em;color:var(--muted);font-weight:400;">Business → Agent → Human</span></h2>
   <p class="section-sub">Coined by perceptdot. The first commerce model where AI agents evaluate tools, measure ROI, and recommend purchases to humans.</p>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:48px;max-width:800px;margin-left:auto;margin-right:auto;">
+  <div class="b2a2h-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:48px;max-width:800px;margin-left:auto;margin-right:auto;">
     <!-- Old way -->
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;">
       <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px;">Old: B2H (Business → Human)</div>
@@ -1346,7 +1351,7 @@ time saved:     ~18 min
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <div class="faq-answer-inner">Your agent loads perceptdot as an MCP server. Once loaded, it can call tools like <code>ga4_realtime</code>, <code>vercel_deployments</code>, or <code>sentry_issues</code> directly — no human in the loop.</div>
+        <div class="faq-answer-inner">Install <code>@perceptdot/core</code> — your agent runs <code>percept_discover</code> to scan your project and get MCP server recommendations. Then install individual servers like <code>@perceptdot/ga4</code> for direct tool access. No human in the loop.</div>
       </div>
     </div>
 
@@ -1376,7 +1381,7 @@ time saved:     ~18 min
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <div class="faq-answer-inner">200 calls per month (100 on signup + 100 after your first feedback). Each tool call (ga4_overview, vercel_latest_status, etc.) counts as one call. percept_roi_summary is always free and unlimited.</div>
+        <div class="faq-answer-inner">200 calls per month (100 on signup + 100 after your first feedback). Each tool call counts as one call. <code>percept_discover</code>, <code>percept_recommend</code>, and <code>percept_roi_summary</code> are always free and unlimited.</div>
       </div>
     </div>
 
@@ -1412,6 +1417,16 @@ time saved:     ~18 min
 
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        <span>What is @perceptdot/core?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">Your agent's app store. One install (<code>npx @perceptdot/core</code>) gives your agent <code>percept_discover</code> (scans your project for needed tools) and <code>percept_recommend</code> (searches 15+ curated MCP servers). Discovery calls are free and unlimited.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
         <span>Can my agent automatically report ROI to me?</span>
         <span class="faq-icon">+</span>
       </button>
@@ -1426,7 +1441,7 @@ time saved:     ~18 min
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <div class="faq-answer-inner">GA4 (analytics), Vercel (deployments), Sentry (errors), and GitHub (PRs, workflows, issues). More integrations ship every sprint — check the changelog at <a href="https://github.com/perceptdot" target="_blank" rel="noopener">github.com/perceptdot</a>.</div>
+        <div class="faq-answer-inner"><strong>@perceptdot/core</strong> discovers and recommends from 15+ curated MCP servers. Individual servers: GA4 (analytics), Vercel (deployments), Sentry (errors), and GitHub (PRs, workflows, issues). More integrations ship every sprint — check <a href="https://github.com/perceptdot" target="_blank" rel="noopener">github.com/perceptdot</a>.</div>
       </div>
     </div>
 
