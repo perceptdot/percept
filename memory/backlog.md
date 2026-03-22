@@ -99,14 +99,17 @@
   - SIGNAL_MAP: package.json deps + .env vars + config files → 자동 추천
   - K_saju 테스트: Stripe + PostgreSQL 2개 정상 추천
   - smithery.yaml + workspace 등록 완료
-- [ ] **PIVOT-03** Phase 2: 백엔드 Registry 프록시 (1일, Dev 담당)
-  - GET /v1/registry/curated, GET /v1/registry/search, POST /v1/recommend/log
-  - core@0.2.0: 백엔드 프록시 사용 전환
-- [ ] **PIVOT-04** Phase 3: 랜딩 페이지 업데이트 (0.5일, DevRel+Dev)
-  - Hero "Your Agent's App Store", Feature 카드 2개 교체
-  - Output Preview에 percept_discover 예시 추가
-- [ ] **PIVOT-05** Phase 4: README + 마케팅 초안 업데이트 (0.5일, DevRel)
-  - "One install. Your agent discovers the rest."
+- ✅ **PIVOT-03** Phase 2: 백엔드 Registry 프록시 완료 (2026-03-22)
+  - GET /v1/registry/curated (17 servers), GET /v1/registry/search, POST /v1/recommend/log
+  - api.perceptdot.com 배포 완료 (Workers + production env)
+  - RECOMMEND_LOG KV 생성 (4a1073d7cd884888a3b933d8813cbd06)
+- ✅ **PIVOT-04** Phase 3: 랜딩 페이지 업데이트 완료 (2026-03-22)
+  - Hero "Your Agent's App Store", percept_discover/recommend 카드 2개 추가
+  - Output Preview에 percept_discover 예시 추가, Install에 core 우선 배치
+  - Cloudflare Pages 재배포 완료
+- ✅ **PIVOT-05** Phase 4: README + 마케팅 초안 업데이트 완료 (2026-03-22)
+  - README: core 최상단 배치, "One install. Your agent discovers the rest."
+  - marketing_drafts.md + marketing_ready_to_post.md 피벗 반영
 
 ---
 

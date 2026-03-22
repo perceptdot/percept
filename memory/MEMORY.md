@@ -47,7 +47,8 @@
     - 키 6개 확보: API Key, API Secret, Bearer Token, Access Token, Access Token Secret, Client ID + Client Secret
     - ⚠️ 키 3개 대화 노출 → Regenerate 필요
     - 데스크탑 작업 시: .env 설정 → 마케팅 트윗 포스팅
-  - 🟡 마케팅 포스팅 시작 필요: Twitter → Reddit → HN
+  - ✅ PIVOT 전체 완료 (Phase 1~4): core@0.1.0 npm + 백엔드 Registry + 랜딩 + README
+  - 🟡 X 트윗 수동 포스팅 필요 (API 402 CreditsDepleted)
   - 🟡 외부 설치 유저 0명 (현재 KV에 내부/테스트 키만 존재)
   - ✅ **PIVOT-01 승인 + PIVOT-02 완료** (2026-03-22 세션 10)
     - @perceptdot/core@0.1.0 npm 퍼블리시 완료
