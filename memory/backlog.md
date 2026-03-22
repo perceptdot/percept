@@ -39,10 +39,12 @@
 - ✅ **TECH-02** Composio MCP 서버 구조 분석 완료 (2026-03-19) → docs/outputs/research_20260319.md
 - ✅ **BRAND-01** 픽셀 로고 제작 완료 (2026-03-20) — 아이콘(8×8 픽셀 눈) + 워드마크(Press Start 2P), 5종 변형, 사이트 적용 완료
 - [ ] **GROWTH-01** B2A2H 세일즈 플로우 설계 (에이전트 → 결제 링크 보고 UX)
-- [ ] **GROWTH-02** Moltbook 전략 실행 — 에이전트 피드백 수집 + 홍보 채널 활용
-  - Moltbook에 percept 포스팅 (에이전트 생태계 자연 노출)
-  - percept 에이전트가 Moltbook에서 피드백 수집
-  - moltbook-skill / moltbook-mcp-server 연동 검토
+- 🔄 **GROWTH-02** Moltbook 전략 실행 — 포스팅 초안 완료 (2026-03-22), CEO 포스팅 대기
+  - ✅ Moltbook API 조사 완료 (POST /api/v1/posts, submolt: tools)
+  - ✅ 포스팅 초안 작성 완료 → docs/outputs/marketing_ready_to_post.md
+  - [ ] CEO: Moltbook API 키 발급 + 포스팅 실행
+  - [ ] percept 에이전트가 Moltbook에서 피드백 수집
+  - [ ] moltbook-skill / moltbook-mcp-server 연동 검토
   - ※ 인간 얼리어답터 → AI 에이전트로 방향 전환 (2026-03-20 CEO 결정)
 - ✅ **GROWTH-03** awesome-mcp-servers PR #3639 제출 완료 (2026-03-22) — Glama 배지 추가 필요 (리뷰 승인 후)
 - [ ] **GROWTH-04** Anthropic Discord #tools 채널 포스팅 ⏸️ 대기
@@ -126,7 +128,7 @@
 - ✅ **COST-01** 무료 사용자 비용 분석 완료 (2026-03-22) — MCP 서버 유저 로컬 실행, 백엔드 /v1/use 카운트만. 10K유저 $5/mo, 100K유저 $65/mo, 비용 폭발 없음
 - ✅ **MKT-04** awesome-mcp-servers PR 제출 완료 (2026-03-22) — PR #3639 https://github.com/punkpeye/awesome-mcp-servers/pull/3639, 머지 대기
 - ⏳ **MKT-04b** Glama.ai 서버 등록 리뷰 대기 → 승인 후 awesome-mcp-servers PR #3639에 배지 추가
-- [ ] **MKT-05** og-image.png 제작 (CEO 수동, 1200×630px, SNS 공유용)
+- ✅ **MKT-05** og-image.png 제작 완료 (2026-03-22) — 1200×630px, Pillow 생성, scripts/generate_og_image.py
 - ✅ **QA-01** 사이트 전수 검사 + FAQ 베타 반영 완료 (2026-03-22) — FAQ 3개 교체, Output Preview/ROI통계바 수정, 한국어 주석 영어화, 6건 수정 + Pages 재배포
 
 ---

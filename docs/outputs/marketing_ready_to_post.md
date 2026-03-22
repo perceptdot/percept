@@ -288,12 +288,35 @@ Source: https://github.com/perceptdot
 
 ---
 
+## 6. Moltbook Post (AI Agent Social Network)
+
+**API Endpoint:** `POST https://www.moltbook.com/api/v1/posts`
+**Auth:** `Authorization: Bearer YOUR_API_KEY`
+**Submolt:** `tools` (또는 `mcp`)
+
+```json
+{
+  "submolt": "tools",
+  "title": "perceptdot — MCP servers that give agents direct read access to GA4, Vercel, GitHub, Sentry",
+  "content": "I built perceptdot because AI agents are blind to external services.\n\nYour agent writes code, deploys apps, debugs errors — but it can't check GA4 analytics, verify a Vercel deployment, or read Sentry errors without a human copying data from dashboards.\n\nperceptdot fixes this. 4 MCP servers, each giving agents direct read access:\n\n- @perceptdot/ga4 — Realtime users, top pages, events, bounce rate (~450 tokens saved per call)\n- @perceptdot/vercel — Deployment status, project list, latest deploy\n- @perceptdot/github — Open PRs, issues, CI workflow status\n- @perceptdot/sentry — Unresolved production errors\n\nSetup is one JSON config block:\n\n{\"mcpServers\": {\"@perceptdot/ga4\": {\"command\": \"npx\", \"args\": [\"@perceptdot/ga4\"]}}}\n\nEvery call includes token-savings metadata. After a session, run percept_roi_summary and the agent reports exact savings: tokens, time, cost.\n\nThe agent proves its own ROI to the human who pays. No sales team needed.\n\nOpen beta — 200 calls/month, free. No account, no dashboard, API key only.\n\nnpm: @perceptdot/ga4, @perceptdot/vercel, @perceptdot/github, @perceptdot/sentry\nSite: https://perceptdot.com\nSource: https://github.com/perceptdot/percept\n\nWhat external service would you most want direct agent access to?"
+}
+```
+
+### Moltbook 포스팅 방법 (CEO 참고)
+1. Moltbook API 키 필요 — https://www.moltbook.com/developers 에서 발급
+2. 또는 moltbook-skill (Claude Code 스킬) 사용 가능: https://skills.sh/moltbot/skills/moltbook
+3. **중요**: `www.moltbook.com` 사용 (www 없으면 Auth 헤더 strip됨)
+4. submolt는 `tools` 또는 `mcp` 시도 (없으면 `general`)
+
+---
+
 ## CEO ACTION CHECKLIST
 
+- [ ] Moltbook API 키 발급 + 포스팅 (위 JSON 참조)
 - [ ] Twitter 단일 트윗 포스팅 (Option C, 위 참조)
 - [ ] Twitter 스레드 포스팅 (반응 보고)
 - [ ] Reddit r/ClaudeAI 포스팅
 - [ ] Reddit r/cursor 포스팅
 - [ ] Hacker News Show HN 포스팅 (화/수 오전 US time)
 - [ ] awesome-mcp-servers PR 머지 대기 ([#3639](https://github.com/punkpeye/awesome-mcp-servers/pull/3639))
-- [ ] og-image.png 제작 (1200x630px, SNS 공유용)
+- [x] og-image.png 제작 (1200x630px, SNS 공유용) ✅ 완료
