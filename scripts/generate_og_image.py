@@ -16,19 +16,19 @@ DARK2 = (26, 26, 26)      # #1a1a1a
 img = Image.new("RGB", (W, H), BG)
 draw = ImageDraw.Draw(img)
 
-# --- Site header logo (matches nav SVG exactly) ---
-# 0=empty, 1=#3d3566(dark), 2=#7c6dfa(main), 3=#c4b5fd(light)
+# --- Site header logo: diamond shape with glow (dark border tiles = invisible) ---
+# 0=empty, 1=empty(dark blends with bg), 2=#7c6dfa(main), 3=#c4b5fd(light)
 eye_map = [
-    [0,0,1,1,1,1,0,0],
-    [0,1,1,2,2,1,1,0],
-    [1,1,2,2,2,2,1,1],
-    [1,2,2,3,3,2,2,1],
-    [1,2,2,3,3,2,2,1],
-    [1,1,2,2,2,2,1,1],
-    [0,1,1,2,2,1,1,0],
-    [0,0,1,1,1,1,0,0],
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,2,2,0,0,0],
+    [0,0,2,2,2,2,0,0],
+    [0,2,2,3,3,2,2,0],
+    [0,2,2,3,3,2,2,0],
+    [0,0,2,2,2,2,0,0],
+    [0,0,0,2,2,0,0,0],
+    [0,0,0,0,0,0,0,0],
 ]
-colors = {0: None, 1: (61,53,102), 2: (124,109,250), 3: (196,181,253)}
+colors = {0: None, 1: None, 2: (124,109,250), 3: (196,181,253)}
 
 # Large eye: each pixel = 22px, positioned center-left
 eye_px = 22
@@ -66,9 +66,14 @@ for row_i, row in enumerate(eye_map):
 # --- Fonts ---
 def load_font(size, bold=False):
     paths = [
+        # macOS
+        "/System/Library/Fonts/Helvetica.ttc",
+        "/Library/Fonts/Arial Bold.ttf" if bold else "/Library/Fonts/Arial.ttf",
+        "/System/Library/Fonts/SFNSDisplay.ttf",
+        "/System/Library/Fonts/SFNS.ttf",
+        # Linux fallback
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-        "/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf",
     ]
     for p in paths:
         if os.path.exists(p):
@@ -77,8 +82,11 @@ def load_font(size, bold=False):
 
 def load_mono_font(size):
     paths = [
+        # macOS
+        "/System/Library/Fonts/Menlo.ttc",
+        "/Library/Fonts/Courier New.ttf",
+        # Linux fallback
         "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
         "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf",
     ]
     for p in paths:
