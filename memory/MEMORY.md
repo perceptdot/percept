@@ -48,6 +48,8 @@
     - 키 파일: `api_keys/x_api.env` (절대 값 노출 금지, CLAUDE.md Rule 12)
   - ✅ PIVOT 전체 완료 (Phase 1~4): core@0.1.0 npm + 백엔드 Registry + 랜딩 + README
   - ✅ X 3/3 스레드 수동 포스팅 완료 (2026-03-22) — "human clipboard" 후킹, API 402→수동 전환
+  - ✅ Reddit 댓글 3개 게시 완료 (2026-03-23) — r/ClaudeCode 1 + r/ClaudeAI 2 (MCP 토론 참여)
+  - ❌ Reddit 포스트 차단 (신규 계정 + Brand Affiliate) → 댓글 카르마 빌딩 전략
   - 🟡 외부 설치 유저 0명 (현재 KV에 내부/테스트 키만 존재)
   - ✅ **PIVOT-01 승인 + PIVOT-02 완료** (2026-03-22 세션 10)
     - @perceptdot/core@0.1.0 npm 퍼블리시 완료

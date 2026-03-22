@@ -67,7 +67,8 @@
     - [ ] Microlaunch 등록 (월간 노출, 장기 발견)
   - **2단계 — 반응 확인 후 실행**
     - [ ] Hacker News Show HN (화/수 US 오전, 초안 ready)
-    - [ ] Reddit r/ClaudeAI + r/cursor + r/webdev + r/SideProject
+    - 🔄 Reddit — 포스트 차단 (신규 계정), 댓글 3개 게시 완료 (r/ClaudeCode 1 + r/ClaudeAI 2, 2026-03-23)
+    - [ ] Reddit r/SideProject (카르마 충분 시)
     - ✅ Twitter/X 3/3 스레드 포스팅 완료 (2026-03-22) — "human clipboard" 후킹, x.com 수동 포스팅
     - [ ] Moltbook 포스팅 (API 키 발급 후)
     - [ ] Anthropic Discord #tools
