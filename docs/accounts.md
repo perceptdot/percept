@@ -49,11 +49,11 @@
 
 | 서비스 | 계정 | API 상태 | env 파일 |
 |--------|------|----------|----------|
-| **X (Twitter)** | thunova0318@gmail.com | ✅ API 키 확보 (App ID: 32625109) | `marketing_sns/x_api.env` ✅ |
-| **Reddit** | 미확인 | ⏸️ 미신청 | `marketing_sns/reddit_api.env` |
-| **LinkedIn** | 미확인 | ⏸️ 미신청 | `marketing_sns/linkedin_api.env` |
-| **Discord** | 미확인 | ⏸️ 미신청 | `marketing_sns/discord_api.env` |
-| **Product Hunt** | 미확인 | ⏸️ 미신청 | `marketing_sns/producthunt_api.env` |
+| **X (Twitter)** | thunova0318@gmail.com | ✅ API 키 확보 (재발급 완료) | `api_keys/x_api.env` ✅ |
+| **Reddit** | 미확인 | ⏸️ 미신청 | `api_keys/reddit_api.env` |
+| **LinkedIn** | 미확인 | ⏸️ 미신청 | `api_keys/linkedin_api.env` |
+| **Discord** | 미확인 | ⏸️ 미신청 | `api_keys/discord_api.env` |
+| **Product Hunt** | 미확인 | ⏸️ 미신청 | `api_keys/producthunt_api.env` |
 
 > X API 키 3개 대화 노출됨 → **Regenerate 필요** (developer.twitter.com)
 
