@@ -81,6 +81,20 @@
 
 ---
 
+## CRITICAL — 전략 피벗 (2026-03-22 세션 8 · CEO 결정 대기)
+
+- [ ] **PIVOT-01** 전략 피벗 승인 — "MCP 서버 제공자" → "에이전트 발견+ROI 레이어" (CEO 결정 대기)
+  - CEO 통찰: 에이전트 자율성 충분, 문제는 발견 경로
+  - CPO 비교 분석: AFTER 9승 1패
+  - 상세: docs/outputs/cpo_20260322.md §9
+- [ ] **PIVOT-02** percept_recommend tool 설계 + PRD 작성 (PIVOT-01 승인 후, PM 담당)
+  - MCP Registry API 연동, 프로젝트 분석 기반 추천
+- [ ] **PIVOT-03** percept_discover tool 설계 (PIVOT-01 승인 후, Dev 담당)
+  - package.json/.env 분석 → 필요한 MCP 서버 자동 추천
+- [ ] **PIVOT-04** 자체 MCP 서버 큐레이션 DB 구축 (Registry API 불안정 대비)
+
+---
+
 ## HIGH — B2A2H 확장 BM (2026-03-22 CPO 리서치)
 
 - [ ] **BM-01** 에이전트 ROI 벤치마크 플랫폼 — /v1/use 집계 → /v1/benchmark 엔드포인트 (v0.3.0 목표)

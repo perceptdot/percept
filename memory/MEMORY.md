@@ -194,6 +194,28 @@ percept → 에이전트 (사용 + ROI 측정) → 사람 (결제만)
 - 실제로 써봐야 불편한 점 발견 가능 → 개선 우선순위 결정
 - QA 중 발견된 UX 불편사항은 backlog에 즉시 기록 (BUG 또는 UX 태그)
 
+## 전략 피벗 검토 (2026-03-22 세션 8 · 모바일 Claude · CEO 결정 대기)
+
+**CEO 통찰**: "에이전트가 Moltbook에 글 쓸 정도면 도구 추천도 할 수 있다"
+**CPO 검증**: 맞음. 에이전트 자율성 충분. 문제는 "발견 경로"가 없는 것.
+
+**피벗 방향**: "MCP 서버 제공자" → "에이전트의 도구 발견+ROI 레이어"
+- percept_recommend: MCP Registry API 검색 → 프로젝트에 필요한 MCP 서버 추천
+- percept_discover: 프로젝트 분석(package.json 등) → 자동 추천
+- percept가 "에이전트의 앱스토어" 역할
+
+**MCP 자동 발견 현황 (리서치 팩트)**:
+- 모든 MCP 클라이언트: 자동 발견/추천/설치 기능 없음
+- 에이전트→에이전트 바이럴 사례: 전 세계 0건
+- 부품 존재: Registry API 라이브, PulseMCP 제안, Smithery CLI — 아무도 미조립
+
+**10축 비교**: AFTER(피벗) 9승 1패. 실행 난이도만 BEFORE 유리.
+**상세**: docs/outputs/cpo_20260322.md §9
+
+**CEO 결정 대기**: 피벗 승인 여부
+
+---
+
 ## 별도 파일
 - `memory/backlog.md` — 전체 백로그
 - `docs/bizplan.md` — 사업계획서 (확정)
