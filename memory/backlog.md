@@ -91,6 +91,16 @@
 - [ ] **BM-03** ACP/UCP 에이전트 커머스 연동 — 에이전트 인라인 결제 중개 (Q3)
   - OpenAI ACP + Google UCP, 개발자 도구 커머스
 
+## HIGH — 장기 비전 (2026-03-22 CPO+CEO 확정)
+
+- [ ] **VISION-01** 장기 방향 최종 선택 — Q3 데이터 기반 (에이전트 광고 네트워크 / 에이전트 Stripe / CFO 에이전트)
+  - MCP 서버 = 씨앗 (데이터 수집기), 진짜 사업 = 데이터 위의 인프라
+  - 상세: docs/bizplan.md §12
+- [ ] **VISION-02** x402/Coinbase AgentKit 연동 PoC — 에이전트 자율결제 인프라 (Q3~Q4)
+  - HTTP 402 네이티브 결제 또는 크립토 월렛 통합
+- [ ] **VISION-03** Composio 채널 파트너십 제안 — 유저 100명 이후
+  - Composio = 연결(3,000+ 앱), percept = ROI 측정. 보완 관계
+
 ---
 
 ## HIGH (다음 스프린트)

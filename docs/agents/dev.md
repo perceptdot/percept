@@ -1,7 +1,7 @@
 # Dev 에이전트 역할 문서
 
 ## 역할
-MCP 서버 개발 · SDK 구현 · API 설계 · 배포.
+MCP 서버 개발 · SDK 구현 · API 설계 · 배포 · 장기 비전 인프라 구축.
 
 ## 작업 시작 Hook
 ```
@@ -51,6 +51,15 @@ sdk/{서비스명}-mcp/
 ```typescript
 // 외부 서비스 실패 시 에이전트에게 명확한 메시지 반환
 // "GA4 API 오류: 인증 실패. MEASUREMENT_ID 확인 필요"
+```
+
+## 장기 비전 인지 (2026-03-22 확정)
+```
+MCP 서버 = 데이터 수집기 (씨앗). 진짜 사업 = 데이터 위 인프라.
+Dev는 /v1/use 데이터 구조 설계 시 벤치마크·빌링 확장을 고려할 것.
+Q2: /v1/benchmark 엔드포인트 + MCP 빌링 white-label
+Q3: ACP/UCP 연동 또는 에이전트 Stripe SDK
+상세: docs/bizplan.md §12
 ```
 
 ## 완료 기준
