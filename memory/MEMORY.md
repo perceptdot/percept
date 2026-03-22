@@ -41,7 +41,7 @@
   - ⏳ Paddle KYC 답변 대기 (1~2 영업일)
   - ⏳ Glama 서버 리뷰 승인 대기 → 승인 후 PR #3639에 배지 추가
   - 🔴 BUG-01: Cloudflare Bot Fight Mode — ClaudeBot 차단 (CEO 수동)
-  - 🟡 og-image.png 제작 필요 (CEO 수동, 1200×630px)
+  - ✅ og-image.png 제작 완료 (2026-03-22 01:17 KST · 모바일 Claude, scripts/generate_og_image.py)
   - ✅ X (Twitter) API 앱 "perceptdot" 생성 완료 (2026-03-22 02:50 KST · 모바일 Claude)
     - App ID: 32625109, Free tier, Read and Write 권한
     - 키 6개 확보: API Key, API Secret, Bearer Token, Access Token, Access Token Secret, Client ID + Client Secret
@@ -49,7 +49,7 @@
     - 데스크탑 작업 시: .env 설정 → 마케팅 트윗 포스팅
   - 🟡 마케팅 포스팅 시작 필요: Twitter → Reddit → HN
   - 🟡 외부 설치 유저 0명 (현재 KV에 내부/테스트 키만 존재)
-  - npm 패키지: ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
+  - npm 패키지: ga4@0.2.6, vercel@0.1.6, github@0.1.5, sentry@0.1.5
 
 ## B2A2H 확장 BM 리서치 결론 (2026-03-22 CPO)
 
@@ -121,7 +121,8 @@
 - percept.dev/ai = 사용 중, perceptmcp.com/getpercept.com = 후보였으나 perceptdot 확정
 
 ## 미결 CEO 결정사항
-- 첫 번째 통합 서비스 (GA4 / Vercel / EC2 / Sentry)
+- ✅ 첫 번째 통합 서비스: GA4 + Vercel 병렬 (2026-03-19 결정)
+- PIVOT-01 전략 피벗 승인 여부 (세션 8 제안, CEO 결정 대기)
 
 ## Moltbook 전략 (2026-03-20 CEO 확정)
 - **얼리어답터 = AI 에이전트** (인간 20명 → 방향 전환)
