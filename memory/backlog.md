@@ -185,7 +185,7 @@
 - ✅ **LEGAL-01** 쿠키 동의 배너 구현 완료 (landing/index.html, localStorage, 2026-03-20)
 - ✅ **LEGAL-02** 이용약관 + 개인정보처리방침 페이지 생성 (terms.html, privacy.html, 2026-03-20)
 - ✅ **LEGAL-03** 한국 SaaS 법적 요건 리서치 완료 (docs/outputs/legal_compliance_report.md, 2026-03-20)
-- [ ] **LEGAL-04** 통신판매업 신고 — THUNOVA 722-60-00889로 정부24 신고 (Stripe 결정 후)
+- ⏸️ **LEGAL-04** 통신판매업 신고 — 현재 간이과세자 면제 (연매출 1억400만 미만 + 거래 50회 미만). 매출 기준 도달 시 정부24 신고. Paddle MoR이므로 perceptdot은 추가 경감
 - ✅ **LEGAL-05** 결제 구조 확정: **Lemon Squeezy** (MoR, 2026-03-20 CEO 결정) — K-사주와 동일 계정 통합 관리
 - ✅ **PAY-01** Lemon Squeezy 계정 생성 (2026-03-20, 인증 제출 완료, 승인 대기 중. 상품 등록은 승인 후 가능)
 - ✅ **PROD-01** AI 최적화 설계 확정: 계정없음·로그인없음·대시보드없음·API키 N개 (2026-03-20)
@@ -196,7 +196,10 @@
 - ✅ **PAY-05** Gumroad 웹훅 + API 키 자동발급 E2E 검증 완료 (2026-03-21) — KV 저장, Resend 이메일, 4개 MCP 서버 설정. Gumroad Ping URL 등록 + thunova0318 실수신 확인 (pd_live_xxx 키 포함)
 - ✅ **DEV-10** 전역 MCP 연결 완료 (2026-03-21) — ~/.claude/.mcp.json 생성, ga4+vercel+github 3개 전역 로드
 - ✅ **PAY-06** API 키 검증 + 무료/유료 차별화 완료 (2026-03-21) — /v1/validate 엔드포인트, KV 역인덱스, Free 10회 제한, 4개 MCP 서버 패치 퍼블리시 (ga4@0.2.1, vercel@0.1.2, github@0.1.1, sentry@0.1.1)
-- [ ] **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트
+- ⏸️ **LEGAL-06** 통신판매업신고번호 발급 후 Footer 업데이트 (LEGAL-04 완료 후)
+- [ ] **LEGAL-07** perceptdot terms/privacy 모순 수정 — GA4 쿠키 기재, Stripe→Paddle, "계정 취소"→이메일, 개인정보 책임자명, Resend 서드파티 추가
+- [ ] **LEGAL-08** K-사주 대표자명/주소/전화번호 사이트 표시 (전자상거래법)
+- [ ] **TAX-01** 세무사 상담 — Paddle 정산금 영세율 적용, 외화입금증명서, 경비 처리 확인
 - [ ] **GROWTH-03** MCP awesome-list 기여 계획
 - ✅ **UX-01** 모바일 코드블록 최적화 — font-size 11px, -webkit-overflow-scrolling (그록 피드백, 2026-03-20)
 - [ ] **DOCS-01** Gitbook 사용자 가이드 — Team 플랜 론칭 시 검토 (지금은 불필요)
