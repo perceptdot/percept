@@ -16,19 +16,19 @@ DARK2 = (26, 26, 26)      # #1a1a1a
 img = Image.new("RGB", (W, H), BG)
 draw = ImageDraw.Draw(img)
 
-# --- Pixel eye icon (large, centered vertically on left) ---
-# 8x8 pixel art eye
+# --- Site header logo (matches nav SVG exactly) ---
+# 0=empty, 1=#3d3566(dark), 2=#7c6dfa(main), 3=#c4b5fd(light)
 eye_map = [
-    [0,0,0,0,0,0,0,0],
     [0,0,1,1,1,1,0,0],
-    [0,1,2,2,1,2,1,0],
-    [0,1,2,3,3,2,1,0],
-    [0,1,2,2,1,2,1,0],
+    [0,1,1,2,2,1,1,0],
+    [1,1,2,2,2,2,1,1],
+    [1,2,2,3,3,2,2,1],
+    [1,2,2,3,3,2,2,1],
+    [1,1,2,2,2,2,1,1],
+    [0,1,1,2,2,1,1,0],
     [0,0,1,1,1,1,0,0],
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0],
 ]
-colors = {0: None, 1: ACCENT, 2: ACCENT2, 3: BG}
+colors = {0: None, 1: (61,53,102), 2: (124,109,250), 3: (196,181,253)}
 
 # Large eye: each pixel = 22px, positioned center-left
 eye_px = 22
