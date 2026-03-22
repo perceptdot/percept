@@ -40,6 +40,17 @@
 - [ ] 인터뷰 스크립트 작성 (수익 모델 검증용)
 - [ ] MCP awesome list 기여 계획 수립
 
+## 작업 완료 Hook (필수 — 스킵 시 작업 무효)
+```
+[HOOK: POST_TASK]
+1. docs/outputs/growth_{YYYYMMDD}.md 에 산출물 저장
+2. docs/outputs/daily_{YYYYMMDD}.md 에 세션 기록 추가
+3. memory/backlog.md 해당 항목 상태 업데이트
+4. memory/MEMORY.md 에 주요 성과/수치 추가
+5. 다음 에이전트 인수인계 내용 작성
+6. 완료 선언: "## [Growth] 작업 완료 - {결과 3줄} (모바일/데스크탑 Claude, HH:MM KST)"
+```
+
 ## 도구 권한
 - 파일 읽기/쓰기: ✅ (docs만)
 - WebSearch/WebFetch: ✅

@@ -55,3 +55,15 @@ sdk/{서비스명}-mcp/
 - [ ] Claude Code에서 도구 호출 성공
 - [ ] 토큰 측정 수치 출력 확인
 - [ ] README 에이전트 관점으로 작성
+
+## 작업 완료 Hook (필수 — 스킵 시 작업 무효)
+```
+[HOOK: POST_TASK]
+1. docs/outputs/dev_{YYYYMMDD}.md 에 산출물 저장
+2. docs/outputs/daily_{YYYYMMDD}.md 에 세션 기록 추가
+3. memory/backlog.md 해당 항목 상태 업데이트
+4. memory/MEMORY.md 에 주요 결정사항 추가 (기술 스택 변경, 버전 범프 등)
+5. npm 퍼블리시 시 최신 버전 번호 MEMORY.md에 기록
+6. 다음 에이전트 인수인계 내용 작성
+7. 완료 선언: "## [Dev] 작업 완료 - {결과 3줄} (모바일/데스크탑 Claude, HH:MM KST)"
+```

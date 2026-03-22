@@ -252,4 +252,35 @@ research_YYYYMMDD.md — 리서치 결과
 
 ---
 
+## 모바일/데스크탑 싱크 규칙 (2026-03-22 CEO 지시)
+
+```
+[동시 작업 금지]
+- 같은 시간에 모바일 + 데스크탑 동시 세션 열지 않음
+- 한쪽 작업 완료 → 기록 → 다른 쪽 시작
+
+[데스크탑 시작 시]
+1. git pull origin main
+2. git branch -r | grep claude/  → 모바일 브랜치 확인
+3. 있으면 머지: git merge origin/claude/xxx
+4. docs/outputs/daily_{오늘}.md 최신 세션 확인
+5. 머지 완료된 claude/* 브랜치 정리
+
+[모바일 시작 시]
+1. docs/outputs/daily_{오늘}.md 최신 세션 확인 → 데스크탑 작업 파악
+2. memory/backlog.md + MEMORY.md 확인
+3. (모바일은 git pull 불필요 — 세션 시작 시 최신 repo 자동 반영)
+
+[충돌 방지]
+- backlog.md / MEMORY.md 수정: append-only 원칙 (기존 줄 수정 최소화, 새 줄 추가 위주)
+- daily 보고서: 세션 번호로 구분 (세션 1, 세션 2...) → 같은 파일 다른 섹션
+- 코드 수정: 같은 파일 동시 수정 금지 → daily에 수정 예정 파일 명시
+
+[필수 기록]
+- 모든 작업은 daily 보고서에 기록 필수 (코드만 수정하고 daily 안 쓰면 싱크 불가)
+- POST_TASK Hook 스킵 금지 — 기록 없는 작업은 없는 작업
+```
+
+---
+
 *이 문서는 CEO 승인 없이 수정 불가.*

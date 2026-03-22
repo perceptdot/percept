@@ -26,6 +26,17 @@
 - [ ] DevRel: {태스크} — 완료 기준: {기준}
 ```
 
+## 작업 완료 Hook (필수 — 스킵 시 작업 무효)
+```
+[HOOK: POST_TASK]
+1. docs/outputs/pm_{YYYYMMDD}.md 에 산출물 저장
+2. docs/outputs/daily_{YYYYMMDD}.md 에 세션 기록 추가
+3. memory/backlog.md 해당 항목 상태 업데이트
+4. memory/MEMORY.md 에 주요 결정사항 추가
+5. 다음 에이전트 인수인계 내용 작성
+6. 완료 선언: "## [PM] 작업 완료 - {결과 3줄} (모바일/데스크탑 Claude, HH:MM KST)"
+```
+
 ## 우선순위 원칙
 ```
 1. CEO 결정 블로킹 항목 최우선
