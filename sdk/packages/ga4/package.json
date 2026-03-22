@@ -2,7 +2,7 @@
   "name": "@perceptdot/ga4",
   "mcpName": "io.github.perceptdot/ga4",
   "version": "0.2.6",
-  "description": "AI agent vision for Google Analytics 4 — with ROI measurement. perceptdot.com",
+  "description": "B2A2H MCP server — AI agent vision for Google Analytics 4 with automatic ROI measurement and reporting. perceptdot.com",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,6 +24,9 @@
     "windsurf",
     "perceptdot",
     "roi",
+    "b2a2h",
+    "agent-commerce",
+    "token-savings",
     "observability",
     "ga4",
     "google-analytics"

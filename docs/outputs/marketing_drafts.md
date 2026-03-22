@@ -8,7 +8,7 @@
 
 ## 1. Reddit r/ClaudeAI Post
 
-**Title:** I gave my Claude Code agent eyes. It now reads GA4, Vercel, and GitHub on its own.
+**Title:** I built a B2A2H platform — where Claude Code evaluates tools, measures ROI, and tells YOU to keep paying
 
 **Body:**
 
@@ -137,38 +137,61 @@ Anyone else doing MCP integrations in Cursor? Curious what services people want 
 
 ## 3. Hacker News "Show HN" Post
 
-**Title:** Show HN: Perceptdot -- MCP servers that give AI agents direct access to GA4, Vercel, GitHub
+**Title:** Show HN: B2A2H – When AI agents sell tools to humans instead of the other way around
 
 **Body:**
 
-I kept hitting the same wall using Claude Code and Cursor: the agent can write code, but it can't see anything outside the codebase. It can't check if a deploy succeeded. It can't read analytics. It can't see production errors. So I become the agent's eyes — copying data from dashboards, pasting into context, burning tokens on information transfer.
+I've been thinking about a shift in how developer tools get sold.
 
-Perceptdot is a set of MCP servers that solve this. Each one connects an external service (GA4, Vercel, GitHub, Sentry) directly to the agent via the Model Context Protocol.
+Today, every SaaS follows B2H (business-to-human): company markets to a human, human evaluates, human buys, human configures. But AI agents are now the ones actually using these tools. The human just approves the credit card.
+
+I'm calling this B2A2H: Business → Agent → Human.
+
+The idea: a tool publishes itself where agents can find it (npm, MCP registry). An agent discovers it, installs it, uses it, measures how much time/tokens it saved — then reports to the human: "This tool saved $23 this month. It costs $19. Keep it." The human clicks "yes." Done.
+
+No sales team. No onboarding flow. No dashboard. The agent IS the user. The human IS the customer. They're different people (well, one isn't a person at all).
+
+I built perceptdot as the first implementation of this model. It's a set of MCP servers (GA4, Vercel, GitHub, Sentry) that:
+
+1. Give agents direct read access to external services
+2. Track token savings on every call (`tokens_saved_estimate` field)
+3. Generate ROI reports the agent delivers to the human (`percept_roi_summary`)
 
 Technical details:
+- TypeScript MCP servers on npm (`@perceptdot/*`)
+- Anthropic's `@modelcontextprotocol/sdk`
+- Each server: 3-5 tools, ~200-450 tokens saved per call vs manual copy-paste
+- Hono + Cloudflare Workers for the API layer
 
-- TypeScript MCP servers, published on npm as `@perceptdot/*`
-- Uses Anthropic's official `@modelcontextprotocol/sdk`
-- Each server exposes 3-5 tools (e.g., `ga4_realtime`, `ga4_overview`, `vercel_latest_status`)
-- Every tool call includes token-savings metadata — the agent tracks how many tokens it saved vs. the manual copy-paste baseline
-- Built-in `percept_roi_summary` tool that reports cumulative savings per session
-- No account needed. API key only. No dashboard.
+The numbers are small today ($0.014/session). But I think the pattern matters more than the magnitude. Gartner says 90% of B2B software evaluations will be agent-mediated by 2029. If that's true, the tools that let agents prove their own value win.
 
-The ROI tracking is the part I find most interesting architecturally. In a B2A2H model (business-to-agent-to-human), the agent needs to justify its own tooling to the human who pays. So every perceptdot MCP call returns a `tokens_saved_estimate` field. After a session, the agent can say: "I saved ~4,500 tokens ($0.014) and ~25 minutes by reading GA4 directly instead of waiting for you to paste data."
+Some context on why this matters now: there are 11,000+ MCP servers, but less than 5% are monetized. Nobody has built the "agent recommends, human pays" loop yet. MCP downloads are growing 85% month-over-month.
 
-It's small numbers today, but the pattern matters: the agent proves ROI to the human, the human keeps paying. No sales team required.
+Open beta: 200 calls/month, free. No account needed.
 
-Stack: TypeScript + Hono (Cloudflare Workers for the API layer) + npm for distribution.
-
-Open beta: 200 calls/month, free. Pro and Team plans coming soon.
-
-https://perceptdot.com
-
-Source: https://github.com/perceptdot
+https://perceptdot.com | https://github.com/perceptdot
 
 ---
 
 ## 4. Twitter/X Thread (7 tweets)
+
+**Tweet 0 (B2A2H Definition — post this FIRST, standalone):**
+
+I coined a term: B2A2H.
+
+Business → Agent → Human.
+
+The old way (B2H): Company sells to human. Human evaluates. Human buys.
+
+The new way (B2A2H): Company publishes tool. Agent discovers it. Agent uses it. Agent proves ROI. Agent tells human: "Keep paying."
+
+Human clicks yes. Done.
+
+We built the first B2A2H platform: perceptdot.com
+
+#B2A2H #AIAgent #MCP
+
+---
 
 **Tweet 1 (Hook):**
 
@@ -307,13 +330,13 @@ perceptdot.com
 - **리뷰**: 실제 피드백 올 때까지 섹션 자동 숨김
 - **npm**: ga4@0.2.5, vercel@0.1.5, github@0.1.4, sentry@0.1.4
 
-### Posting order recommendation:
-1. **awesome-mcp-servers PR** — 먼저 제출 (83.7k 스타, 자연 유입)
-2. **Twitter single tweet** (Option B or C) — hook 테스트
-3. **Twitter thread** — single tweet 반응 있으면
-4. **Reddit r/ClaudeAI** — highest intent audience
-5. **Reddit r/cursor** — second highest intent
-6. **Hacker News** — highest risk/reward, 화/수 오전 US time
+### Posting order recommendation (B2A2H 선점 우선):
+1. **Twitter "B2A2H Definition" tweet (Tweet 0)** — 용어 선점 최우선. 지금 즉시.
+2. **awesome-mcp-servers PR** — 이미 제출됨, 머지 대기
+3. **Hacker News "Show HN: B2A2H"** — 용어 담론 형성 (화/수 US 오전)
+4. **Reddit r/ClaudeAI** — B2A2H 앵글로 리프레이밍
+5. **Reddit r/cursor** — MCP 유저 타겟
+6. **Twitter thread (7 tweets)** — HN/Reddit 반응 후 확장
 
 ### Key phrases that tested well in drafting:
 - "Your AI agent is blind" — strongest hook
