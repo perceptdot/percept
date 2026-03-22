@@ -212,6 +212,8 @@
 - ✅ **MKT-04** awesome-mcp-servers PR 제출 완료 (2026-03-22) — PR #3639 https://github.com/punkpeye/awesome-mcp-servers/pull/3639, 머지 대기
 - ⏳ **MKT-04b** Glama.ai 서버 등록 리뷰 대기 → 승인 후 awesome-mcp-servers PR #3639에 배지 추가
 - ✅ **MKT-05** og-image.png 제작 완료 (2026-03-22) — 1200×630px, Pillow 생성, scripts/generate_og_image.py
+- ✅ **SEC-01** API 키 보안 체계 구축 완료 (2026-03-22) — GitGuardian 설치, CLAUDE.md Rule 12 추가, marketing_sns→api_keys 리네임, .gitignore 강화, docs/accounts.md 생성
+- ✅ **DOC-01** accounts.md 계정 맵 생성 완료 (2026-03-22) — 전체 서비스·API 키·상태 일원화 관리
 - [ ] **SEO-02** 나무위키 레퍼런스 SEO 최적화 — 사람 대상 검색 유입 강화
   - 나무위키 "MCP (프로토콜)" / "AI 에이전트" 등 관련 문서에 perceptdot 레퍼런스 추가
   - 한국어 검색 노출 극대화 (네이버/구글 한국어)

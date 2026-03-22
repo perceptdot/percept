@@ -49,13 +49,13 @@
 
 | 서비스 | 계정 | API 상태 | env 파일 |
 |--------|------|----------|----------|
-| **X (Twitter)** | thunova0318@gmail.com | ✅ API 키 확보 (재발급 완료) | `api_keys/x_api.env` ✅ |
+| **X (Twitter)** | thunova0318@gmail.com | ✅ API 키 재발급 완료 (GitGuardian 탐지 후) | `api_keys/x_api.env` ✅ |
 | **Reddit** | 미확인 | ⏸️ 미신청 | `api_keys/reddit_api.env` |
 | **LinkedIn** | 미확인 | ⏸️ 미신청 | `api_keys/linkedin_api.env` |
 | **Discord** | 미확인 | ⏸️ 미신청 | `api_keys/discord_api.env` |
 | **Product Hunt** | 미확인 | ⏸️ 미신청 | `api_keys/producthunt_api.env` |
 
-> X API 키 3개 대화 노출됨 → **Regenerate 필요** (developer.twitter.com)
+> ✅ X API 키 재발급 완료 (2026-03-22, GitGuardian 탐지 → CEO 수동 Regenerate)
 
 ---
 
@@ -84,7 +84,7 @@
 
 | 우선순위 | 액션 | 이유 |
 |----------|------|------|
-| 🔴 즉시 | X API 키 Regenerate | 대화창 노출됨 |
+| ✅ 완료 | X API 키 Regenerate | 재발급 완료 (2026-03-22) |
 | 🟡 이번 주 | npm 계정 확인 | @perceptdot/* 패키지 소유자 확인 필요 |
 | 🟡 이번 주 | Paddle KYC 답변 확인 | 승인 후 Gumroad 대체 |
 | 🟠 다음 주 | GitHub thunova0318 이전 | perceptdot org Owner 변경 |

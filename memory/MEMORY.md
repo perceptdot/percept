@@ -44,11 +44,10 @@
   - ✅ og-image.png 제작 완료 (2026-03-22 01:17 KST · 모바일 Claude, scripts/generate_og_image.py)
   - ✅ X (Twitter) API 앱 "perceptdot" 생성 완료 (2026-03-22 02:50 KST · 모바일 Claude)
     - App ID: 32625109, Free tier, Read and Write 권한
-    - 키 6개 확보: API Key, API Secret, Bearer Token, Access Token, Access Token Secret, Client ID + Client Secret
-    - ⚠️ 키 3개 대화 노출 → Regenerate 필요
-    - 데스크탑 작업 시: .env 설정 → 마케팅 트윗 포스팅
+    - ✅ 키 재발급 완료 (GitGuardian X-API-Key Secret 탐지 → CEO 수동 Regenerate)
+    - 키 파일: `api_keys/x_api.env` (절대 값 노출 금지, CLAUDE.md Rule 12)
   - ✅ PIVOT 전체 완료 (Phase 1~4): core@0.1.0 npm + 백엔드 Registry + 랜딩 + README
-  - 🟡 X 트윗 수동 포스팅 필요 (API 402 CreditsDepleted)
+  - ✅ X 3/3 스레드 수동 포스팅 완료 (2026-03-22) — "human clipboard" 후킹, API 402→수동 전환
   - 🟡 외부 설치 유저 0명 (현재 KV에 내부/테스트 키만 존재)
   - ✅ **PIVOT-01 승인 + PIVOT-02 완료** (2026-03-22 세션 10)
     - @perceptdot/core@0.1.0 npm 퍼블리시 완료
@@ -245,9 +244,18 @@ CEO 지시사항:
 
 ---
 
+## API 키 보안 (2026-03-22 확립)
+- **CLAUDE.md Rule 12**: .env 파일 Read 시 값 절대 출력 금지. "키 N개 확인" 형태로만 보고
+- **GitGuardian**: perceptdot org에 설치 완료 — git push 시 시크릿 자동 탐지
+- **api_keys/ 폴더**: 15개 .env 파일 관리 (기존 marketing_sns/ → api_keys/ 리네임)
+- **.gitignore**: api_keys/, *.env, marketing_sns/ 추가 완료
+- **계정 맵**: `docs/accounts.md` — 전체 서비스별 계정·키·상태 관리
+- **사고 이력**: X-API-Key Secret git 노출 → GitGuardian 탐지 → CEO 수동 재발급
+
 ## 별도 파일
 - `memory/backlog.md` — 전체 백로그
 - `docs/bizplan.md` — 사업계획서 (확정)
+- `docs/accounts.md` — 계정 맵 (전체 서비스·API 키·상태)
 - `IDEA.md` — 최초 아이디어 기록
 
 ## 시장 수치 (리서치 완료 2026-03-19)
