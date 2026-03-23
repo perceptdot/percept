@@ -166,6 +166,53 @@ def solve_math_challenge(challenge_text):
     clean = re.sub(r'[^a-z0-9\s]', ' ', text)
     clean = re.sub(r'\s+', ' ', clean).strip()
 
+    # ── 극도 난독화 전처리 ─────────────────────────────────────────
+    _num_words = {
+        'zero','one','two','three','four','five','six','seven','eight','nine','ten',
+        'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen',
+        'eighteen','nineteen','twenty','thirty','forty','fifty',
+        'sixty','seventy','eighty','ninety','hundred'
+    }
+
+    # (1) 단일 알파 토큰 병합: "T hIrTy" → "thirty", "T hReE" → "three"
+    #     완전한 숫자 단어(twenty, three 등) 앞 단일 토큰은 병합 금지
+    tokens = clean.split()
+    merged = []
+    i = 0
+    while i < len(tokens):
+        tok = tokens[i]
+        if len(tok) == 1 and tok.isalpha():
+            group = tok
+            i += 1
+            while i < len(tokens) and len(tokens[i]) == 1 and tokens[i].isalpha():
+                group += tokens[i]
+                i += 1
+            # 단일 1개만 모였을 때 → 다음 토큰이 partial 단어면 흡수
+            # (숫자 단어 완전형은 흡수 금지: "a"+"thirty" → 분리 유지)
+            if (len(group) == 1 and i < len(tokens)
+                    and tokens[i].isalpha()
+                    and tokens[i] not in _num_words):
+                group += tokens[i]
+                i += 1
+            merged.append(group)
+        else:
+            merged.append(tok)
+            i += 1
+
+    # (2) 연속 중복 제거 — 결과가 숫자 단어일 때만 적용
+    #     "thirrtyy"→"thirty"✓  "twwoo"→"two"✓  "three"→"thre"(×숫자 단어 아님)→유지✓
+    deduped = []
+    for tok in merged:
+        if not tok:
+            continue
+        d = tok[0]
+        for ch in tok[1:]:
+            if ch != d[-1]:
+                d += ch
+        deduped.append(d if d in _num_words else tok)
+    clean = ' '.join(deduped)
+    # ─────────────────────────────────────────────────────────────
+
     # 복합 숫자 우선 처리 (긴 것부터)
     compound_map = {
         "twenty one":21,"twenty two":22,"twenty three":23,"twenty four":24,
