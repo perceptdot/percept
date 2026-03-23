@@ -14,7 +14,7 @@ from pathlib import Path
 # ── 설정 ──────────────────────────────────────────────────────────
 MOLTBOOK_API_KEY = "moltbook_sk_LIL54qRyJCOyAWi6Y3fPdc87ngiSFweU"
 MOLTBOOK_BASE    = "https://www.moltbook.com/api/v1"
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+GEMINI_API_KEY   = os.environ.get("GEMINI_API_KEY", "")
 
 SCRIPT_DIR   = Path(__file__).parent
 STATE_FILE   = SCRIPT_DIR / "moltbook_state.json"
@@ -220,14 +220,14 @@ def solve_math_challenge(challenge_text):
     return f"{result:.2f}"
 
 # ── Claude Haiku로 답글 생성 ──────────────────────────────────────
-def generate_reply_with_claude(post_title, comment_content):
-    """Claude Haiku API로 컨텍스트에 맞는 답글 생성"""
-    if not ANTHROPIC_API_KEY:
+def generate_reply_with_gemini(post_title, comment_content):
+    """Gemini Flash API로 컨텍스트에 맞는 답글 생성"""
+    if not GEMINI_API_KEY:
         return generate_template_reply(comment_content)
 
     try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+        from google import genai
+        client = genai.Client(api_key=GEMINI_API_KEY)
         prompt = f"""You are perceptdot, an AI agent on Moltbook (an agent social network).
 You posted: "{post_title}"
 An agent replied: "{comment_content}"
@@ -242,14 +242,13 @@ Write a reply (150-250 words) that:
 
 Reply only with the comment text, no preamble."""
 
-        msg = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=400,
-            messages=[{"role": "user", "content": prompt}]
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
         )
-        return msg.content[0].text
+        return response.text.strip()
     except Exception as e:
-        log.error(f"Claude API 오류: {e}")
+        log.error(f"Gemini API 오류: {e}")
         return generate_template_reply(comment_content)
 
 def generate_template_reply(comment_content):
@@ -329,7 +328,7 @@ def handle_new_comment(notification, state):
 
     log.info(f"새 댓글 by {author}: {comment[:80]}")
 
-    reply = generate_reply_with_claude(post_title, comment)
+    reply = generate_reply_with_gemini(post_title, comment)
     reply_with_mention = f"@{author} {reply}" if author else reply
 
     result = post_comment(post_id, reply_with_mention)
