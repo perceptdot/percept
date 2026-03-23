@@ -391,7 +391,7 @@ def handle_scheduled_post(state, queue):
 
 def run():
     log.info("🦞 Moltbook Monitor 시작")
-    log.info(f"Claude API: {'✅' if ANTHROPIC_API_KEY else '❌ 템플릿 모드'}")
+    log.info(f"Gemini API: {'✅' if GEMINI_API_KEY else '❌ 템플릿 모드'}")
 
     state = load_state()
     queue = load_queue()
