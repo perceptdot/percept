@@ -62,6 +62,9 @@
     - 4 tools: percept_discover, percept_recommend, percept_installed, percept_roi_summary
     - 15 curated servers, SIGNAL_MAP 자동 추천, K_saju 테스트 통과
   - npm 패키지: core@0.1.0, ga4@0.2.6, vercel@0.1.6, github@0.1.5, sentry@0.1.5
+  - ✅ **AlternativeTo 등록 완료** (2026-03-23) — alternativeto.net/software/perceptdot/, Composio alternative, 승인 대기 24h
+  - ⏳ **Paddle KYC 최종 승인 임박** (2026-03-23) — Stevan이 계정정보 Sorina Lee로 업데이트, 검증 곧 완료
+  - ✅ **@perceptdot/ga4-perceptdot MCP 설정 완료** (2026-03-23) — GCP perceptdot 프로젝트, percept-ga4 서비스 계정, GA4 속성 529351391, ~/.claude.json 추가. Claude Code 재시작 후 활성화
 
 ## B2A2H 확장 BM 리서치 결론 (2026-03-22 CPO)
 

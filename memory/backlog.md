@@ -54,7 +54,7 @@
     - ❌ DevHunt — 유료 $49 (무료=2028년 대기), 스킵 (2026-03-23)
     - ❌ TAAFT — 유료 $49 최소, 무료 플랜 없음, 스킵 (2026-03-23)
     - [ ] BetaList 등록 (무료, 심사 4개월 대기) → https://betalist.com/submit
-    - [ ] AlternativeTo 등록 (무료, "Composio 대안" 검색 노출) → https://alternativeto.net/suggest/
+    - ✅ AlternativeTo 등록 완료 (2026-03-23, 승인 대기 24h) — alternativeto.net/software/perceptdot/ · Composio alternative 등록
     - [ ] Launching Next 등록 (무료, 심사 수주) → https://www.launchingnext.com/submit/
     - [ ] Microlaunch 등록 (무료) → https://microlaunch.net/submit
     - [ ] mcpservers.org 등록 (무료) → https://mcpservers.org/submit
@@ -168,7 +168,8 @@
   - .mcp.json 업데이트 (ga4-k-saju → @perceptdot/ga4, Named Profiles 방식)
   - npm @perceptdot/ga4@0.2.0 퍼블리시 완료
   - perceptdot GA4 Property ID 확보 시 profiles에 추가만 하면 됨
-  - [ ] **DEV-11b** 같은 패턴을 vercel/github/sentry에도 적용 (후순위)
+  - ✅ **DEV-11b** GA4_PROFILES perceptdot 프로필 추가 완료 (2026-03-23) — 별도 MCP 서버 @perceptdot/ga4-perceptdot으로 설정 (Property ID: 529351391)
+  - [ ] **DEV-11c** 같은 패턴을 vercel/github/sentry에도 적용 (후순위)
 
 ## NORMAL
 
