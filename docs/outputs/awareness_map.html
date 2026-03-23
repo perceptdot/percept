@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>perceptdot · Awareness Map 3D</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #030308;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+
+    /* Star field background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 10%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,0.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 30%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(2px 2px at 20% 50%, rgba(167,139,250,0.15) 0%, transparent 100%),
+        radial-gradient(2px 2px at 70% 85%, rgba(167,139,250,0.1) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #graph-container { width: 100vw; height: 100vh; }
+
+    /* ── HEADER ── */
+    #header {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 100;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #header h1 {
+      font-size: 26px;
+      letter-spacing: 8px;
+      color: #a78bfa;
+      text-shadow:
+        0 0 20px rgba(167,139,250,0.9),
+        0 0 60px rgba(167,139,250,0.4),
+        0 0 100px rgba(167,139,250,0.2);
+      font-weight: normal;
+    }
+    #header .subtitle {
+      font-size: 9px;
+      color: #3a3a5a;
+      letter-spacing: 4px;
+      margin-top: 8px;
+    }
+
+    /* ── STATS ── */
+    #stats {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 100;
+      text-align: right;
+      pointer-events: none;
+    }
+    .stat-line { font-size: 9px; color: #2a2a4a; letter-spacing: 2px; margin-bottom: 5px; }
+    .stat-line .val { color: #a78bfa; }
+
+    /* ── PANELS ── */
+    .panel {
+      position: fixed;
+      z-index: 100;
+      background: rgba(3, 3, 16, 0.88);
+      border: 1px solid rgba(167, 139, 250, 0.18);
+      border-radius: 10px;
+      padding: 16px 20px;
+      backdrop-filter: blur(12px);
+    }
+    .panel-title {
+      font-size: 8px;
+      letter-spacing: 3px;
+      color: #3a3a6a;
+      margin-bottom: 12px;
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 7px;
+      font-size: 9px;
+      color: #6666aa;
+      letter-spacing: 1px;
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    #legend-cat   { bottom: 24px; left: 24px; }
+    #legend-status { bottom: 24px; right: 24px; }
+
+    /* ── TOOLTIP ── */
+    #tooltip {
+      position: fixed;
+      background: rgba(5, 5, 22, 0.96);
+      border: 1px solid rgba(167, 139, 250, 0.45);
+      border-radius: 9px;
+      padding: 13px 17px;
+      pointer-events: none;
+      display: none;
+      z-index: 200;
+      min-width: 190px;
+      max-width: 250px;
+      box-shadow: 0 0 24px rgba(167,139,250,0.18), 0 4px 20px rgba(0,0,0,0.6);
+    }
+    .tt-label  { color: #e2e2ff; font-size: 13px; font-weight: bold; margin-bottom: 3px; }
+    .tt-group  { color: #4444aa; font-size: 8px; letter-spacing: 2px; margin-bottom: 8px; }
+    .tt-status { font-size: 11px; margin-bottom: 6px; }
+    .tt-desc   {
+      color: #7777aa;
+      font-size: 10px;
+      line-height: 1.55;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 8px;
+    }
+
+    /* ── INSTRUCTIONS ── */
+    #instructions {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      font-size: 8px;
+      color: #1e1e38;
+      letter-spacing: 2px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* ── PROGRESS BAR ── */
+    #progress-bar {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      pointer-events: none;
+      text-align: center;
+    }
+    .prog-label { font-size: 8px; color: #3a3a6a; letter-spacing: 3px; margin-bottom: 6px; }
+    .prog-track {
+      width: 200px;
+      height: 2px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #c084fc, #60a5fa, #34d399);
+      border-radius: 1px;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="header">
+    <h1>PERCEPTDOT</h1>
+    <div class="subtitle">AWARENESS MAP · 2026-03-23 · B2A2H PLATFORM</div>
+  </div>
+
+  <!-- Stats -->
+  <div id="stats">
+    <div class="stat-line">NODES <span class="val" id="node-count">-</span></div>
+    <div class="stat-line">CHANNELS <span class="val">12</span></div>
+    <div class="stat-line">PHASE <span class="val">OPEN BETA</span></div>
+    <div class="stat-line">LIVE SINCE <span class="val">03-22</span></div>
+  </div>
+
+  <!-- Progress -->
+  <div id="progress-bar">
+    <div class="prog-label">AWARENESS PROGRESS</div>
+    <div class="prog-track"><div class="prog-fill" style="width:32%"></div></div>
+  </div>
+
+  <!-- Legend: Category -->
+  <div class="panel" id="legend-cat">
+    <div class="panel-title">CATEGORY</div>
+    <div class="legend-row"><div class="dot" style="background:#c084fc;box-shadow:0 0 8px #c084fc40"></div>CENTER</div>
+    <div class="legend-row"><div class="dot" style="background:#60a5fa"></div>PRODUCT</div>
+    <div class="legend-row"><div class="dot" style="background:#fb923c"></div>MARKETING</div>
+    <div class="legend-row"><div class="dot" style="background:#34d399"></div>COMMUNITY</div>
+    <div class="legend-row"><div class="dot" style="background:#fbbf24"></div>MONETIZATION</div>
+  </div>
+
+  <!-- Legend: Status -->
+  <div class="panel" id="legend-status">
+    <div class="panel-title">STATUS</div>
+    <div class="legend-row"><div class="dot" style="background:#00ff88;box-shadow:0 0 6px #00ff8860"></div>LIVE / DONE</div>
+    <div class="legend-row"><div class="dot" style="background:#60a5fa"></div>READY</div>
+    <div class="legend-row"><div class="dot" style="background:#fbbf24"></div>WAITING</div>
+    <div class="legend-row"><div class="dot" style="background:#fb923c"></div>PARTIAL</div>
+    <div class="legend-row"><div class="dot" style="background:#374151"></div>PENDING</div>
+  </div>
+
+  <!-- Instructions -->
+  <div id="instructions">DRAG TO ROTATE · SCROLL TO ZOOM · CLICK TO FOCUS · AUTO-ROTATES</div>
+
+  <!-- Tooltip -->
+  <div id="tooltip">
+    <div class="tt-label"  id="tt-label"></div>
+    <div class="tt-group"  id="tt-group"></div>
+    <div class="tt-status" id="tt-status"></div>
+    <div class="tt-desc"   id="tt-desc"></div>
+  </div>
+
+  <!-- Graph -->
+  <div id="graph-container"></div>
+
+  <script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
+  <script>
+
+    // ── STATUS CONFIG ────────────────────────────────────────────────────────────
+    const S_COLOR = {
+      live:    '#00ff88',
+      done:    '#00ff88',
+      ready:   '#60a5fa',
+      waiting: '#fbbf24',
+      partial: '#fb923c',
+      pending: '#374151',
+    };
+    const S_LABEL = {
+      live:    '✅ LIVE',
+      done:    '✅ 완료',
+      ready:   '🔵 초안 준비 완료',
+      waiting: '⏳ 승인 대기 중',
+      partial: '🟠 부분 완료',
+      pending: '⚪ 미실행',
+    };
+    const G_PARTICLE_COLOR = {
+      product:      '#60a5fa',
+      marketing:    '#fb923c',
+      community:    '#34d399',
+      monetization: '#fbbf24',
+      center:       '#c084fc',
+      category:     '#a78bfa',
+    };
+
+    // ── GRAPH DATA ───────────────────────────────────────────────────────────────
+    const nodes = [
+      // CENTER
+      { id:'perceptdot',     label:'perceptdot',           group:'center',       status:'live',    size:14, desc:'AI 에이전트 ROI 측정 MCP 플랫폼 · B2A2H 모델' },
+
+      // CATEGORIES
+      { id:'cat-product',    label:'📦 PRODUCT',           group:'category',     size:7 },
+      { id:'cat-marketing',  label:'📢 MARKETING',         group:'category',     size:7 },
+      { id:'cat-community',  label:'🌐 COMMUNITY',         group:'category',     size:7 },
+      { id:'cat-money',      label:'💰 MONETIZATION',      group:'category',     size:7 },
+
+      // PRODUCT
+      { id:'core',     label:'core@0.1.0',        group:'product', status:'live',    desc:'에이전트 앱스토어 · percept_discover / recommend / installed / roi' },
+      { id:'ga4',      label:'ga4@0.2.6',          group:'product', status:'live',    desc:'GA4 실시간 분석 · 7 tools' },
+      { id:'vercel',   label:'vercel@0.1.6',       group:'product', status:'live',    desc:'Vercel 배포 모니터링 · 5 tools' },
+      { id:'github',   label:'github@0.1.5',       group:'product', status:'live',    desc:'GitHub PR/이슈 추적 · 5 tools' },
+      { id:'sentry',   label:'sentry@0.1.5',       group:'product', status:'live',    desc:'Sentry 에러 추적 · 5 tools' },
+      { id:'api',      label:'api.perceptdot.com', group:'product', status:'live',    desc:'Cloudflare Workers · 19 endpoints' },
+      { id:'landing',  label:'perceptdot.com',     group:'product', status:'live',    desc:'무료 베타 랜딩 · Google Search Console 인덱스 완료' },
+
+      // MARKETING
+      { id:'twitter',      label:'X / Twitter',    group:'marketing', status:'done',    desc:'3/3 스레드 포스팅 완료 · "human clipboard" 후킹 메시지' },
+      { id:'reddit',       label:'Reddit',          group:'marketing', status:'partial', desc:'댓글 3개 완료 (r/ClaudeCode + r/ClaudeAI 2) · 포스트 차단 중 (신규 계정)' },
+      { id:'hn',           label:'Hacker News',     group:'marketing', status:'ready',   desc:'Show HN 초안 완료 · 화/수 US 오전 타이밍 대기 중' },
+      { id:'devto',        label:'Dev.to',          group:'marketing', status:'ready',   desc:'기술 블로그 초안 완료 · "MCP 토큰 절감" 주제' },
+      { id:'discord',      label:'Discord',         group:'marketing', status:'ready',   desc:'MCP 커뮤니티 아웃리치 템플릿 준비 완료' },
+      { id:'indiehackers', label:'Indie Hackers',   group:'marketing', status:'ready',   desc:'빌드인퍼블릭 아웃라인 준비 완료' },
+      { id:'ph',           label:'Product Hunt',    group:'marketing', status:'pending', desc:'3단계 올인 예정 · 스크린샷+데모GIF 준비 후 실행' },
+
+      // COMMUNITY / DIRECTORY
+      { id:'mcpso',    label:'mcp.so',              group:'community', status:'done',    desc:'등록 완료 (2026-03-22)' },
+      { id:'glama',    label:'Glama.ai',            group:'community', status:'waiting', desc:'제출 완료 · 리뷰 승인 대기 중' },
+      { id:'awesome',  label:'awesome-mcp-servers', group:'community', status:'waiting', desc:'PR #3639 머지 대기 · Glama 배지 승인 후 추가 예정' },
+      { id:'moltbook', label:'Moltbook',            group:'community', status:'partial', desc:'에이전트 등록 완료 · 클레임 트윗 인증 대기 (코드: ocean-D2WD)' },
+      { id:'smithery', label:'Smithery',            group:'community', status:'pending', desc:'smithery.yaml 준비 · 미제출' },
+      { id:'devhunt',  label:'DevHunt',             group:'community', status:'pending', desc:'개발자 도구 전용 PH · 제출 예정' },
+      { id:'betalist', label:'BetaList',            group:'community', status:'pending', desc:'베타 얼리어답터 전문 · 제출 예정' },
+      { id:'taaft',    label:'TAAFT',               group:'community', status:'pending', desc:"There's An AI For That · 월 수백만 방문 AI 디렉토리" },
+
+      // MONETIZATION
+      { id:'free',    label:'Free Starter',  group:'monetization', status:'live',    desc:'200 calls (100 + 100 피드백) · 카드 불필요 · 오픈 베타' },
+      { id:'gumroad', label:'Gumroad',       group:'monetization', status:'live',    desc:'임시 결제 브릿지 · Pro $19 / Team $99 라이브' },
+      { id:'paddle',  label:'Paddle KYC',    group:'monetization', status:'waiting', desc:'KYC 심사 중 · 승인 후 Gumroad 대체 → 정식 유료화' },
+    ];
+
+    const links = [
+      { source:'perceptdot', target:'cat-product' },
+      { source:'perceptdot', target:'cat-marketing' },
+      { source:'perceptdot', target:'cat-community' },
+      { source:'perceptdot', target:'cat-money' },
+
+      { source:'cat-product', target:'core' },
+      { source:'cat-product', target:'ga4' },
+      { source:'cat-product', target:'vercel' },
+      { source:'cat-product', target:'github' },
+      { source:'cat-product', target:'sentry' },
+      { source:'cat-product', target:'api' },
+      { source:'cat-product', target:'landing' },
+
+      { source:'cat-marketing', target:'twitter' },
+      { source:'cat-marketing', target:'reddit' },
+      { source:'cat-marketing', target:'hn' },
+      { source:'cat-marketing', target:'devto' },
+      { source:'cat-marketing', target:'discord' },
+      { source:'cat-marketing', target:'indiehackers' },
+      { source:'cat-marketing', target:'ph' },
+
+      { source:'cat-community', target:'mcpso' },
+      { source:'cat-community', target:'glama' },
+      { source:'cat-community', target:'awesome' },
+      { source:'cat-community', target:'moltbook' },
+      { source:'cat-community', target:'smithery' },
+      { source:'cat-community', target:'devhunt' },
+      { source:'cat-community', target:'betalist' },
+      { source:'cat-community', target:'taaft' },
+
+      { source:'cat-money', target:'free' },
+      { source:'cat-money', target:'gumroad' },
+      { source:'cat-money', target:'paddle' },
+    ];
+
+    document.getElementById('node-count').textContent = nodes.length;
+
+    // ── GRAPH INIT ───────────────────────────────────────────────────────────────
+    const tooltip   = document.getElementById('tooltip');
+    const ttLabel   = document.getElementById('tt-label');
+    const ttGroup   = document.getElementById('tt-group');
+    const ttStatus  = document.getElementById('tt-status');
+    const ttDesc    = document.getElementById('tt-desc');
+    const container = document.getElementById('graph-container');
+
+    const Graph = ForceGraph3D()(container)
+      .width(window.innerWidth)
+      .height(window.innerHeight)
+      .backgroundColor('#030308')
+      .graphData({ nodes, links })
+      .numDimensions(3)
+
+      // Nodes
+      .nodeLabel('')
+      .nodeVal(n => {
+        if (n.group === 'center')   return n.size * n.size;
+        if (n.group === 'category') return n.size * n.size;
+        return 20;
+      })
+      .nodeColor(n => {
+        if (n.group === 'center')   return '#c084fc';
+        if (n.group === 'category') return '#94a3b8';
+        return S_COLOR[n.status] || '#374151';
+      })
+      .nodeOpacity(0.93)
+      .nodeResolution(24)
+
+      // Links
+      .linkColor(() => 'rgba(167,139,250,0.12)')
+      .linkWidth(0.8)
+      .linkDirectionalParticles(2)
+      .linkDirectionalParticleWidth(1.5)
+      .linkDirectionalParticleColor(link => {
+        const tgt = typeof link.target === 'object' ? link.target : nodes.find(n => n.id === link.target);
+        return tgt ? (G_PARTICLE_COLOR[tgt.group] || '#a78bfa') : '#a78bfa';
+      })
+      .linkDirectionalParticleSpeed(0.006)
+
+      // Hover
+      .onNodeHover(node => {
+        container.style.cursor = node ? 'pointer' : 'default';
+        if (node && node.group !== 'category') {
+          tooltip.style.display = 'block';
+          ttLabel.textContent  = node.label;
+          ttGroup.textContent  = (node.group || '').toUpperCase();
+          ttStatus.textContent = node.status ? (S_LABEL[node.status] || '') : '';
+          ttDesc.textContent   = node.desc || '';
+          ttDesc.style.display = node.desc ? 'block' : 'none';
+        } else {
+          tooltip.style.display = 'none';
+        }
+      })
+
+      // Click → focus
+      .onNodeClick(node => {
+        autoRotate = false;
+        const dist = 80;
+        const mag  = Math.hypot(node.x || 1, node.y || 1, node.z || 1);
+        const ratio = 1 + dist / mag;
+        Graph.cameraPosition(
+          { x: node.x * ratio, y: node.y * ratio, z: node.z * ratio },
+          node,
+          900
+        );
+        setTimeout(() => { autoRotate = true; }, 6000);
+      });
+
+    // ── TOOLTIP FOLLOW ───────────────────────────────────────────────────────────
+    document.addEventListener('mousemove', e => {
+      let x = e.clientX + 18, y = e.clientY - 12;
+      if (x + 260 > window.innerWidth)  x = e.clientX - 268;
+      if (y + 170 > window.innerHeight) y = window.innerHeight - 175;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top  = y + 'px';
+    });
+
+    // ── AUTO-ROTATE ──────────────────────────────────────────────────────────────
+    let autoRotate = true;
+    let angle = 0;
+
+    setInterval(() => {
+      if (!autoRotate) return;
+      Graph.cameraPosition({
+        x: 420 * Math.sin(angle),
+        z: 420 * Math.cos(angle),
+      });
+      angle += 0.0025;
+    }, 16);
+
+    // Pause on drag
+    container.addEventListener('pointerdown', () => { autoRotate = false; });
+    container.addEventListener('pointerup',   () => { setTimeout(() => { autoRotate = true; }, 5000); });
+
+    // ── FORCE TWEAKS ─────────────────────────────────────────────────────────────
+    Graph.d3Force('charge').strength(-180);
+    Graph.d3Force('link').distance(link => {
+      const src = typeof link.source === 'object' ? link.source.id : link.source;
+      if (src === 'perceptdot') return 100;
+      if (src.startsWith('cat-')) return 70;
+      return 40;
+    });
+
+    // ── RESIZE ───────────────────────────────────────────────────────────────────
+    window.addEventListener('resize', () => {
+      Graph.width(window.innerWidth).height(window.innerHeight);
+    });
+
+  </script>
+</body>
+</html>
