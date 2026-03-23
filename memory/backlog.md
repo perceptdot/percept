@@ -80,9 +80,14 @@
   - **공통 준비물**
     - [x] og-image.png (1200×630px)
     - [x] 랜딩 페이지 라이브 (perceptdot.com)
-    - [x] npm 4개 서버 퍼블리시
+    - [x] npm 5개 서버 퍼블리시 (core + ga4 + vercel + github + sentry)
     - [x] GitHub 공개 repo
-    - [x] 마케팅 초안 5채널 (docs/outputs/marketing_ready_to_post.md)
+    - [x] 마케팅 초안 전채널 (docs/outputs/marketing_ready_to_post.md)
+    - [x] 디렉토리 10개 제출 시트 (docs/outputs/directory_submission_sheet.md, 2026-03-23)
+    - [x] r/mcp + HN 첫댓글 + 댓글 템플릿 (docs/outputs/community_posts.md, 2026-03-23)
+    - [x] Dev.to 블로그 + Indie Hackers 아웃라인 (docs/outputs/blog_devto_mcp_tokens.md, 2026-03-23)
+    - [x] PH 런칭 키트 전체 (docs/outputs/producthunt_launch_kit.md, 2026-03-23)
+    - [x] Discord/DM/Reddit/X 아웃리치 템플릿 (docs/outputs/outreach_templates.md, 2026-03-23)
     - [ ] 스크린샷 3~5장 (터미널 MCP 실사용 장면) — Dev 담당
     - [ ] 데모 GIF or 30초 영상 (선택, 효과 극대화)
     - [ ] 각 플랫폼별 프로필/계정 생성 — CEO 수동

@@ -12,23 +12,39 @@
 | awesome-mcp-servers PR | - | ✅ SUBMITTED | [PR #3639](https://github.com/punkpeye/awesome-mcp-servers/pull/3639) — 승인 대기 |
 | GitHub README | - | ✅ PUSHED | PIVOT-05 반영 완료 (core 추가, "Your Agent's App Store" 포지셔닝) |
 | og-image.png | - | ✅ DONE | 1200×630px, landing/ 배치 |
-| **DevHunt** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
-| **BetaList** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
-| **TAAFT** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
-| **AlternativeTo** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
-| **Launching Next** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
-| **Microlaunch** | 1단계 | 🔲 TODO | 즉시 등록 가능 |
-| Twitter/X Single Tweet | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
-| Twitter/X Thread | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
-| Reddit r/ClaudeAI | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
+| **DevHunt** | 1단계 | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **BetaList** | 1단계 | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **TAAFT** | 1단계 | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **AlternativeTo** | 1단계 | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **Launching Next** | 1단계 | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **Microlaunch** | 1단계 | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **mcpservers.org** | 1단계b | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **PulseMCP** | 1단계b | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **mcpserverfinder** | 1단계b | 🔲 TODO | 제출 시트 → `directory_submission_sheet.md` |
+| **wong2/awesome-mcp** | 1단계b | 🔲 TODO | PR 초안 → `community_posts.md` |
+| Twitter/X Single Tweet | 2단계 | ✅ POSTED | 3/3 스레드 완료 (2026-03-22) |
+| Twitter/X Thread | 2단계 | ✅ POSTED | 완료 (2026-03-22) |
+| Reddit r/ClaudeAI | 2단계 | ✅ COMMENTED | 댓글 3개 (포스트 차단) |
 | Reddit r/cursor | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
-| Reddit r/webdev, r/SideProject | 2단계 | 🔲 TODO | 초안 작성 필요 |
-| Hacker News | 2단계 | ✅ READY | 아래 복사 → 포스팅 |
+| **Reddit r/mcp** | 2단계 | ✅ READY | 초안 → `community_posts.md` |
+| Reddit r/webdev, r/SideProject | 2단계 | ✅ READY | 초안 작성 완료 |
+| Hacker News | 2단계 | ✅ READY | 본문+첫댓글 → `community_posts.md` |
 | Moltbook | 2단계 | ✅ READY | API 키 발급 후 포스팅 |
-| Anthropic Discord | 2단계 | 🔲 TODO | 초안 작성 필요 |
-| Indie Hackers | 2단계 | 🔲 TODO | 빌드인퍼블릭 스토리 필요 |
-| Smol Launch | 2단계 | 🔲 TODO | 주간 포맷, 개발자 특화 |
-| **Product Hunt** | 3단계 | 🔲 PREP | 1회성 올인 — 준비 완벽 시 실행 |
+| **MCP Discord** | 2단계 | ✅ READY | 템플릿 → `outreach_templates.md` |
+| Anthropic Discord | 2단계 | ✅ READY | 템플릿 → `outreach_templates.md` |
+| **Dev.to** | 2단계 | ✅ READY | 블로그 → `blog_devto_mcp_tokens.md` |
+| Indie Hackers | 2단계 | ✅ READY | 아웃라인 → `blog_devto_mcp_tokens.md` |
+| Smol Launch | 2단계 | 🔲 TODO | PH description 활용 |
+| **Product Hunt** | 3단계 | ✅ KIT READY | 런칭 키트 → `producthunt_launch_kit.md` |
+
+### 신규 산출물 (2026-03-23)
+| 파일 | 용도 |
+|------|------|
+| `directory_submission_sheet.md` | 10개 디렉토리 복붙 제출 시트 |
+| `community_posts.md` | r/mcp + HN 첫댓글 + PR 머지 촉구 + 댓글 템플릿 |
+| `blog_devto_mcp_tokens.md` | Dev.to 기술 블로그 + Indie Hackers 아웃라인 |
+| `producthunt_launch_kit.md` | PH 제출 필드 + 첫댓글 + 스크린샷 가이드 + 데모 GIF 스크립트 |
+| `outreach_templates.md` | Discord/DM/Reddit 댓글/X 리플라이/주간 체크리스트 |
 
 ### 3단계 런칭 스택 전략 (CEO 2026-03-22 지시)
 
