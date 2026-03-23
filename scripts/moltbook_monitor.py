@@ -143,7 +143,7 @@ def load_state():
         return json.loads(STATE_FILE.read_text())
     return {
         "handled_notification_ids": [],
-        "replied_post_ids": {},   # post_id → last_reply_timestamp
+        "post_reply_log": {},   # post_id → {"count": N, "authors": [...]}
         "last_post_time": 0,
         "queue_index": 0
     }
@@ -327,12 +327,26 @@ def handle_new_comment(notification, state):
     if not post_id or not comment:
         return
 
-    # 같은 포스트에 2시간 내 이미 답글 달았으면 스킵
-    replied_post_ids = state.setdefault("replied_post_ids", {})
-    last_reply = replied_post_ids.get(str(post_id), 0)
-    if time.time() - last_reply < 7200:
-        log.info(f"스킵 (2시간 내 이미 답글): post_id={post_id}")
+    # ── 자연스러운 답글 필터 ──────────────────────────────────────
+    pid = str(post_id)
+    log_entry = state.setdefault("post_reply_log", {}).setdefault(pid, {"count": 0, "authors": []})
+
+    # 1) 스팸 감지: URL 3개 이상 or 짧은 홍보성 댓글
+    url_count = comment.count("http")
+    if url_count >= 2 or (len(comment) < 80 and any(w in comment.lower() for w in ["register", "buy", "sign up", "click"])):
+        log.info(f"스킵 (스팸 감지): {comment[:60]}")
         return
+
+    # 2) 같은 저자에게 이 스레드에서 이미 답글 달았으면 스킵
+    if author_id and author_id in log_entry["authors"]:
+        log.info(f"스킵 (이미 답글한 저자): @{author}")
+        return
+
+    # 3) 포스트당 최대 3번 답글
+    if log_entry["count"] >= 3:
+        log.info(f"스킵 (스레드 답글 한도 초과: {log_entry['count']}/3): post_id={pid}")
+        return
+    # ─────────────────────────────────────────────────────────────
 
     log.info(f"새 댓글 by {author}: {comment[:80]}")
 
@@ -344,8 +358,10 @@ def handle_new_comment(notification, state):
         log.error(f"댓글 게시 실패: {result}")
         return
 
-    # 답글 성공 → 이 포스트 ID 기록 (2시간 중복 방지)
-    replied_post_ids[str(post_id)] = time.time()
+    # 답글 성공 → 로그 업데이트
+    log_entry["count"] += 1
+    if author_id:
+        log_entry["authors"].append(author_id)
 
     verification = result["comment"].get("verification", {})
     code    = verification.get("verification_code")
