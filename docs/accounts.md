@@ -17,7 +17,7 @@
 
 | 서비스 | 현재 계정 | 목표 계정 | 상태 | 프로젝트 |
 |--------|-----------|-----------|------|----------|
-| **GitHub** (soondoobu1111-star) | soondoobu1111@gmail.com | thunova0318으로 이전 | ⏸️ 대기 | K-사주 + perceptdot |
+| **GitHub** (soondoobu1111-star) | thunova0318@gmail.com (Primary) | ✅ 완료 | 완료 (2026-03-23) | K-사주 + perceptdot |
 | **GitHub Org** (perceptdot) | soondoobu1111-star 소유 | thunova0318 계정 Owner로 추가 | ⏸️ 대기 | perceptdot |
 | **Vercel** | soondoobu1111@gmail.com | thunova0318으로 이전 | ⏸️ 대기 | K-사주 FE |
 | **AWS EC2** | soondoobu1111@gmail.com | thunova0318으로 이전 | ⏸️ 대기 | K-사주 BE |

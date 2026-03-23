@@ -21,7 +21,7 @@
 
 ## CRITICAL — 계정 이전 (soondoobu1111 → thunova0318)
 
-- [ ] **ACCT-01** GitHub: soondoobu1111-star에 thunova0318 이메일 추가 + perceptdot org Owner 이전
+- ✅ **ACCT-01** GitHub Primary 이메일 → thunova0318@gmail.com 변경 완료 (2026-03-23)
 - [ ] **ACCT-02** Vercel: thunova0318@gmail.com으로 이전 (K-사주 배포 포함)
 - [ ] **ACCT-03** AWS: 루트 계정 이메일 soondoobu1111 → thunova0318 변경
 - [ ] **ACCT-04** Gitbook: thunova0318 Admin 초대
