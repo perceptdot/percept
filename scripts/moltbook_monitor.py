@@ -143,6 +143,7 @@ def load_state():
         return json.loads(STATE_FILE.read_text())
     return {
         "handled_notification_ids": [],
+        "replied_post_ids": {},   # post_id → last_reply_timestamp
         "last_post_time": 0,
         "queue_index": 0
     }
@@ -326,6 +327,13 @@ def handle_new_comment(notification, state):
     if not post_id or not comment:
         return
 
+    # 같은 포스트에 2시간 내 이미 답글 달았으면 스킵
+    replied_post_ids = state.setdefault("replied_post_ids", {})
+    last_reply = replied_post_ids.get(str(post_id), 0)
+    if time.time() - last_reply < 7200:
+        log.info(f"스킵 (2시간 내 이미 답글): post_id={post_id}")
+        return
+
     log.info(f"새 댓글 by {author}: {comment[:80]}")
 
     reply = generate_reply_with_gemini(post_title, comment)
@@ -335,6 +343,9 @@ def handle_new_comment(notification, state):
     if not result.get("success"):
         log.error(f"댓글 게시 실패: {result}")
         return
+
+    # 답글 성공 → 이 포스트 ID 기록 (2시간 중복 방지)
+    replied_post_ids[str(post_id)] = time.time()
 
     verification = result["comment"].get("verification", {})
     code    = verification.get("verification_code")
