@@ -39,32 +39,28 @@
 - ✅ **TECH-02** Composio MCP 서버 구조 분석 완료 (2026-03-19) → docs/outputs/research_20260319.md
 - ✅ **BRAND-01** 픽셀 로고 제작 완료 (2026-03-20) — 아이콘(8×8 픽셀 눈) + 워드마크(Press Start 2P), 5종 변형, 사이트 적용 완료
 - [ ] **GROWTH-01** B2A2H 세일즈 플로우 설계 (에이전트 → 결제 링크 보고 UX)
-- 🔄 **GROWTH-02** Moltbook 전략 실행 — 에이전트 등록 완료 + 포스팅 초안 완료 (2026-03-22)
-  - ✅ Moltbook 에이전트 등록 완료 — pending_claim 상태
-  - ✅ API Key: moltbook_sk_LIL54qRyJCOyAWi6Y3fPdc87ngiSFweU
-  - ✅ skill.md 확인 완료 — API base: https://www.moltbook.com/api/v1
-  - ✅ 포스팅 초안 작성 완료 → docs/outputs/marketing_ready_to_post.md
-  - [ ] CEO 클레임 (트윗 인증, 코드: ocean-D2WD)
-  - [ ] **클레임 후 에이전트가 API로 직접 홍보 포스트 작성** (CEO 지시: "읽고 글쓰게 할걸")
-    - POST /posts로 submolt에 포스트 작성
-    - 신규 에이전트 math challenge 해결 필요 (/verify)
-    - Rate limit: 1 post/30min
-    - 전략: GET /home → 기존 글 댓글/업보트 참여 → 홍보 포스트
+- ✅ **GROWTH-02** Moltbook 전략 실행 완료 (2026-03-23)
+  - ✅ 에이전트 등록 + HUMAN OWNER 클레임 + X @perceptdot 연동 완료
+  - ✅ math challenge(/verify) 해결 완료 — Verified 배지 획득
+  - ✅ API 포스팅 자동화 완료 — 포스트 5개, 댓글 9개 (최고 6pts, 5댓글)
+  - [ ] 지속 포스팅/댓글 참여 (Rate limit: 1 post/30min)
   - [ ] percept 에이전트가 Moltbook에서 피드백 수집
-  - [ ] moltbook-skill / moltbook-mcp-server 연동 검토
-  - ※ 인간 얼리어답터 → AI 에이전트로 방향 전환 (2026-03-20 CEO 결정)
-- ✅ **GROWTH-03** awesome-mcp-servers PR #3639 제출 완료 (2026-03-22) — Glama 배지 추가 필요 (리뷰 승인 후)
+- ✅ **GROWTH-03** awesome-mcp-servers PR #3639 제출 완료 (2026-03-22) — Glama 배지 추가 완료 (2026-03-23, punkpeye 요청 반영)
 - [ ] **GROWTH-04** Anthropic Discord #tools 채널 포스팅 ⏸️ 대기
 - [ ] **GROWTH-05** r/ClaudeAI Reddit 소개 포스트 ⏸️ 대기
 - [ ] **GROWTH-06** 런칭 플랫폼 다단계 전략 (2026-03-22 CEO 지시 — 최적·최고 홍보)
   - 담당: Growth (실행) + DevRel (콘텐츠) + CPO (감독)
   - **1단계 — 즉시 등록 (복수 가능, 부담 없음)**
-    - [ ] DevHunt 등록 (개발자 도구 전용 PH, MCP/CLI 정확 타겟)
-    - [ ] BetaList 등록 (베타 제품 전용, 얼리어답터 모집)
-    - [ ] There's An AI For That (TAAFT) 등록 (AI 도구 디렉토리, 월 수백만 방문)
-    - [ ] AlternativeTo 등록 ("Composio 대안" 검색 노출)
-    - [ ] Launching Next 등록 (큐레이션 스타트업 디렉토리)
-    - [ ] Microlaunch 등록 (월간 노출, 장기 발견)
+    - ❌ DevHunt — 유료 $49 (무료=2028년 대기), 스킵 (2026-03-23)
+    - ❌ TAAFT — 유료 $49 최소, 무료 플랜 없음, 스킵 (2026-03-23)
+    - [ ] BetaList 등록 (무료, 심사 4개월 대기) → https://betalist.com/submit
+    - [ ] AlternativeTo 등록 (무료, "Composio 대안" 검색 노출) → https://alternativeto.net/suggest/
+    - [ ] Launching Next 등록 (무료, 심사 수주) → https://www.launchingnext.com/submit/
+    - [ ] Microlaunch 등록 (무료) → https://microlaunch.net/submit
+    - [ ] mcpservers.org 등록 (무료) → https://mcpservers.org/submit
+    - [ ] PulseMCP 등록 (무료) → https://www.pulsemcp.com/submit
+    - [ ] mcpserverfinder.com 등록 (미확인)
+    - [ ] wong2/awesome-mcp-servers PR (무료 GitHub PR) → https://github.com/wong2/awesome-mcp-servers
   - **2단계 — 반응 확인 후 실행**
     - [ ] Hacker News Show HN (화/수 US 오전, 초안 ready)
     - 🔄 Reddit — 포스트 차단 (신규 계정), 댓글 3개 게시 완료 (r/ClaudeCode 1 + r/ClaudeAI 2, 2026-03-23)
@@ -85,7 +81,7 @@
     - [x] 마케팅 초안 전채널 (docs/outputs/marketing_ready_to_post.md)
     - [x] 디렉토리 10개 제출 시트 (docs/outputs/directory_submission_sheet.md, 2026-03-23)
     - [x] r/mcp + HN 첫댓글 + 댓글 템플릿 (docs/outputs/community_posts.md, 2026-03-23)
-    - [x] Dev.to 블로그 + Indie Hackers 아웃라인 (docs/outputs/blog_devto_mcp_tokens.md, 2026-03-23)
+    - [x] Dev.to 블로그 게시 완료 (2026-03-23) — dev.to/perceptdot/how-i-built-mcp-servers-that-save-450-tokens-per-ga4-query-and-auto-discover
     - [x] PH 런칭 키트 전체 (docs/outputs/producthunt_launch_kit.md, 2026-03-23)
     - [x] Discord/DM/Reddit/X 아웃리치 템플릿 (docs/outputs/outreach_templates.md, 2026-03-23)
     - [ ] 스크린샷 3~5장 (터미널 MCP 실사용 장면) — Dev 담당
@@ -193,6 +189,7 @@
 - ⏸️ **LEGAL-04** 통신판매업 신고 — 현재 간이과세자 면제 (연매출 1억400만 미만 + 거래 50회 미만). 매출 기준 도달 시 정부24 신고. Paddle MoR이므로 perceptdot은 추가 경감
 - ✅ **LEGAL-05** 결제 구조 확정: **Lemon Squeezy** (MoR, 2026-03-20 CEO 결정) — K-사주와 동일 계정 통합 관리
 - ✅ **PAY-01** Lemon Squeezy 계정 생성 (2026-03-20, 인증 제출 완료, 승인 대기 중. 상품 등록은 승인 후 가능)
+- ✅ **PAY-07** Lemon Squeezy 추가정보 답장 완료 (2026-03-23) — 데모영상(youtu.be/pMg2nu6O1hw) + 가격플랜(Free $0/Pro $19/Team $49) + 이메일 신원확인. 승인 대기 중
 - ✅ **PROD-01** AI 최적화 설계 확정: 계정없음·로그인없음·대시보드없음·API키 N개 (2026-03-20)
 - ✅ **PROD-02** Landing FAQ 섹션 추가 + 배포 완료 (10개 항목, 아코디언, 2026-03-20)
 - ⏳ **PAY-02** Paddle 승인 대기 → 승인 시 K-사주 + perceptdot 동시 Gumroad→Paddle 전환 (2026-03-21 CEO 결정: 임시=Gumroad, 정식=Paddle) | 2026-03-22 CEO 결정: 무료 베타 오픈 → Paddle 승인 후 정식 유료 출시. Free Starter 200 calls, 정식 출시 시 100으로 축소

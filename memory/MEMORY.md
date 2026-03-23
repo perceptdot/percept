@@ -38,7 +38,7 @@
   - ✅ Glama.ai MCP 서버 등록 제출 완료 (리뷰 대기)
   - ✅ Paddle KYC 이름 불일치 답신 발송 (CheonKyu Jang → Sorina Lee/THUNOVA 설명 + Account Settings 변경 요청)
   - ✅ 랜딩 푸터 사업자번호 라인 제거 (국제 SaaS 불필요)
-  - ⏳ Paddle KYC 답변 대기 (1~2 영업일)
+  - ⏳ **Lemon Squeezy** KYC 답변 대기 (Paddle 아님 — 수정) — 데모영상+가격+X프로필 제출 후 승인 진행
   - ⏳ Glama 서버 리뷰 승인 대기 → 승인 후 PR #3639에 배지 추가
   - 🔴 BUG-01: Cloudflare Bot Fight Mode — ClaudeBot 차단 (CEO 수동)
   - ✅ og-image.png 제작 완료 (2026-03-22 01:17 KST · 모바일 Claude, scripts/generate_og_image.py)
