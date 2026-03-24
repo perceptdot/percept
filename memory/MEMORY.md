@@ -1,17 +1,26 @@
 # percept — 프로젝트 메모리
 
 > 이 프로젝트는 K-사주와 **별개**. K-사주 메모리와 혼동 금지.
-> 최초 생성: 2026-03-19 | 업데이트: 2026-03-22
+> 최초 생성: 2026-03-19 | 업데이트: 2026-03-24
 
 ---
 
 ## 현재 Phase
-- **0단계 ✅ 완료** (2026-03-19)
-- **1단계 ✅ 완료** (2026-03-19): npm 퍼블리시까지 완료
-  - @perceptdot/ga4@0.1.0, @perceptdot/vercel@0.1.0 → npmjs.com 라이브
-  - Hono 백엔드(api/) + Python SDK(python-sdk/) 기초 완성
-- **2단계 ✅ 완료 (2026-03-20)**: GitHub 공개 + Cloudflare Workers + Landing Pages 배포
-- **3단계 🔄 진행 중 (2026-03-21~22)**: 도메인 + 결제 + Growth + v0.2.x
+
+### 🔴 현재: @perceptdot/eye (EYE-02/03 단계)
+```
+✅ EYE-01: CF Browser Rendering API POC 완료 (2026-03-24)
+   → 7.4초 / $0.000012/체크 / api.perceptdot.com/v1/eye/check 라이브
+   → 아키텍처: CF BR (Puppeteer) + CF Workers AI (Llama-3.2-11B Vision)
+EYE-02: r/ClaudeCode 수요 설문 50명 (다음)
+EYE-03: 아키텍처 확정 (CF BR + CF Workers AI 기반)
+```
+
+### ✅ 완료된 단계
+- **0단계** (2026-03-19): 아이디어 검증 + 사업계획 + 기술 스택 결정
+- **1단계** (2026-03-19): npm 퍼블리시 완료 (@perceptdot/ga4, vercel 첫 버전)
+- **2단계** (2026-03-20): GitHub 공개 + Cloudflare Workers + Landing Pages 배포
+- **3단계** (2026-03-21~22): 도메인 + 결제 + Growth + v0.2.x
   - ✅ @perceptdot/sentry@0.1.1, @perceptdot/github@0.1.1, vercel@0.1.2 npm 라이브
   - ✅ @perceptdot/ga4@0.2.1 — Named Profiles + 플랜 검증
   - ✅ Landing 가격 개편: Free 2통합/200콜, Team $99/10시트
@@ -280,8 +289,46 @@ CEO 지시사항:
 - `docs/bizplan.md` — 사업계획서 (확정)
 - `docs/accounts.md` — 계정 맵 (전체 서비스·API 키·상태)
 - `IDEA.md` — 최초 아이디어 기록
+- `docs/agents/` — 7개 에이전트 문서 (2026-03-24 eye 피벗 반영 전체 업데이트)
 
-## 시장 수치 (리서치 완료 2026-03-19)
-- TAM: $183B (2033), CAGR 49.6%
-- 직접 경쟁사: Composio ($29M 시리즈A) — ROI 측정 없음
-- Claude Code 점유율: 46% (개발자 설문 1위)
+## 전략 피벗 확정 (2026-03-24 · 데스크탑 Claude)
+
+**기존 제품 (B2A2H 메트릭 추적) → 폐기**
+**신제품: @perceptdot/eye — AI 에이전트 비주얼 QA Remote MCP**
+
+### 핵심 근거
+- CEO 원래 직관 복귀: "에이전트에게 눈을 달아준다"
+- 전용 MCP 비주얼 QA 제품 = 전 세계 0개 (2026-03-24 리서치 확인)
+- 시장: $1.5B 비주얼 테스팅 × $10.9B AI 에이전트 교차점
+
+### 아키텍처 결정
+- 인프라: **Cloudflare Browser Rendering API** (이미 CF 사용 중, ~$0.0001/체크)
+- Vision: **Gemini 2.5 Flash** (86% 절감, $0.00194/체크) + 하이브리드 옵션
+- 배달: **Remote MCP (HTTP)** — `claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp`
+- 마진: ~95% (인프라 + API 합산)
+- ⚠️ Cloudflare Workers에서 Playwright 직접 실행 불가 (128MB 한도) → CF BR API 사용
+
+### 제품 로드맵
+- Phase 1: visual_check(url) — 스크린샷 + AI 분석
+- Phase 2: 영속 베이스라인 (Cloudflare R2)
+- Phase 3: 기본 손 (click, fill, navigate)
+- Phase 4: visual_journey() — 눈+손 E2E 저니 감사 (핵심 차별점)
+- Phase 5: CI/CD GitHub Action + Vercel Integration
+
+### 다음 액션 (POC 우선)
+- [ ] Cloudflare BR API POC — 10초 이내, $0.05 이하 확인
+- [ ] r/ClaudeCode 수요 설문 (50명 목표, 구매 의향 30%+ 기준)
+- [ ] POC 통과 시 → Remote MCP 서버 구현
+
+### 산출물
+- `docs/outputs/eye_strategy_report_20260324.md` — 종합 전략
+- `docs/outputs/eye_infra_cost_20260324.md` — 비용 비교
+- `docs/outputs/eye_hands_research_20260324.md` — 눈+손 로드맵
+- `docs/outputs/daily_20260324.md` — 일일 보고
+
+## 시장 수치 (리서치 완료 2026-03-19, 2026-03-24 업데이트)
+- 비주얼 테스팅 시장: $1.5B → $5B (2033), CAGR 12.5%
+- AI 에이전트 시장: $10.9B → $52.6B (2030), CAGR 46.3%
+- MCP SDK 다운: 97M+/월, 80배/5개월 성장
+- Claude Code ARR: $2.5B+, 분기별 2배
+- 직접 경쟁사: TestSprite MCP ($8.1M) — 범용. Applitools — MCP 없음

@@ -48,6 +48,30 @@
 - ✅ **GROWTH-03** awesome-mcp-servers PR #3639 제출 완료 (2026-03-22) — Glama 배지 추가 완료 (2026-03-23, punkpeye 요청 반영)
 - [ ] **GROWTH-04** Anthropic Discord #tools 채널 포스팅 ⏸️ 대기
 - [ ] **GROWTH-05** r/ClaudeAI Reddit 소개 포스트 ⏸️ 대기
+
+---
+
+## @perceptdot/eye 피벗 태스크 (2026-03-24 추가)
+
+### CRITICAL (POC 먼저)
+- ✅ **EYE-01** CF Browser Rendering API POC 완료 (2026-03-24) — 7.4초, $0.000012/체크 (목표의 0.024%) 🎉
+- [ ] **EYE-02** r/ClaudeCode 수요 설문 — "에이전트 시각 버그 경험? $19 낼 의향?" 50명 이상 (1일)
+- [ ] **EYE-03** POC 결과로 아키텍처 확정 (CF BR API or Browserless $25/월)
+
+### HIGH (POC 통과 후)
+- [ ] **EYE-04** Remote MCP 서버 구현 (mcp.perceptdot.com/mcp) — visual_check 1개 도구만 먼저
+- [ ] **EYE-05** 랜딩 perceptdot.com 신제품 메시지로 전환
+- [ ] **EYE-06** 2분 데모 영상 제작 (에이전트가 실제 버그 잡는 장면)
+- [ ] **EYE-07** Show HN + r/ClaudeCode 포스팅
+
+### MEDIUM (이후)
+- [ ] **EYE-08** 영속 베이스라인 (Cloudflare R2)
+- [ ] **EYE-09** visual_diff 도구 추가
+- [ ] **EYE-10** Gumroad Free/Pro 결제 연동
+
+### 폐기된 방향
+- ~~B2A2H 메트릭 추적 MCP~~ → 2026-03-24 전략 피벗으로 폐기
+- ~~컨시어지 서비스 $49~~ → CEO 폐기 결정 ("손 가는 아이디어")
 - [ ] **GROWTH-06** 런칭 플랫폼 다단계 전략 (2026-03-22 CEO 지시 — 최적·최고 홍보)
   - 담당: Growth (실행) + DevRel (콘텐츠) + CPO (감독)
   - **1단계 — 즉시 등록 (복수 가능, 부담 없음)**

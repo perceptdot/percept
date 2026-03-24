@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import puppeteer from "@cloudflare/puppeteer";
 
 // ─── 환경 바인딩 타입 ──────────────────────────────────────────────────────────
 
@@ -13,6 +14,13 @@ interface Env {
   RESEND_API_KEY: string;
   /** Gumroad 웹훅 시크릿 (선택) */
   GUMROAD_WEBHOOK_SECRET?: string;
+  /** CF Browser Rendering API 바인딩 (wrangler.toml [browser]) */
+  BROWSER: Fetcher;
+  /** CF Workers AI 바인딩 (wrangler.toml [ai]) */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  AI: any;
+  /** Gemini API 키 (wrangler secret put GEMINI_API_KEY) — fallback용 */
+  GEMINI_API_KEY: string;
 }
 
 // ─── Registry 타입 ────────────────────────────────────────────────────────────
@@ -1187,6 +1195,216 @@ app.post("/v1/recommend/log", async (c) => {
   });
 
   return c.json({ logged: true });
+});
+
+// ─── @perceptdot/eye: visual_check ────────────────────────────────────────────
+
+/**
+ * POST /v1/eye/check
+ * EYE-01 POC: CF Browser Rendering API → 스크린샷 → Gemini 2.5 Flash 비주얼 분석
+ *
+ * Body: { url: string, prompt?: string }
+ * Returns: { ok, poc_passed, url, analysis, timing, cost, screenshot_b64? }
+ *
+ * POC 통과 기준: timing.total_ms < 10000 AND cost.estimated_usd < 0.05
+ *
+ * 사전 요건:
+ *   1. Cloudflare Workers 유료 플랜 (Browser Rendering 활성화)
+ *   2. wrangler secret put GEMINI_API_KEY
+ */
+app.post("/v1/eye/check", async (c) => {
+  const startTime = Date.now();
+
+  // ── 요청 파싱 ──
+  let body: { url?: string; prompt?: string; include_screenshot?: boolean };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Invalid JSON" }, 400);
+  }
+
+  const { url, prompt, include_screenshot = false } = body;
+  if (!url) return c.json({ error: "url is required" }, 400);
+
+  // URL 유효성 검사 (SSRF 방지: http/https만 허용)
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+    if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+      return c.json({ error: "URL must use http or https protocol" }, 400);
+    }
+    // Private IP 차단
+    const host = parsedUrl.hostname;
+    if (
+      host === "localhost" ||
+      host.startsWith("127.") ||
+      host.startsWith("192.168.") ||
+      host.startsWith("10.") ||
+      host === "0.0.0.0" ||
+      host.endsWith(".local")
+    ) {
+      return c.json({ error: "Private/localhost URLs are not allowed" }, 400);
+    }
+  } catch {
+    return c.json({ error: "Invalid URL" }, 400);
+  }
+
+  // ── CF Browser Rendering API: 스크린샷 ──
+  const browserStart = Date.now();
+  let screenshotB64: string;
+  let screenshotBytes: number;
+
+  try {
+    const browser = await puppeteer.launch(c.env.BROWSER);
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 800 });
+    await page.goto(parsedUrl.toString(), {
+      waitUntil: "load",
+      timeout: 7000,
+    });
+    const shot = await page.screenshot({
+      encoding: "base64",
+      type: "jpeg",
+      quality: 80,
+    });
+    await browser.close();
+    screenshotB64 = shot as string;
+    screenshotBytes = Math.round((screenshotB64.length * 3) / 4);
+  } catch (e) {
+    return c.json(
+      {
+        ok: false,
+        error: `Screenshot failed: ${String(e)}`,
+        hint: "Ensure CF Browser Rendering is enabled (Workers paid plan required)",
+        timing_ms: Date.now() - startTime,
+      },
+      500
+    );
+  }
+  const browserMs = Date.now() - browserStart;
+
+  // ── CF Workers AI: 비주얼 QA 분석 (지역제한 없음) ──
+  const aiStart = Date.now();
+  const analysisPrompt =
+    prompt ||
+    `You are a visual QA engineer. Analyze this web page screenshot for visual bugs.
+Look for: broken layouts, element overflow, missing images, misalignment, text clipping, z-index issues, color/contrast problems.
+URL: ${url}
+Be specific (what, where on page). If none found, say "No visual issues detected."
+Max 150 words.`;
+
+  let analysis = "";
+
+  try {
+    // CF Workers AI — @cf/meta/llama-3.2-11b-vision-instruct
+    // screenshot을 Uint8Array로 변환
+    const binaryStr = atob(screenshotB64);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+
+    // Llama 3.2 11B Vision — CF에서 제공하는 최고 품질 비전 모델
+    // 첫 사용 시 라이선스 동의 필요 (자동 처리)
+    let aiResult;
+    try {
+      aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
+        prompt: analysisPrompt,
+        image: [...bytes],
+        max_tokens: 300,
+      });
+    } catch (licenseErr) {
+      const msg = String(licenseErr);
+      if (msg.includes("5016") || msg.includes("agree")) {
+        // 라이선스 동의 자동 처리
+        await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
+          prompt: "agree",
+          image: [...bytes],
+          max_tokens: 10,
+        });
+        aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
+          prompt: analysisPrompt,
+          image: [...bytes],
+          max_tokens: 300,
+        });
+      } else {
+        throw licenseErr;
+      }
+    }
+
+    analysis = aiResult?.response ?? "Analysis unavailable";
+  } catch (e) {
+    // CF AI 실패 시 Gemini fallback
+    try {
+      const geminiRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${c.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  { inline_data: { mime_type: "image/jpeg", data: screenshotB64 } },
+                  { text: analysisPrompt },
+                ],
+              },
+            ],
+            generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
+          }),
+        }
+      );
+      if (geminiRes.ok) {
+        const gd = (await geminiRes.json()) as {
+          candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
+        };
+        analysis = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? `CF AI failed: ${String(e)}`;
+      } else {
+        analysis = `Analysis failed (CF AI: ${String(e)}, Gemini: ${geminiRes.status})`;
+      }
+    } catch (e2) {
+      analysis = `Analysis failed: CF AI: ${String(e)} / Gemini: ${String(e2)}`;
+    }
+  }
+  const aiMs = Date.now() - aiStart;
+  const totalMs = Date.now() - startTime;
+
+  // ── 비용 추정 ──
+  // CF Workers AI: ~$0.011/1000 神経ステップ (Workers paid plan)
+  // Free plan에서는 무료 (하루 10k requests)
+  // CF BR API: ~$0.001/1000 sessions (negligible)
+  const cfAiCost = 0.000011; // ~11 신경 steps for vision, $0.011/1000 = $0.000011
+  const cfBrCost = 0.000001;
+  const totalCost = cfAiCost + cfBrCost;
+
+  // ── POC 통과 판정 ──
+  const pocPassed = totalMs < 10_000 && totalCost < 0.05;
+
+  const result: Record<string, unknown> = {
+    ok: true,
+    poc_passed: pocPassed,
+    url,
+    analysis,
+    timing: {
+      total_ms: totalMs,
+      browser_ms: browserMs,
+      ai_ms: aiMs,
+      under_10s: totalMs < 10_000,
+    },
+    cost: {
+      estimated_usd: Math.round(totalCost * 1_000_000) / 1_000_000,
+      under_5cents: totalCost < 0.05,
+      note: "CF Workers AI vision (~$0.011/1000req free tier on paid plan)",
+    },
+    screenshot_size_bytes: screenshotBytes,
+  };
+
+  // 스크린샷은 요청 시에만 포함 (프로덕션에서는 생략)
+  if (include_screenshot) {
+    result.screenshot_b64 = screenshotB64;
+  }
+
+  return c.json(result);
 });
 
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────

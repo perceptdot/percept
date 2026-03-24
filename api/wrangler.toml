@@ -1,9 +1,18 @@
 name = "perceptdot-api"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ENVIRONMENT = "production"
+
+# CF Browser Rendering API (유료 Workers 플랜 필요)
+[browser]
+binding = "BROWSER"
+
+# CF Workers AI (비주얼 분석용 — Gemini 지역제한 우회)
+[ai]
+binding = "AI"
 
 [[kv_namespaces]]
 binding = "API_KEYS"
@@ -15,6 +24,12 @@ id = "4a1073d7cd884888a3b933d8813cbd06"
 
 [env.production]
 vars = { ENVIRONMENT = "production" }
+
+[env.production.browser]
+binding = "BROWSER"
+
+[env.production.ai]
+binding = "AI"
 
 [[env.production.kv_namespaces]]
 binding = "API_KEYS"

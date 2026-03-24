@@ -1,65 +1,98 @@
 # Growth 에이전트 역할 문서
 
 ## 역할
-에이전트 생태계 진입 전략 · 얼리어답터 확보 · B2B 영업 · 커뮤니티 빌딩.
+에이전트 생태계 진입 전략 · 얼리어답터 확보 · 커뮤니티 빌딩 · @perceptdot/eye 수요 검증.
 
 ## 작업 시작 Hook
 ```
 1. CLAUDE.md 확인
 2. 이 문서 확인
-3. 현재 Phase 확인 (메모리/backlog)
+3. 현재 Phase 확인 (memory/backlog.md)
 4. 싱크 체크:
    - 데스크탑: git pull origin main + 원격 claude/* 브랜치 확인 → 있으면 머지
    - 모바일: docs/outputs/daily_{오늘}.md 최신 세션 확인 → 데스크탑 작업 파악
 5. 작업 시작 선언: "## [Growth] 작업 시작 - {task} (모바일/데스크탑 Claude)"
 ```
 
-## 핵심 채널 (AI 에이전트 생태계)
+## 현재 마케팅 현황 (2026-03-24 기준)
 
+### 완료
+- ✅ Twitter/X 스레드 3개 포스팅 (2026-03-22)
+- ✅ awesome-mcp-servers PR #3639 머지 + Glama 배지 (2026-03-23)
+- ✅ Reddit 댓글 3개 (r/ClaudeCode 1 + r/ClaudeAI 2, 2026-03-23)
+- ✅ Moltbook Verified 배지 + 포스트 5개 + 댓글 9개 (2026-03-23)
+- ✅ AlternativeTo 등록 완료 (승인 대기, 2026-03-23)
+- ✅ Dev.to 블로그 게시 (2026-03-23)
+- ✅ Lemon Squeezy KYC 제출 완료 (승인 대기)
+
+### 진행 중 / 대기
+- [ ] 디렉토리 제출: BetaList, Launching Next, Microlaunch, mcpservers.org, PulseMCP
+- [ ] Product Hunt 런칭 (스크린샷 5장 + 데모 영상 완성 후)
+- [ ] HN Show HN (화/수 US 오전)
+
+## @perceptdot/eye GTM 전략 (2026-03-24 피벗 후)
+
+### EYE-02 — r/ClaudeCode 수요 설문 (최우선)
 ```
-1. Claude Code 사용자 커뮤니티 (Discord, Reddit r/ClaudeAI)
-2. Anthropic 개발자 포럼
-3. GitHub (MCP awesome list, 서버 디렉토리)
-4. X/Twitter (AI 개발자 커뮤니티)
-5. Hacker News (Show HN)
+포스트 제목: "Does your AI agent catch visual bugs? 👁️"
+내용: "에이전트가 박스 삐져나온 버그 못 잡아서 답답했던 경험 있으신가요?
+     비주얼 QA MCP 서버 만들고 있는데, 사용하실 의향이 있다면?
+     [투표: Yes, 무조건 / Yes, 가격 맞으면 / 별로 / 에이전트 안 씀]"
+목표: 50명 이상 응답
+계정 이슈: 신규 계정 포스트 차단 → 댓글 방식 또는 카르마 확보 후 포스트
 ```
 
-## 얼리어답터 확보 전략
+### eye 핵심 GTM 메시지
 ```
 타겟: Claude Code를 일평균 2시간+ 쓰는 개발자/팀
-접근: "무료로 써보고 토큰 절감 수치 알려주세요"
-목표: 1단계 5명 → 2단계 50명
+페인포인트: "배포했는데 UI 버그 → 인간이 직접 눈으로 확인 → 비효율"
+솔루션: "visual_check() 한 줄 → 에이전트가 버그 텍스트로 보고"
+가격: Free 50체크 / Pro $19 / Team $49
+차별점: "전용 MCP 비주얼 QA — 전 세계 최초"
 ```
 
-## Go-to-Market 메시지
+### 채널 우선순위 (eye 출시 후)
 ```
-핵심 메시지: "에이전트가 눈을 갖게 됩니다"
-수치 증거: "평균 토큰 47% 절감"
-차별점: "절감 없으면 비용 없음"
-장기 포지셔닝: "에이전트 경제의 ROI 인프라" ← 2026-03-22 추가
+1. r/ClaudeCode — EYE-02 수요 설문 + Show & Tell (가장 핵심)
+2. Anthropic Discord #tools — MCP 유저 직접 접근
+3. Hacker News Show HN — 개발자 커뮤니티 바이럴
+4. Product Hunt — 3단계 올인
+5. Moltbook — 지속 포스팅 (Rate limit: 1 post/30min)
 ```
+
+## 기존 perceptdot (로컬 MCP 서버) 마케팅
+
+### Go-to-Market 메시지
+```
+핵심: "AI 에이전트에게 눈을 달아줍니다"
+수치: "체크당 $0.002, 평균 토큰 450개 절감"
+차별점: "ROI를 수치로 증명하는 유일한 MCP 플랫폼"
+```
+
+## 플랫폼 제출 현황
+
+| 플랫폼 | 상태 | 비고 |
+|--------|------|------|
+| awesome-mcp-servers | ✅ 머지 + Glama 배지 | |
+| AlternativeTo | ✅ 제출 (승인 대기) | |
+| Smithery | ✅ 등록 | |
+| Dev.to | ✅ 게시 완료 | |
+| BetaList | 📋 미제출 | 무료, 심사 4개월 |
+| mcpservers.org | 📋 미제출 | 무료 |
+| PulseMCP | 📋 미제출 | 무료 |
+| Product Hunt | ⏸️ 대기 | 데모 영상 완성 후 |
+| HN Show HN | ⏸️ 대기 | eye 완성 후 |
 
 ## 장기 비전 인지 (2026-03-22 확정)
 ```
-MCP 서버 = 씨앗. 데이터 축적 후 에이전트 경제 인프라로 전환.
-Growth는 현재 MCP 서버 유저 확보에 집중하되,
-Q3 플랫폼 전환 시 SaaS 회사 대상 B2B 세일즈로 확장 예정.
+현재: Claude Code / Cursor 개발자 (MCP 서버 유저 확보)
+Q2: MCP 서버 운영자 (빌링 white-label)
+Q3: SaaS 회사 (에이전트 광고/결제 인프라)
 
-잠재 고객 확장:
-  현재: Claude Code / Cursor 개발자
-  Q2: MCP 서버 운영자 (빌링 white-label)
-  Q3: SaaS 회사 (에이전트 광고/결제 인프라)
-
-"B2A2H" 용어 = perceptdot이 정의하는 신규 카테고리.
+"B2A2H" = perceptdot이 정의하는 신규 카테고리.
 카테고리 크리에이터 포지셔닝 마케팅 필요.
 상세: docs/bizplan.md §12
 ```
-
-## 현재 할 일
-- ✅ MCP awesome list PR #3639 제출 완료
-- [ ] 마케팅 포스팅 실행 (Twitter → Reddit → HN)
-- [ ] 1단계 플랫폼 등록 (DevHunt, BetaList, TAAFT 등 6개)
-- [ ] 얼리어답터 50명 확보
 
 ## 작업 완료 Hook (필수 — 스킵 시 작업 무효)
 ```
