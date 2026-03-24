@@ -70,6 +70,7 @@
 - [ ] **EYE-10** Gumroad Free/Pro 결제 연동
 
 - ✅ **EYE-GHA** GitHub Action MVP 빌드 완료 (2026-03-24) — eye-action/ (action.yml + src/index.js + dist/ 번들 + README), CF API has_issues+summary 표준화
+- ✅ **EYE-REDESIGN** 랜딩 전면 리디자인 완료 (2026-03-24) — RED 컬러(#ff1a3c), eye 제품 9개 섹션, Paddle 결제 준비, 모바일 반응형. ⚠️ Paddle Price ID 미설정 (대시보드에서 Pro/Team 상품 생성 후 입력 필요)
 
 ### 폐기된 방향
 - ~~B2A2H 메트릭 추적 MCP~~ → 2026-03-24 전략 피벗으로 폐기
