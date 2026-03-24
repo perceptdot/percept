@@ -66,6 +66,12 @@
         "price": "19",
         "priceCurrency": "USD",
         "description": "Pro — 10,000 checks/month"
+      },
+      {
+        "@type": "Offer",
+        "price": "49",
+        "priceCurrency": "USD",
+        "description": "Unlimited — unlimited checks/month"
       }
     ],
     "provider": {
@@ -117,7 +123,7 @@
         "name": "What does it cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Free plan includes 100 checks per month — no credit card required. Pro is $19/month for 10,000 checks. Team is $99/month for unlimited checks plus Slack notifications and SLA support."
+          "text": "Free plan includes 100 checks per month — no credit card required. Pro is $19/month for 10,000 checks. Unlimited is $49/month for unlimited checks plus priority support."
         }
       },
       {
@@ -1864,24 +1870,24 @@
         <button class="btn btn-primary pricing-cta" onclick="openProModal()">Start Pro &rarr;</button>
       </div>
 
-      <!-- Team -->
+      <!-- Unlimited -->
       <div class="pricing-card fade-up fade-up-d2">
-        <div class="pricing-plan">Team</div>
+        <div class="pricing-plan">Unlimited</div>
         <div class="pricing-price">
           <span class="price-currency">$</span>
-          <span class="price-amount">99</span>
+          <span class="price-amount">49</span>
           <span class="price-period">&nbsp;/ month</span>
         </div>
-        <p class="pricing-desc">For larger teams with high deployment volume and SLA needs.</p>
+        <p class="pricing-desc">For power users shipping fast. No caps, ever.</p>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
           <li><span class="feat-icon">&#10003;</span> Unlimited checks</li>
           <li><span class="feat-icon">&#10003;</span> Everything in Pro</li>
-          <li><span class="feat-icon">&#10003;</span> 10 team members</li>
-          <li><span class="feat-icon">&#10003;</span> Slack notifications</li>
-          <li><span class="feat-icon">&#10003;</span> SLA support</li>
+          <li><span class="feat-icon">&#10003;</span> Webhook notifications</li>
+          <li><span class="feat-icon">&#10003;</span> Custom AI prompts</li>
+          <li><span class="feat-icon">&#10003;</span> Priority support</li>
         </ul>
-        <button class="btn btn-outline pricing-cta" onclick="openTeamModal()">Start Team &rarr;</button>
+        <button class="btn btn-outline pricing-cta" onclick="openUnlimitedModal()">Start Unlimited &rarr;</button>
       </div>
     </div>
   </section>
@@ -2118,13 +2124,13 @@
     </div>
   </div>
 
-  <!-- Team Modal -->
-  <div class="modal-overlay" id="modal-team" onclick="handleOverlayClick(event, 'modal-team')">
+  <!-- Unlimited Modal -->
+  <div class="modal-overlay" id="modal-unlimited" onclick="handleOverlayClick(event, 'modal-unlimited')">
     <div class="modal">
-      <button class="modal-close" onclick="closeTeamModal()" aria-label="Close">&times;</button>
-      <h3>perceptdot Team &mdash; $99/month</h3>
-      <p class="modal-sub" id="team-modal-sub">Redirecting to secure checkout&hellip;</p>
-      <div id="team-modal-body" style="text-align:center;padding:16px 0;">
+      <button class="modal-close" onclick="closeUnlimitedModal()" aria-label="Close">&times;</button>
+      <h3>perceptdot Unlimited &mdash; $49/month</h3>
+      <p class="modal-sub" id="unlimited-modal-sub">Redirecting to secure checkout&hellip;</p>
+      <div id="unlimited-modal-body" style="text-align:center;padding:16px 0;">
         <div class="spinner" style="margin:0 auto 16px;"></div>
         <p style="font-size:13px;color:var(--muted);">Opening Paddle checkout&hellip;</p>
       </div>
@@ -2136,7 +2142,7 @@
   <script>
     // ---- Paddle config ----
     const PADDLE_PRO_PRICE_ID = 'pri_01kmg45jn3dx41vcz3hxemjwkz';
-    const PADDLE_TEAM_PRICE_ID = 'pri_01kmg4e7n5hykhyvnv5x4x4y0k';
+    const PADDLE_UNLIMITED_PRICE_ID = ''; // TODO: create $49 Unlimited price in Paddle dashboard
 
     // Initialize Paddle once on load
     window.addEventListener('load', () => {
@@ -2204,24 +2210,24 @@
 
     function closeProModal() { closeModal('modal-pro'); }
 
-    function openTeamModal() {
-      openModal('modal-team');
-      gtag('event', 'open_team_modal', { event_category: 'engagement' });
+    function openUnlimitedModal() {
+      openModal('modal-unlimited');
+      gtag('event', 'open_unlimited_modal', { event_category: 'engagement' });
       setTimeout(() => {
-        if (PADDLE_TEAM_PRICE_ID) {
+        if (PADDLE_UNLIMITED_PRICE_ID) {
           try {
-            Paddle.Checkout.open({ items: [{ priceId: PADDLE_TEAM_PRICE_ID, quantity: 1 }] });
-            closeModal('modal-team');
+            Paddle.Checkout.open({ items: [{ priceId: PADDLE_UNLIMITED_PRICE_ID, quantity: 1 }] });
+            closeModal('modal-unlimited');
           } catch (e) {
-            showPaddleFallback('team-modal-body', 'team-modal-sub', 'Team');
+            showPaddleFallback('unlimited-modal-body', 'unlimited-modal-sub', 'Unlimited');
           }
         } else {
-          showPaddleFallback('team-modal-body', 'team-modal-sub', 'Team');
+          showPaddleFallback('unlimited-modal-body', 'unlimited-modal-sub', 'Unlimited');
         }
       }, 300);
     }
 
-    function closeTeamModal() { closeModal('modal-team'); }
+    function closeUnlimitedModal() { closeModal('modal-unlimited'); }
 
     function showPaddleFallback(bodyId, subId, plan) {
       document.getElementById(bodyId).innerHTML =
@@ -2286,7 +2292,7 @@
       if (e.key === 'Escape') {
         closeModal('modal-free');
         closeModal('modal-pro');
-        closeModal('modal-team');
+        closeModal('modal-unlimited');
       }
     });
 
