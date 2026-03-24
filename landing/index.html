@@ -2132,6 +2132,11 @@
     const PADDLE_PRO_PRICE_ID = 'pri_01kmg45jn3dx41vcz3hxemjwkz';
     const PADDLE_TEAM_PRICE_ID = 'pri_01kmg4e7n5hykhyvnv5x4x4y0k';
 
+    // Initialize Paddle once on load
+    window.addEventListener('load', () => {
+      try { Paddle.Initialize({ token: 'live_b1bd10e2c2ab4e9f8a05d259c46' }); } catch(e) {}
+    });
+
     // ---- Mobile menu ----
     function toggleMobileMenu() {
       const menu = document.getElementById('mobile-menu');
@@ -2180,7 +2185,6 @@
       setTimeout(() => {
         if (PADDLE_PRO_PRICE_ID) {
           try {
-            Paddle.Initialize({ token: 'live_b1bd10e2c2ab4e9f8a05d259c46' });
             Paddle.Checkout.open({ items: [{ priceId: PADDLE_PRO_PRICE_ID, quantity: 1 }] });
             closeModal('modal-pro');
           } catch (e) {
@@ -2189,7 +2193,7 @@
         } else {
           showPaddleFallback('pro-modal-body', 'pro-modal-sub', 'Pro');
         }
-      }, 600);
+      }, 300);
     }
 
     function closeProModal() { closeModal('modal-pro'); }
@@ -2200,7 +2204,6 @@
       setTimeout(() => {
         if (PADDLE_TEAM_PRICE_ID) {
           try {
-            Paddle.Initialize({ token: 'live_b1bd10e2c2ab4e9f8a05d259c46' });
             Paddle.Checkout.open({ items: [{ priceId: PADDLE_TEAM_PRICE_ID, quantity: 1 }] });
             closeModal('modal-team');
           } catch (e) {
@@ -2209,7 +2212,7 @@
         } else {
           showPaddleFallback('team-modal-body', 'team-modal-sub', 'Team');
         }
-      }, 600);
+      }, 300);
     }
 
     function closeTeamModal() { closeModal('modal-team'); }
