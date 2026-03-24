@@ -59,10 +59,11 @@
 - [ ] **EYE-03** POC 결과로 아키텍처 확정 (CF BR API or Browserless $25/월)
 
 ### HIGH (POC 통과 후)
-- [ ] **EYE-04** Remote MCP 서버 구현 (mcp.perceptdot.com/mcp) — visual_check 1개 도구만 먼저
+- ✅ **EYE-04** Remote MCP 서버 구현 (mcp.perceptdot.com/mcp) 완료 (2026-03-24) — Hono + CF Workers, visual_check 도구, initialize/tools/list/tools/call 정상 동작 확인
 - ✅ **EYE-05** 랜딩 perceptdot.com 신제품 메시지로 전환 (2026-03-24) — "Give Your AI Eyes." 헤로 교체, 메타태그 업데이트, MCP 설치 1줄 + "Try visual_check free" CTA
-- [ ] **EYE-06** 2분 데모 영상 제작 (에이전트가 실제 버그 잡는 장면)
-- [ ] **EYE-07** Show HN + r/ClaudeCode 포스팅
+- [ ] **EYE-06** 2분 데모 영상/GIF 제작 ⭐ 1순위 — 에이전트가 실제 버그 잡는 장면 (없으면 홍보 불가)
+- [ ] **EYE-07** Show HN + r/ClaudeCode 포스팅 ⭐ 2순위 — 데모 영상 완료 후
+- [ ] **EYE-11** GitHub Marketplace eye-action 등록 ⭐ 3순위 — perceptdot/eye-action repo 생성 후
 
 ### MEDIUM (이후)
 - [ ] **EYE-08** 영속 베이스라인 (Cloudflare R2)
@@ -70,7 +71,19 @@
 - [ ] **EYE-10** Gumroad Free/Pro 결제 연동
 
 - ✅ **EYE-GHA** GitHub Action MVP 빌드 완료 (2026-03-24) — eye-action/ (action.yml + src/index.js + dist/ 번들 + README), CF API has_issues+summary 표준화
-- ✅ **EYE-REDESIGN** 랜딩 전면 리디자인 완료 (2026-03-24) — RED 컬러(#ff1a3c), eye 제품 9개 섹션, Paddle 결제 준비, 모바일 반응형. ⚠️ Paddle Price ID 미설정 (대시보드에서 Pro/Team 상품 생성 후 입력 필요)
+- ✅ **EYE-REDESIGN** 랜딩 전면 리디자인 완료 (2026-03-24) — RED 컬러(#ff1a3c), eye 제품 9개 섹션, 모바일 반응형
+- ✅ **PAY-PADDLE** Paddle 결제 완전 연동 완료 (2026-03-24)
+  - Pro $19: pri_01kmg45jn3dx41vcz3hxemjwkz
+  - Unlimited $49: pri_01kmg8vwgm41gkycqn9y5fhzem
+  - Client token: live_b1bd10e2c2ab4e9f8a05d259c46
+  - 도메인 승인: perceptdot.com ✅
+  - 법적 모달: Terms/Privacy/Refund (회사 유리 조항) ✅
+- ✅ **BRAND-EYE** 브랜딩 자산 완료 (2026-03-24)
+  - favicon.svg (투명 배경)
+  - logo-profile.png (400×400, 픽셀 아이콘)
+  - x-banner.png (1500×500, X 프로필 배너)
+- ✅ **PRICE-01** 가격 개편 완료 (2026-03-24→25) — Team($99, 10멤버) → Unlimited($49, 개인 무제한)
+- ✅ **AARRR-01** AARRR + ROI 분석 완료 (2026-03-24) — Pro LTV $380~950, 마진 94.8%, 우선순위: 데모>ShowHN>GHMarketplace
 
 ### 폐기된 방향
 - ~~B2A2H 메트릭 추적 MCP~~ → 2026-03-24 전략 피벗으로 폐기
