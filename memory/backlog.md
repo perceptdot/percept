@@ -60,7 +60,7 @@
 
 ### HIGH (POC 통과 후)
 - [ ] **EYE-04** Remote MCP 서버 구현 (mcp.perceptdot.com/mcp) — visual_check 1개 도구만 먼저
-- [ ] **EYE-05** 랜딩 perceptdot.com 신제품 메시지로 전환
+- ✅ **EYE-05** 랜딩 perceptdot.com 신제품 메시지로 전환 (2026-03-24) — "Give Your AI Eyes." 헤로 교체, 메타태그 업데이트, MCP 설치 1줄 + "Try visual_check free" CTA
 - [ ] **EYE-06** 2분 데모 영상 제작 (에이전트가 실제 버그 잡는 장면)
 - [ ] **EYE-07** Show HN + r/ClaudeCode 포스팅
 
@@ -68,6 +68,8 @@
 - [ ] **EYE-08** 영속 베이스라인 (Cloudflare R2)
 - [ ] **EYE-09** visual_diff 도구 추가
 - [ ] **EYE-10** Gumroad Free/Pro 결제 연동
+
+- ✅ **EYE-GHA** GitHub Action MVP 빌드 완료 (2026-03-24) — eye-action/ (action.yml + src/index.js + dist/ 번들 + README), CF API has_issues+summary 표준화
 
 ### 폐기된 방향
 - ~~B2A2H 메트릭 추적 MCP~~ → 2026-03-24 전략 피벗으로 폐기

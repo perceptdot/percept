@@ -12,6 +12,12 @@
 ✅ EYE-01: CF Browser Rendering API POC 완료 (2026-03-24)
    → 7.4초 / $0.000012/체크 / api.perceptdot.com/v1/eye/check 라이브
    → 아키텍처: CF BR (Puppeteer) + CF Workers AI (Llama-3.2-11B Vision)
+✅ EYE-05: 랜딩 "Give Your AI Eyes." 메시지 교체 완료 (2026-03-24)
+   → 메타태그 전면 교체, MCP 설치 1줄 코드 표시, "Try visual_check free" CTA
+✅ EYE-GHA: GitHub Action MVP 완성 (2026-03-24)
+   → eye-action/ (action.yml + src/index.js + ncc 번들 dist/ + README)
+   → CF API /v1/eye/check 응답 표준화: has_issues + summary + issues[] + viewport
+   → 다음: perceptdot/eye-action GitHub repo 생성 → Marketplace 등록
 EYE-02: r/ClaudeCode 수요 설문 50명 (다음)
 EYE-03: 아키텍처 확정 (CF BR + CF Workers AI 기반)
 ```
