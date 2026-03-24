@@ -2180,7 +2180,7 @@
       setTimeout(() => {
         if (PADDLE_PRO_PRICE_ID) {
           try {
-            Paddle.Initialize({ token: '' }); // Fill in Paddle client token
+            Paddle.Initialize({ token: 'live_b1bd10e2c2ab4e9f8a05d259c46' });
             Paddle.Checkout.open({ items: [{ priceId: PADDLE_PRO_PRICE_ID, quantity: 1 }] });
             closeModal('modal-pro');
           } catch (e) {
@@ -2200,7 +2200,7 @@
       setTimeout(() => {
         if (PADDLE_TEAM_PRICE_ID) {
           try {
-            Paddle.Initialize({ token: '' }); // Fill in Paddle client token
+            Paddle.Initialize({ token: 'live_b1bd10e2c2ab4e9f8a05d259c46' });
             Paddle.Checkout.open({ items: [{ priceId: PADDLE_TEAM_PRICE_ID, quantity: 1 }] });
             closeModal('modal-team');
           } catch (e) {
