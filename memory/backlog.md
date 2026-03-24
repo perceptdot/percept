@@ -55,6 +55,8 @@
 
 ### CRITICAL (POC 먼저)
 - ✅ **EYE-01** CF Browser Rendering API POC 완료 (2026-03-24) — 7.4초, $0.000012/체크 (목표의 0.024%) 🎉
+- [ ] **BUG-EYE-01** `waitUntil:"load"` → Paddle.js 기다려 18초 초과 — `networkidle2` 또는 `domcontentloaded`로 수정 필요 ⚡ 내일 1순위
+- [ ] **BUG-EYE-02** `has_issues`/`summary`/`issues[]` 필드 미배포 — 로컬엔 있음, `wrangler deploy` 필요 ⚡ 내일 1순위
 - [ ] **EYE-02** r/ClaudeCode 수요 설문 — "에이전트 시각 버그 경험? $19 낼 의향?" 50명 이상 (1일)
 - [ ] **EYE-03** POC 결과로 아키텍처 확정 (CF BR API or Browserless $25/월)
 

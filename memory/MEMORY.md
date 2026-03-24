@@ -18,9 +18,19 @@
 ✅ EYE-GHA: GitHub Action MVP 완성 (2026-03-24)
    → eye-action/ (action.yml + src/index.js + ncc 번들 dist/ + README)
    → 다음: perceptdot/eye-action GitHub repo 생성 → Marketplace 등록 (EYE-11)
+🔴 BUG-EYE-01: waitUntil:"load" → perceptdot.com 18초 초과 (Paddle.js 때문) → networkidle2로 수정
+🔴 BUG-EYE-02: has_issues/summary 필드 미배포 → wrangler deploy 필요 (GHA 연동 전 필수)
 ⭐ EYE-06: 데모 영상/GIF 제작 (1순위 — 없으면 홍보 불가)
 EYE-02: r/ClaudeCode 수요 설문 50명 (EYE-06 완료 후)
 EYE-07: Show HN + r/ClaudeCode 포스팅 (EYE-06 완료 후)
+```
+
+### POC 라이브 검증 결과 (2026-03-25)
+```
+example.com: 7.7초 ✅ / $0.000012 ✅ / poc_passed: true
+perceptdot.com: 18초 ❌ (Paddle.js 로드 대기) / poc_passed: false
+→ waitUntil 수정 후 재검증 필요
+배포 미완: has_issues/summary 필드 로컬에만 존재
 ```
 
 ### Paddle 결제 현황 (2026-03-24~25 완료)
