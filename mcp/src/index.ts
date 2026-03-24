@@ -1,0 +1,138 @@
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+
+const app = new Hono()
+
+app.use('*', cors({
+  origin: '*',
+  allowMethods: ['GET', 'POST', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+}))
+
+// Health check
+app.get('/', (c) => c.json({ service: 'perceptdot MCP', version: '1.0.0', status: 'ok' }))
+
+// MCP Streamable HTTP endpoint
+app.post('/mcp', async (c) => {
+  const body = await c.req.json()
+  const requests = Array.isArray(body) ? body : [body]
+  const responses: any[] = []
+
+  for (const req of requests) {
+    const res = await handleRpc(req)
+    if (res !== null) responses.push(res)
+  }
+
+  if (responses.length === 0) return c.body(null, 204)
+  return c.json(Array.isArray(body) ? responses : responses[0])
+})
+
+// SSE upgrade (for clients that request streaming)
+app.get('/mcp', (c) => {
+  return c.json({ error: 'Use POST for MCP requests' }, 405)
+})
+
+async function handleRpc(req: any): Promise<any | null> {
+  const { jsonrpc, id, method, params } = req
+
+  // Notifications — no response needed
+  if (id === undefined && method?.startsWith('notifications/')) return null
+
+  switch (method) {
+    case 'initialize':
+      return {
+        jsonrpc: '2.0', id,
+        result: {
+          protocolVersion: '2024-11-05',
+          capabilities: { tools: {} },
+          serverInfo: { name: 'perceptdot', version: '1.0.0' }
+        }
+      }
+
+    case 'tools/list':
+      return {
+        jsonrpc: '2.0', id,
+        result: {
+          tools: [
+            {
+              name: 'visual_check',
+              description:
+                'Screenshot a URL and analyze it for visual bugs using AI. ' +
+                'Returns whether issues exist, a summary, and a detailed issues list. ' +
+                'Use this after deployments, PRs, or any UI change to catch layout problems.',
+              inputSchema: {
+                type: 'object',
+                properties: {
+                  url: {
+                    type: 'string',
+                    description: 'URL to visually check (must be publicly accessible)'
+                  },
+                  prompt: {
+                    type: 'string',
+                    description: 'Optional: specific aspect to focus on (e.g. "check the header layout")'
+                  }
+                },
+                required: ['url']
+              }
+            }
+          ]
+        }
+      }
+
+    case 'tools/call': {
+      const { name, arguments: args } = params ?? {}
+      if (name !== 'visual_check') {
+        return {
+          jsonrpc: '2.0', id,
+          error: { code: -32601, message: `Unknown tool: ${name}` }
+        }
+      }
+
+      try {
+        const resp = await fetch('https://api.perceptdot.com/v1/eye/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: args?.url, prompt: args?.prompt }),
+        })
+
+        if (!resp.ok) {
+          throw new Error(`API error ${resp.status}`)
+        }
+
+        const result: any = await resp.json()
+
+        const issueLines = (result.issues ?? [])
+          .map((i: any) => `  [${(i.severity ?? 'info').toUpperCase()}] ${i.description}`)
+          .join('\n')
+
+        const text = result.has_issues
+          ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}\n\nCost: $${result.cost_usd?.toFixed(6)} | Duration: ${result.duration_ms}ms`
+          : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}\n\nCost: $${result.cost_usd?.toFixed(6)} | Duration: ${result.duration_ms}ms`
+
+        return {
+          jsonrpc: '2.0', id,
+          result: {
+            content: [{ type: 'text', text }],
+            isError: false
+          }
+        }
+      } catch (e: any) {
+        return {
+          jsonrpc: '2.0', id,
+          result: {
+            content: [{ type: 'text', text: `Error running visual_check: ${e.message}` }],
+            isError: true
+          }
+        }
+      }
+    }
+
+    default:
+      return {
+        jsonrpc: '2.0', id,
+        error: { code: -32601, message: `Method not found: ${method}` }
+      }
+  }
+}
+
+export default app
