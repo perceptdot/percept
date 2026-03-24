@@ -2059,6 +2059,12 @@
         <a href="https://perceptdot-api.perceptdot.workers.dev/rss/changelog">Changelog</a>
         &nbsp;&middot;&nbsp;
         <a href="mailto:service@perceptdot.com">Contact</a>
+        &nbsp;&middot;&nbsp;
+        <a href="#" onclick="openModal('modal-terms');return false;">Terms</a>
+        &nbsp;&middot;&nbsp;
+        <a href="#" onclick="openModal('modal-privacy');return false;">Privacy</a>
+        &nbsp;&middot;&nbsp;
+        <a href="#" onclick="openModal('modal-refund');return false;">Refund</a>
       </span>
     </div>
   </footer>
@@ -2313,5 +2319,108 @@
 
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   </script>
+  <!-- ===================== LEGAL MODALS ===================== -->
+
+  <!-- Terms of Service -->
+  <div class="modal-overlay" id="modal-terms" onclick="handleOverlayClick(event,'modal-terms')">
+    <div class="modal" style="max-width:680px;max-height:80vh;overflow-y:auto;">
+      <button class="modal-close" onclick="closeModal('modal-terms')" aria-label="Close">&times;</button>
+      <h3>Terms of Service</h3>
+      <div style="color:var(--muted);font-size:13px;line-height:1.8;margin-top:1.2rem;">
+        <p><strong style="color:var(--text);">Effective date: March 24, 2026</strong></p>
+        <p style="margin-top:1rem;">perceptdot is operated by THUNOVA. By using our service you agree to these terms.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">1. Service</strong><br>
+        perceptdot provides AI-powered visual QA tools via API and MCP server. We offer Free, Pro ($19/mo), and Team ($99/mo) plans. Features and limits may change with notice.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">2. Acceptable Use</strong><br>
+        You may not use perceptdot to check URLs you do not own or have permission to test, for illegal purposes, or to overload third-party systems. Abuse results in immediate termination.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">3. Payment</strong><br>
+        Paid plans are billed monthly via Paddle. You may cancel at any time; access continues until the end of the billing period. We reserve the right to change pricing with 30 days notice.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">4. Availability</strong><br>
+        We aim for high availability but do not guarantee uptime. We are not liable for losses caused by downtime, incorrect analysis, or service interruption.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">5. Intellectual Property</strong><br>
+        perceptdot software and branding are owned by THUNOVA. You retain ownership of URLs and content you submit for analysis.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">6. Termination</strong><br>
+        We may suspend accounts that violate these terms. You may cancel your account at any time by contacting service@perceptdot.com.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">7. Governing Law</strong><br>
+        These terms are governed by the laws of the Republic of Korea.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Contact:</strong> service@perceptdot.com</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy -->
+  <div class="modal-overlay" id="modal-privacy" onclick="handleOverlayClick(event,'modal-privacy')">
+    <div class="modal" style="max-width:680px;max-height:80vh;overflow-y:auto;">
+      <button class="modal-close" onclick="closeModal('modal-privacy')" aria-label="Close">&times;</button>
+      <h3>Privacy Policy</h3>
+      <div style="color:var(--muted);font-size:13px;line-height:1.8;margin-top:1.2rem;">
+        <p><strong style="color:var(--text);">Effective date: March 24, 2026</strong></p>
+        <p style="margin-top:1rem;">THUNOVA operates perceptdot. This policy describes how we collect and use data.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Data We Collect</strong><br>
+        &bull; Email address (when signing up for API key)<br>
+        &bull; URLs submitted for visual analysis<br>
+        &bull; Usage metrics (number of checks, timestamps)<br>
+        &bull; Standard server logs (IP address, user agent)</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">How We Use Data</strong><br>
+        &bull; To provide and improve the visual QA service<br>
+        &bull; To send transactional emails (API key delivery, billing)<br>
+        &bull; To measure service performance and detect abuse</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Data Sharing</strong><br>
+        We do not sell personal data. We share data with:<br>
+        &bull; Cloudflare (infrastructure, screenshot rendering)<br>
+        &bull; Google (AI vision analysis via Gemini API)<br>
+        &bull; Paddle (payment processing)<br>
+        &bull; Brevo (transactional email)</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Screenshots</strong><br>
+        Screenshots taken during visual_check() are used solely for AI analysis and are not stored permanently. They are discarded after analysis completes.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Your Rights</strong><br>
+        You may request deletion of your data at any time by emailing service@perceptdot.com. We will comply within 30 days.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Cookies</strong><br>
+        We use Google Analytics (anonymized) for aggregate usage statistics. No advertising cookies.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Contact:</strong> service@perceptdot.com</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Refund Policy -->
+  <div class="modal-overlay" id="modal-refund" onclick="handleOverlayClick(event,'modal-refund')">
+    <div class="modal" style="max-width:680px;max-height:80vh;overflow-y:auto;">
+      <button class="modal-close" onclick="closeModal('modal-refund')" aria-label="Close">&times;</button>
+      <h3>Refund Policy</h3>
+      <div style="color:var(--muted);font-size:13px;line-height:1.8;margin-top:1.2rem;">
+        <p><strong style="color:var(--text);">Effective date: March 24, 2026</strong></p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Monthly Subscriptions</strong><br>
+        We offer a <strong style="color:var(--text);">7-day full refund</strong> on your first payment if you are not satisfied. To request a refund, email service@perceptdot.com within 7 days of your first charge with the subject line "Refund Request".</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Subsequent Months</strong><br>
+        After the first month, subscriptions are non-refundable. You may cancel at any time to prevent future charges; access continues until the end of the paid period.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Service Outages</strong><br>
+        If perceptdot experiences a verified outage of more than 24 continuous hours in a billing period, we will provide a prorated credit upon request.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">How to Cancel</strong><br>
+        Email service@perceptdot.com with subject "Cancel Subscription". We will cancel within 1 business day and confirm by email.</p>
+
+        <p style="margin-top:1rem;"><strong style="color:var(--text);">Contact:</strong> service@perceptdot.com</p>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
