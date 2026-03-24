@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" shape-rendering="crispEdges">
+  <!-- background -->
+  <rect width="400" height="400" fill="#07000d"/>
+
+  <!-- red radial glow behind icon -->
+  <radialGradient id="glow" cx="50%" cy="45%" r="35%">
+    <stop offset="0%" stop-color="#ff1a3c" stop-opacity="0.18"/>
+    <stop offset="100%" stop-color="#ff1a3c" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="400" height="400" fill="url(#glow)"/>
+
+  <!--
+    Pixel eye: 8×8 grid, each cell = 22px
+    Total icon = 176×176
+    Centered horizontally: x_offset = (400-176)/2 = 112
+    Vertical: y_offset = 72  (icon: 72→248, gap: 248→278, text: 278→318)
+    Colors: D=#cc0030, R=#ff1a3c, H=#ff6080
+  -->
+
+  <!-- row 0: . . D D D D . . -->
+  <rect x="156" y="72"  width="22" height="22" fill="#cc0030"/>
+  <rect x="178" y="72"  width="22" height="22" fill="#cc0030"/>
+  <rect x="200" y="72"  width="22" height="22" fill="#cc0030"/>
+  <rect x="222" y="72"  width="22" height="22" fill="#cc0030"/>
+
+  <!-- row 1: . D D R R D D . -->
+  <rect x="134" y="94"  width="22" height="22" fill="#cc0030"/>
+  <rect x="156" y="94"  width="22" height="22" fill="#cc0030"/>
+  <rect x="178" y="94"  width="22" height="22" fill="#ff1a3c"/>
+  <rect x="200" y="94"  width="22" height="22" fill="#ff1a3c"/>
+  <rect x="222" y="94"  width="22" height="22" fill="#cc0030"/>
+  <rect x="244" y="94"  width="22" height="22" fill="#cc0030"/>
+
+  <!-- row 2: D D R R R R D D -->
+  <rect x="112" y="116" width="22" height="22" fill="#cc0030"/>
+  <rect x="134" y="116" width="22" height="22" fill="#cc0030"/>
+  <rect x="156" y="116" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="178" y="116" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="200" y="116" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="222" y="116" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="244" y="116" width="22" height="22" fill="#cc0030"/>
+  <rect x="266" y="116" width="22" height="22" fill="#cc0030"/>
+
+  <!-- row 3: D R R H H R R D -->
+  <rect x="112" y="138" width="22" height="22" fill="#cc0030"/>
+  <rect x="134" y="138" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="156" y="138" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="178" y="138" width="22" height="22" fill="#ff6080"/>
+  <rect x="200" y="138" width="22" height="22" fill="#ff6080"/>
+  <rect x="222" y="138" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="244" y="138" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="266" y="138" width="22" height="22" fill="#cc0030"/>
+
+  <!-- row 4: D R R H H R R D -->
+  <rect x="112" y="160" width="22" height="22" fill="#cc0030"/>
+  <rect x="134" y="160" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="156" y="160" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="178" y="160" width="22" height="22" fill="#ff6080"/>
+  <rect x="200" y="160" width="22" height="22" fill="#ff6080"/>
+  <rect x="222" y="160" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="244" y="160" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="266" y="160" width="22" height="22" fill="#cc0030"/>
+
+  <!-- row 5: D D R R R R D D -->
+  <rect x="112" y="182" width="22" height="22" fill="#cc0030"/>
+  <rect x="134" y="182" width="22" height="22" fill="#cc0030"/>
+  <rect x="156" y="182" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="178" y="182" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="200" y="182" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="222" y="182" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="244" y="182" width="22" height="22" fill="#cc0030"/>
+  <rect x="266" y="182" width="22" height="22" fill="#cc0030"/>
+
+  <!-- row 6: . D D R R D D . -->
+  <rect x="134" y="204" width="22" height="22" fill="#cc0030"/>
+  <rect x="156" y="204" width="22" height="22" fill="#cc0030"/>
+  <rect x="178" y="204" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="200" y="204" width="22" height="22" fill="#ff1a3c"/>
+  <rect x="222" y="204" width="22" height="22" fill="#cc0030"/>
+  <rect x="244" y="204" width="22" height="22" fill="#cc0030"/>
+
+  <!-- row 7: . . D D D D . . -->
+  <rect x="156" y="226" width="22" height="22" fill="#cc0030"/>
+  <rect x="178" y="226" width="22" height="22" fill="#cc0030"/>
+  <rect x="200" y="226" width="22" height="22" fill="#cc0030"/>
+  <rect x="222" y="226" width="22" height="22" fill="#cc0030"/>
+
+  <!--
+    "perceptdot" text in Press Start 2P
+    Positioned at y=300 (baseline), centered
+    "percept" white, "dot" red
+  -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+    .wm { font-family: 'Press Start 2P', 'Courier New', monospace; font-size: 26px; letter-spacing: 0; }
+  </style>
+
+  <!-- percept (white) -->
+  <text x="93" y="306" class="wm" fill="#f2f0f5">percept</text>
+  <!-- dot (red) — x calculated: 93 + 7chars * ~15.6px ≈ 93 + 109 = 202... tuned visually -->
+  <text x="201" y="306" class="wm" fill="#ff1a3c">dot</text>
+</svg>
