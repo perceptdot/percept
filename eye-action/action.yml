@@ -1,0 +1,29 @@
+name: 'perceptdot Visual Check'
+description: 'AI-powered visual QA for every deployment — catch UI bugs automatically'
+branding:
+  icon: 'eye'
+  color: 'purple'
+
+inputs:
+  url:
+    description: 'URL to visually check (e.g. Vercel preview URL)'
+    required: true
+  api_key:
+    description: 'perceptdot API key (get free at perceptdot.com)'
+    required: true
+  fail_on_issue:
+    description: 'Fail the workflow if visual issues are detected'
+    required: false
+    default: 'false'
+
+outputs:
+  result:
+    description: 'AI analysis result (JSON)'
+  has_issues:
+    description: 'true if visual issues detected'
+  summary:
+    description: 'Human-readable summary of findings'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>perceptdot — Your Agent's App Store</title>
-  <meta name="description" content="Your agent's app store. One install — your agent discovers and connects to GA4, Vercel, Sentry, GitHub and more automatically." />
-  <meta property="og:title" content="perceptdot — Your Agent's App Store" />
-  <meta property="og:description" content="One install. Your agent discovers the rest. The first agent-native discovery + ROI layer for MCP servers." />
+  <title>perceptdot — Visual QA for AI-generated code</title>
+  <meta name="description" content="Give your AI eyes. Catch visual bugs before users do — automatic screenshot + AI analysis on every deploy." />
+  <meta property="og:title" content="perceptdot — Visual QA for AI-generated code" />
+  <meta property="og:description" content="Give your AI eyes. Catch visual bugs before users do — automatic screenshot + AI analysis on every deploy." />
   <meta property="og:url" content="https://perceptdot.com" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://perceptdot.com/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="perceptdot — Your Agent's App Store" />
-  <meta name="twitter:description" content="One install. Your agent discovers the rest. The first agent-native discovery + ROI layer for MCP servers." />
+  <meta name="twitter:title" content="perceptdot — Visual QA for AI-generated code" />
+  <meta name="twitter:description" content="Give your AI eyes. Catch visual bugs before users do — automatic screenshot + AI analysis on every deploy." />
   <meta name="twitter:image" content="https://perceptdot.com/og-image.png" />
   <meta name="keywords" content="MCP server, AI agent, Claude Code, agent observability, ROI measurement, Vercel monitoring, GA4 analytics, GitHub integration, Sentry errors, developer tools, Model Context Protocol, agent app store" />
   <meta property="og:site_name" content="perceptdot" />
@@ -979,20 +979,25 @@
 <div class="hero">
   <div class="badge">
     <span class="badge-dot"></span>
-    Open Beta · Free Starter
+    Open Beta · Free to Try
   </div>
-  <h1>Your Agent's<br /><span class="highlight">App Store</span></h1>
+  <h1>Give Your AI<br /><span class="highlight">Eyes.</span></h1>
   <p class="hero-sub">
-    One install. Your agent discovers the rest. perceptdot auto-scans your project, recommends the right MCP servers, and connects to GA4, Vercel, Sentry, GitHub — measuring ROI at every step.
+    Visual QA for every deploy — automatic, headless, no desktop required.<br />
+    Your AI writes code fast. Does it <em>look</em> right?
   </p>
   <div class="hero-actions">
-    <a class="btn btn-primary" href="#install">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12l10 10 10-10"/></svg>
-      npx -y @perceptdot/core
+    <button class="btn btn-primary" onclick="openFreeModal()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12C4.5 7 8 4 12 4s7.5 3 10 8c-2.5 5-6 8-10 8S4.5 17 2 12z"/></svg>
+      Try visual_check free
+    </button>
+    <a class="btn btn-outline" href="#install">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      GitHub Action
     </a>
-    <a class="btn btn-outline" href="#how-it-works">See how it works</a>
   </div>
-  <p style="margin-top: 16px; font-size: 12px; color: var(--muted); font-family: var(--mono);">npx -y @perceptdot/core &nbsp;→&nbsp; agent discovers 15+ MCP servers instantly</p>
+  <p style="margin-top: 20px; font-size: 12px; color: var(--muted); font-family: var(--mono); background: rgba(124,109,250,0.08); border: 1px solid rgba(124,109,250,0.2); border-radius: 6px; padding: 10px 16px; display: inline-block;">claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp</p>
+  <p style="margin-top: 10px; font-size: 12px; color: var(--muted);">Works headless, in CI/CD · Claude Code · Cursor · Copilot · any AI coding tool</p>
 </div>
 
 <!-- WORKS WITH -->

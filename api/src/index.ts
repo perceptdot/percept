@@ -1380,11 +1380,32 @@ Max 150 words.`;
   // ── POC 통과 판정 ──
   const pocPassed = totalMs < 10_000 && totalCost < 0.05;
 
+  // ── has_issues / summary 표준화 (GitHub Action 호환) ──
+  const noIssueKeywords = [
+    "no visual issues",
+    "no issues detected",
+    "looks good",
+    "no problems",
+    "no bugs",
+    "nothing wrong",
+    "no visual bugs",
+  ];
+  const lowerAnalysis = analysis.toLowerCase();
+  const hasIssues = !noIssueKeywords.some((kw) => lowerAnalysis.includes(kw));
+  // summary: 첫 문장 (최대 200자)
+  const summary = analysis.split(/[.\n]/)[0]?.trim().slice(0, 200) || analysis.slice(0, 200);
+
   const result: Record<string, unknown> = {
     ok: true,
     poc_passed: pocPassed,
     url,
+    has_issues: hasIssues,
+    summary,
     analysis,
+    issues: hasIssues
+      ? [{ severity: "medium" as const, description: summary }]
+      : [],
+    viewport: { width: 1280, height: 800 },
     timing: {
       total_ms: totalMs,
       browser_ms: browserMs,
@@ -1396,6 +1417,8 @@ Max 150 words.`;
       under_5cents: totalCost < 0.05,
       note: "CF Workers AI vision (~$0.011/1000req free tier on paid plan)",
     },
+    duration_ms: totalMs,
+    cost_usd: Math.round(totalCost * 1_000_000) / 1_000_000,
     screenshot_size_bytes: screenshotBytes,
   };
 

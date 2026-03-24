@@ -1,5 +1,7 @@
 node_modules/
 dist/
+# GitHub Action dist/ must be committed
+!eye-action/dist/
 .env
 .env.local
 *.env
