@@ -89,14 +89,20 @@ async function handleRpc(req: any): Promise<any | null> {
       }
 
       try {
-        const resp = await fetch('https://api.perceptdot.com/v1/eye/check', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: args?.url, prompt: args?.prompt }),
-        })
+        // 500 에러 시 최대 2회 재시도 (2초 간격)
+        let resp: Response | null = null
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          resp = await fetch('https://api.perceptdot.com/v1/eye/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: args?.url, prompt: args?.prompt }),
+          })
+          if (resp.ok) break
+          if (attempt < 3) await new Promise(r => setTimeout(r, 2000 * attempt))
+        }
 
-        if (!resp.ok) {
-          throw new Error(`API error ${resp.status}`)
+        if (!resp || !resp.ok) {
+          throw new Error(`API error ${resp?.status ?? 'unknown'} (after 3 attempts)`)
         }
 
         const result: any = await resp.json()
