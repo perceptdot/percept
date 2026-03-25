@@ -1,45 +1,38 @@
-# ❓ 자주 묻는 질문
+# ❓ FAQ
 
 ---
 
-## Claude Code가 뭔가요?
+## What is Claude Code?
 
-Anthropic이 만든 AI 코딩 도구예요.\
-터미널에서 `claude` 명령어로 실행하고, AI에게 말로 작업을 시킬 수 있어요.\
-[Claude Code 설치하기 →](https://claude.ai/download)
-
----
-
-## 로그인 없이 쓸 수 있나요?
-
-네! 이메일로 API 키를 발급받으면 바로 쓸 수 있어요.\
-별도 회원가입 없이 이메일 1개만 있으면 돼요.
+Claude Code is an AI coding tool by Anthropic. Run it from your terminal with the `claude` command and give it tasks in plain English.\
+[Get Claude Code →](https://claude.ai/download)
 
 ---
 
-## 어떤 사이트든 검사할 수 있나요?
+## Do I need to create an account?
 
-공개된 웹사이트라면 다 가능해요.\
-로그인이 필요한 페이지나 비공개 사이트는 검사가 어려울 수 있어요.
-
----
-
-## 검사가 너무 오래 걸려요
-
-페이지 크기에 따라 **5~20초** 정도 걸려요.\
-긴 페이지일수록 타일이 많아서 시간이 더 걸려요.\
-캐시된 결과는 0.3초 이내로 응답해요.
+No. Just enter your email at [perceptdot.com](https://perceptdot.com) and your API key is sent immediately. No signup, no password.
 
 ---
 
-## 결과가 틀린 것 같아요 (false positive)
+## Can I check any website?
 
-AI가 버그라고 했는데 실제론 의도된 디자인일 수 있어요.\
-그런 경우 `no_cache=true`로 다시 확인해보거나, 결과를 무시해도 돼요.
+Any publicly accessible website works. Pages that require login or are behind a firewall may not be fully analyzed.
 
 ---
 
-## 문제가 있으면 어디에 물어봐요?
+## Why does it take 5–20 seconds?
 
-📧 service@perceptdot.com 으로 이메일 주세요!\
-빠르게 답장 드릴게요.
+Page height determines the number of tiles. A short landing page = 1 tile (~5s). A long documentation page = multiple tiles (~20s). Cached results return in under 0.3s.
+
+---
+
+## I'm getting false positives
+
+Sometimes the AI flags intentional design choices as issues. Use `no_cache=true` to re-run, or simply ignore the report if it doesn't match what you see.
+
+---
+
+## Something's wrong — where do I get help?
+
+📧 Email us at **service@perceptdot.com** — we respond quickly.

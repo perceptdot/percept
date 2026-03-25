@@ -1,29 +1,29 @@
-# perceptdot이 뭐야? 👁️
+# What is perceptdot? 👁️
 
-AI 에이전트가 웹사이트를 **눈으로 보고**, 버그를 찾아주는 도구예요.
+perceptdot gives your AI agent **eyes** — it takes a screenshot of any website and tells you exactly what's broken.
 
-Claude Code 같은 AI 도구에 연결하면, AI가 직접 웹사이트를 스크린샷 찍고 "버튼이 삐져나왔어요", "글자가 잘렸어요" 같은 문제를 알려줘요.
-
----
-
-## 이런 문제를 찾아줘요
-
-✅ 버튼이 화면 밖으로 튀어나온 경우\
-✅ 글자가 잘려서 안 보이는 경우\
-✅ 다른 요소가 겹쳐서 가려진 경우\
-✅ 레이아웃이 틀어진 경우
+Connect it to Claude Code or any MCP-compatible AI tool, and your agent can automatically detect layout bugs, overflowing elements, clipped text, and visual glitches — without you having to look.
 
 ---
 
-## 어떻게 작동하나요?
+## What it finds
 
-1️⃣ AI가 웹사이트를 열어요\
-2️⃣ 스크린샷을 찍어요\
-3️⃣ 어디가 이상한지 분석해요\
-4️⃣ "~번째 섹션 버튼이 밖으로 튀어나왔어요" 라고 알려줘요
+✅ Buttons overflowing outside their container\
+✅ Text getting clipped or cut off\
+✅ Elements overlapping and hiding each other\
+✅ Broken layouts and misaligned sections
 
 ---
 
-## 설치는 1분이면 돼요
+## How it works
 
-다음 페이지에서 바로 시작해보세요 👉 [⚡ 1분 설치하기](install.md)
+1️⃣ Your AI opens the website\
+2️⃣ Takes a full-page screenshot (tiled at 1280×1600px)\
+3️⃣ Analyzes each tile with Gemini 2.5 Flash\
+4️⃣ Reports: *"The CTA button in section 3 overflows by 18px"*
+
+---
+
+## Ready in 1 minute
+
+Jump straight to setup 👉 [⚡ Quick Install](install.md)

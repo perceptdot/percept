@@ -1,37 +1,37 @@
-# 💳 요금제
+# 💳 Pricing
 
 ---
 
-## Free (무료)
+## Free
 
-🆓 매달 **100타일** 무료\
-✅ 설치 즉시 사용 가능\
-✅ 이메일로 API 키 발급\
-✅ 전체 기능 동일하게 사용 가능
-
----
-
-## Pro ($19/월)
-
-⚡ **무제한** 타일\
-✅ Free 모든 기능 포함\
-✅ 우선 처리 (빠른 응답)
+🆓 **100 tiles/month** — no credit card needed\
+✅ Instant API key via email\
+✅ All features included\
+✅ Full-page tiling, AI analysis, issue reports
 
 ---
 
-## Unlimited ($49/월)
+## Pro — $19/month
 
-🚀 **무제한** 타일\
-✅ 팀 전체 사용\
-✅ 전용 지원
+⚡ **Unlimited tiles**\
+✅ Everything in Free\
+✅ Priority processing
 
 ---
 
-## API 키 받기
+## Unlimited — $49/month
 
-👉 [perceptdot.com](https://perceptdot.com) 에서 이메일 입력하면 **무료 키 바로 발급**이에요!
+🚀 **Unlimited tiles**\
+✅ Team usage\
+✅ Dedicated support
+
+---
+
+## Get started for free
+
+👉 Enter your email at [perceptdot.com](https://perceptdot.com) — **free API key sent instantly**.
 
 {% hint style="success" %}
-**Free 플랜으로 시작해보세요!**\
-100타일이면 사이트 수십 개를 검사할 수 있어요. 부담 없이 써보고 업그레이드하세요.
+**Start with Free.**\
+100 tiles covers dozens of pages. Try it out, then upgrade when you need more.
 {% endhint %}

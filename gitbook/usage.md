@@ -1,52 +1,50 @@
-# 🔍 어떻게 쓰나요?
+# 🔍 How to Use
 
-Claude Code에서 그냥 **말로 부탁**하면 돼요. 어렵지 않아요!
-
----
-
-## 기본 사용법
-
-```
-내 사이트 버그 확인해줘: https://내사이트.com
-```
-
-```
-https://shop.example.com 레이아웃 문제 있어?
-```
+Just talk to Claude Code naturally. No special syntax needed.
 
 ---
 
-## 결과 예시
+## Basic usage
 
-AI가 이렇게 알려줘요:
+```
+Check my site for bugs: https://mysite.com
+```
+
+```
+Any layout issues on https://shop.example.com?
+```
+
+---
+
+## Example output
 
 ```
 has_issues: true
 
-문제 발견됨:
-1. [HIGH] 상단 버튼이 컨테이너 밖으로 18px 튀어나옴
-2. [MED]  모바일에서 텍스트가 잘려서 '...' 처리됨
+Issues found:
+1. [HIGH] CTA button overflows container by 18px (section-hero)
+2. [MED]  Product title text is clipped on mobile viewport
 
-전체 페이지 5개 구역 검사 완료 (2.3초)
+Full-page scan complete — 5 tiles analyzed in 2.3s
 ```
 
 ---
 
-## 자주 쓰는 표현
+## Useful phrases
 
-| 말하는 방법 | 뭐 하는 건지 |
-|------------|------------|
-| "확인해줘" | 전체 페이지 스캔 |
-| "버그 있어?" | 문제만 골라서 알려줌 |
-| "no\_cache=true로 다시 확인해줘" | 캐시 무시하고 새로 스캔 |
+| What to say | What it does |
+|-------------|-------------|
+| "Check this URL" | Full-page scan |
+| "Any bugs?" | Reports issues only |
+| "Re-check with no_cache=true" | Bypass cache, fresh scan |
 
 ---
 
-## 알아두면 좋은 것
+## Good to know
 
 {% hint style="info" %}
-**타일이 뭔가요?**\
-페이지를 1280×1600px 조각으로 잘라서 검사해요.\
-짧은 페이지 = 타일 1개, 긴 페이지 = 여러 개.\
-타일 1개당 크레딧 1개가 사용돼요.
+**What's a tile?**\
+perceptdot splits pages into 1280×1600px sections for analysis.\
+Short pages = 1 tile. Long pages = multiple tiles.\
+1 tile = 1 credit used.
 {% endhint %}
