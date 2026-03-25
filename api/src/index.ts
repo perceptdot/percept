@@ -1394,8 +1394,8 @@ Rules: Normal design choices (dark themes, minimal layouts, bold fonts) are NOT 
     hasIssues = !noIssueKeywords.some((kw) => lowerAnalysis.includes(kw));
   }
   // summary: VERDICT 접두사 제거 후 첫 문장 (최대 200자)
-  const rawFirst = analysis.replace(/^\*{0,2}VERDICT:\s*(NO ISSUES|ISSUES FOUND)\*{0,2}\s*[\n]*/i, '').split(/[.\n]/)[0]?.trim();
-  const summary = (rawFirst || analysis).slice(0, 200);
+  const cleaned = analysis.replace(/^\*{0,2}VERDICT:\s*(NO ISSUES|ISSUES FOUND)\*{0,2}\s*[\n]*/i, '').trim();
+  const summary = cleaned.split('\n\n')[0].trim().slice(0, 200);
 
   const result: Record<string, unknown> = {
     ok: true,
