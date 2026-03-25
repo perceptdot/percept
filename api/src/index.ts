@@ -1311,20 +1311,36 @@ app.post("/v1/eye/check", async (c) => {
     ? `Focus on: ${prompt}`
     : "Look for: broken layouts, element overflow, missing images, severe misalignment, text clipping, z-index issues, extremely low color contrast.";
 
-  const analysisPrompt = `You are a visual QA engineer reviewing a web page screenshot.
+  const analysisPrompt = `You are a strict visual QA engineer. Your job is to find ONLY clear, objective rendering errors — NOT design opinions.
+
 URL: ${url}
 
-STEP 1 — First line must be EXACTLY one of:
+WHAT COUNTS AS A REAL BUG (flag these):
+- Element visibly cut off or clipped by its container
+- Button/text extending outside its parent box
+- Overlapping elements that obscure each other (z-index)
+- Completely broken layout (columns collapsed, content stacked wrong)
+- Images showing a broken icon (src failed to load)
+
+WHAT IS NOT A BUG (do NOT flag these):
+- Minimalist or simple design
+- Dark backgrounds, bold fonts, unusual colors
+- Small margins or tight spacing
+- Any element that is INTENTIONALLY designed that way
+- Placeholder or example pages with little content
+- "Missing" content that is just empty by design
+
+STEP 1 — First line EXACTLY one of:
 VERDICT: NO ISSUES
 VERDICT: ISSUES FOUND
 
 STEP 2 — One sentence summary (max 80 chars).
 
-STEP 3 — If issues found, list each as a bullet:
-- [high|medium|low] Specific issue description (max 80 chars each, max 5 bullets)
+STEP 3 — Only if you found a REAL BUG above, list it:
+- [high|medium|low] Exact description of the rendering error (max 80 chars, max 5 bullets)
 
 ${userFocus}
-Rules: Dark themes, minimal layouts, bold fonts are NOT bugs. Only flag clear rendering errors.`;
+Be conservative. If unsure whether something is a bug, do NOT list it.`;
 
   let hasIssues = false;
   let summary = "";
@@ -1382,17 +1398,9 @@ Rules: Dark themes, minimal layouts, bold fonts are NOT bugs. Only flag clear re
       }
     }
 
-    // 최종 보정: VERDICT와 실제 내용이 모순될 때
-    // — issues[]가 비어있고 summary가 "no issues" 계열이면 false로 덮어씀
-    // — Gemini가 VERDICT: ISSUES FOUND라 쓰고 본문에서 "no visible issues"라 하는 경우 방지
-    const noIssueSignals = ["no visible issues", "no issues", "no visual issues", "no problems", "looks good", "well-designed", "no bugs", "renders correctly", "no rendering"];
-    const summaryLower = summary.toLowerCase();
-    const summaryClean = noIssueSignals.some((kw) => summaryLower.includes(kw));
-    if (issues.length === 0 && summaryClean) {
-      return { hasIssues: false, summary, issues };
-    }
-
-    return { hasIssues: foundIssues, summary, issues };
+    // has_issues는 issues[] 개수로만 결정 — VERDICT 텍스트는 신뢰하지 않음
+    // Gemini가 VERDICT와 본문을 모순되게 쓰는 경우가 잦아 issues[] 자체가 진실
+    return { hasIssues: issues.length > 0, summary, issues };
   }
 
   // Gemini 2.0 Flash — primary
