@@ -1307,18 +1307,15 @@ app.post("/v1/eye/check", async (c) => {
 
   // ── CF Workers AI: 비주얼 QA 분석 (지역제한 없음) ──
   const aiStart = Date.now();
-  const analysisPrompt =
-    prompt ||
-    `You are a visual QA engineer. Analyze this web page screenshot for visual bugs.
+  const verdictInstruction = `\n\nIMPORTANT: Start your response with exactly one of:\n- "VERDICT: NO ISSUES" — if the page looks visually correct\n- "VERDICT: ISSUES FOUND" — if you see clear visual bugs\nNormal design choices (dark theme, bold fonts) are NOT bugs.`;
+
+  const analysisPrompt = prompt
+    ? `${prompt}\nURL: ${url}${verdictInstruction}`
+    : `You are a visual QA engineer. Analyze this web page screenshot for visual bugs.
 URL: ${url}
 
 Look ONLY for clear bugs: broken layouts, element overflow (content outside container), missing images, severe misalignment, text clipping, z-index overlap issues, extremely low color contrast.
-
-IMPORTANT: Start your response with exactly one of:
-- "VERDICT: NO ISSUES" — if the page looks visually correct
-- "VERDICT: ISSUES FOUND" — if you see clear visual bugs
-
-Then briefly describe what you found (max 100 words). Normal design choices (dark theme, minimal layout, bold fonts) are NOT bugs.`;
+${verdictInstruction}`;
 
   let analysis = "";
 
