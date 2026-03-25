@@ -1285,14 +1285,14 @@ app.post("/v1/eye/check", async (c) => {
   const startTime = Date.now();
 
   // ── 요청 파싱 ──
-  let body: { url?: string; prompt?: string; include_screenshot?: boolean };
+  let body: { url?: string; prompt?: string; include_screenshot?: boolean; no_cache?: boolean };
   try {
     body = await c.req.json();
   } catch {
     return c.json({ error: "Invalid JSON" }, 400);
   }
 
-  const { url, prompt, include_screenshot = false } = body;
+  const { url, prompt, include_screenshot = false, no_cache = false } = body;
   if (!url) return c.json({ error: "url is required" }, 400);
 
   // URL 유효성 검사 (SSRF 방지: http/https만 허용)
@@ -1318,9 +1318,9 @@ app.post("/v1/eye/check", async (c) => {
     return c.json({ error: "Invalid URL" }, 400);
   }
 
-  // ── KV 캐시 조회 (prompt 없는 표준 요청만 캐시) ──
+  // ── KV 캐시 조회 (no_cache=true 또는 prompt 있으면 스킵) ──
   const cacheKey = `eye:${url}`;
-  if (!prompt && c.env.VISUAL_CACHE) {
+  if (!prompt && !no_cache && c.env.VISUAL_CACHE) {
     try {
       const cached = await c.env.VISUAL_CACHE.get(cacheKey, "json");
       if (cached) {

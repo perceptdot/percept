@@ -70,6 +70,10 @@ async function handleRpc(req: any): Promise<any | null> {
                   prompt: {
                     type: 'string',
                     description: 'Optional: specific aspect to focus on (e.g. "check the header layout")'
+                  },
+                  no_cache: {
+                    type: 'boolean',
+                    description: 'Optional: set true to bypass cache and always run a fresh analysis'
                   }
                 },
                 required: ['url']
@@ -97,7 +101,7 @@ async function handleRpc(req: any): Promise<any | null> {
           resp = await fetch('https://api.perceptdot.com/v1/eye/check', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: args?.url, prompt: args?.prompt }),
+            body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache }),
           })
           if (resp.ok) break
           if (attempt < 4) await new Promise(r => setTimeout(r, delays[attempt - 1]))
