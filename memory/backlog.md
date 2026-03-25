@@ -57,6 +57,10 @@
 - ✅ **EYE-01** CF Browser Rendering API POC 완료 (2026-03-24) — 7.4초, $0.000012/체크 (목표의 0.024%) 🎉
 - ✅ **BUG-EYE-01** `waitUntil:"domcontentloaded"` + 요청 차단(Paddle.js/GTM) + 5s 타임아웃 적용 (2026-03-25) — perceptdot.com 18s→9.9s, POC 통과
 - ✅ **BUG-EYE-02** `has_issues`/`summary`/`issues[]` 배포 완료 (2026-03-25) — VERDICT 파싱 구조화, Gemini 2.0 Flash 주 AI 전환
+- ✅ **EYE-INFRA-01** KV 캐싱 + Durable Objects 큐 배포 완료 (2026-03-25) — VISUAL_CACHE KV(5분 TTL) + BrowserQueue DO(동시 2개 제한), 캐시 히트 시 ~0.3s
+- ✅ **EYE-INFRA-02** `no_cache` 파라미터 추가 (2026-03-25) — 데모/테스트용 캐시 우회, /visual-test 스킬 업데이트
+- ✅ **EYE-INFRA-03** 프롬프트 Tier 1/2 분리 + 파서 보강 (2026-03-25) — Tier 1(overflow/clipping 등) 무조건 리포트, summary 키워드 폴백
+- ✅ **EYE-INFRA-04** Gemini 2.0 Flash → 2.5 Flash 마이그레이션 (2026-03-25) — MMMU +8%p(71.7→79.7%), thinkingBudget:0, 2.5 Flash Lite 비교 후 Lite 탈락(false positive)
 - [ ] **EYE-02** r/ClaudeCode 수요 설문 — "에이전트 시각 버그 경험? $19 낼 의향?" 50명 이상 (1일)
 - [ ] **EYE-03** POC 결과로 아키텍처 확정 (CF BR API or Browserless $25/월)
 

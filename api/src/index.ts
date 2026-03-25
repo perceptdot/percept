@@ -1429,10 +1429,23 @@ These are objective rendering failures. Report them even if the page looks inten
 
 ── TIER 2: SKIP (design choices, not bugs) ────────────────────────────
 Do NOT report these — they are intentional design decisions:
-• Minimalist pages with little content (e.g. example.com)
+• Pages with minimal or sparse content (text-only, few elements) — this is a design choice, NOT a bug
+• Simple pages that look "empty" — e.g. a page with just a title, paragraph, and link is perfectly valid
 • Dark backgrounds, bold fonts, unusual color schemes
 • Tight spacing or large whitespace
-• Empty sections that appear to be placeholders by design
+• Empty sections or missing images that appear to be placeholders by design
+• Low content density — having few elements on a page is NOT a rendering error
+
+── EXAMPLE: Correct NO ISSUES response ────────────────────────────────
+For a simple page with readable text, a few links, standard layout:
+VERDICT: NO ISSUES
+Page renders correctly with readable text and standard layout.
+
+── CONFIDENCE RULE ────────────────────────────────────────────────────
+Before reporting ANY bug, ask yourself:
+"Can I point to a specific visible element on screen that is clearly broken?"
+If NO → do not report it. Do NOT invent or assume bugs you cannot see clearly.
+Missing content, sparse layout, or plain design are NEVER bugs.
 
 ── RESPONSE FORMAT (follow exactly) ───────────────────────────────────
 VERDICT: NO ISSUES
@@ -1446,10 +1459,9 @@ VERDICT: ISSUES FOUND
 - [low] description of bug 3 (max 80 chars)
 
 RULES:
-• If you found ANY Tier 1 bug → write VERDICT: ISSUES FOUND and list each bug as a bullet
+• Only report bugs you can SEE clearly in the screenshot — no assumptions
+• If the page renders with visible, readable content → default verdict is NO ISSUES unless a Tier 1 bug is clearly visible
 • If zero Tier 1 bugs → write VERDICT: NO ISSUES and no bullets
-• Do NOT describe bugs in the summary line — bullets only
-• Do NOT skip the bullet list if verdict is ISSUES FOUND
 
 ${userFocus}`;
 
@@ -1522,7 +1534,7 @@ ${userFocus}`;
   // Gemini 2.0 Flash — primary
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${c.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1531,7 +1543,7 @@ ${userFocus}`;
             { inline_data: { mime_type: "image/jpeg", data: screenshotB64 } },
             { text: analysisPrompt },
           ]}],
-          generationConfig: { maxOutputTokens: 500, temperature: 0.1, thinkingConfig: { thinkingBudget: 0 } },
+          generationConfig: { maxOutputTokens: 500, temperature: 0.1 },
         }),
       }
     );
