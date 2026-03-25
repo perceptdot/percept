@@ -1798,7 +1798,7 @@ If there are confirmed bugs:
     await c.env.VISUAL_CACHE.put(cacheKey, JSON.stringify(result), { expirationTtl: 300 }).catch(() => {});
   }
 
-  return c.json(result);
+  return c.json(result, 200, { "Cache-Control": "no-store, no-cache, must-revalidate" });
 });
 
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────
