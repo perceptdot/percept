@@ -1632,10 +1632,10 @@
 
     <div class="install-tabs">
       <div class="install-tab-btns">
-        <button class="itab active" onclick="switchTab('claude')">Claude Code</button>
-        <button class="itab" onclick="switchTab('cursor')">Cursor</button>
-        <button class="itab" onclick="switchTab('windsurf')">Windsurf</button>
-        <button class="itab" onclick="switchTab('cline')">Cline</button>
+        <button class="itab active" onclick="switchTab('claude',true)">Claude Code</button>
+        <button class="itab" onclick="switchTab('cursor',true)">Cursor</button>
+        <button class="itab" onclick="switchTab('windsurf',true)">Windsurf</button>
+        <button class="itab" onclick="switchTab('cline',true)">Cline</button>
       </div>
       <div class="hero-code" id="tab-claude">
         <span class="code-comment"># Replace YOUR_KEY with your API key</span><br>
@@ -1660,17 +1660,6 @@
       <a href="#github-action" class="btn btn-outline">GitHub Action &nbsp;&#8599;</a>
     </div>
 
-    <div class="compat-row">
-      <span>Works headless</span>
-      <span class="sep">|</span>
-      <span>Claude Code</span>
-      <span class="sep">|</span>
-      <span>Cursor</span>
-      <span class="sep">|</span>
-      <span>GitHub Copilot</span>
-      <span class="sep">|</span>
-      <span>Windsurf</span>
-    </div>
   </section>
 
   <div class="section-sep"></div>
@@ -2277,7 +2266,8 @@
     }
 
     // ---- Install tab switcher ----
-    function switchTab(name) {
+    var _tabAutoTimer = null;
+    function switchTab(name, manual) {
       var tabs = ['claude','cursor','windsurf','cline'];
       tabs.forEach(function(t) {
         document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
@@ -2286,7 +2276,17 @@
       btns.forEach(function(b, i) {
         b.classList.toggle('active', tabs[i]===name);
       });
+      if (manual) {
+        clearInterval(_tabAutoTimer);
+        _tabAutoTimer = setInterval(autoNextTab, 3000);
+      }
     }
+    function autoNextTab() {
+      var tabs = ['claude','cursor','windsurf','cline'];
+      var cur = tabs.findIndex(function(t) { return document.getElementById('tab-'+t).style.display !== 'none'; });
+      switchTab(tabs[(cur + 1) % tabs.length], false);
+    }
+    _tabAutoTimer = setInterval(autoNextTab, 3000);
 
     // ---- Free key form ----
     async function submitFreeKey() {
