@@ -493,7 +493,7 @@ async function sendApiKeyEmail(
           <table cellpadding="0" cellspacing="0">
             <tr>
               <td style="padding-right:10px;vertical-align:middle;">
-                <img src="https://perceptdot.com/logo-400x400.png" width="32" height="32" alt="perceptdot" style="display:block;border-radius:4px;">
+                <img src="https://perceptdot.com/logo-email.png" width="32" height="32" alt="perceptdot" style="display:block;">
               </td>
               <td style="vertical-align:middle;">
                 <span style="font-size:18px;font-weight:700;color:#f2f0f5;letter-spacing:-0.5px;">percept<span style="color:#ff1a3c;">dot</span></span>
