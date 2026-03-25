@@ -493,20 +493,7 @@ async function sendApiKeyEmail(
           <table cellpadding="0" cellspacing="0">
             <tr>
               <td style="padding-right:10px;vertical-align:middle;">
-                <!-- pixel eye logo (SVG inline) -->
-                <svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="8"  y="0"  width="16" height="4" fill="#cc0030"/>
-                  <rect x="4"  y="4"  width="4"  height="4" fill="#cc0030"/>
-                  <rect x="24" y="4"  width="4"  height="4" fill="#cc0030"/>
-                  <rect x="0"  y="8"  width="4"  height="16" fill="#cc0030"/>
-                  <rect x="28" y="8"  width="4"  height="16" fill="#cc0030"/>
-                  <rect x="4"  y="4"  width="24" height="24" fill="#ff1a3c"/>
-                  <rect x="8"  y="8"  width="16" height="16" fill="#ff6080"/>
-                  <rect x="12" y="12" width="8"  height="8"  fill="#ff1a3c"/>
-                  <rect x="4"  y="28" width="4"  height="4"  fill="#cc0030"/>
-                  <rect x="24" y="28" width="4"  height="4"  fill="#cc0030"/>
-                  <rect x="8"  y="28" width="16" height="4"  fill="#cc0030"/>
-                </svg>
+                <img src="https://perceptdot.com/logo-400x400.png" width="32" height="32" alt="perceptdot" style="display:block;border-radius:4px;">
               </td>
               <td style="vertical-align:middle;">
                 <span style="font-size:18px;font-weight:700;color:#f2f0f5;letter-spacing:-0.5px;">percept<span style="color:#ff1a3c;">dot</span></span>
