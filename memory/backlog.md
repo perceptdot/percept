@@ -55,14 +55,17 @@
 
 ### CRITICAL (POC 먼저)
 - ✅ **EYE-01** CF Browser Rendering API POC 완료 (2026-03-24) — 7.4초, $0.000012/체크 (목표의 0.024%) 🎉
-- [ ] **BUG-EYE-01** `waitUntil:"load"` → Paddle.js 기다려 18초 초과 — `networkidle2` 또는 `domcontentloaded`로 수정 필요 ⚡ 내일 1순위
-- [ ] **BUG-EYE-02** `has_issues`/`summary`/`issues[]` 필드 미배포 — 로컬엔 있음, `wrangler deploy` 필요 ⚡ 내일 1순위
+- ✅ **BUG-EYE-01** `waitUntil:"domcontentloaded"` + 요청 차단(Paddle.js/GTM) + 5s 타임아웃 적용 (2026-03-25) — perceptdot.com 18s→9.9s, POC 통과
+- ✅ **BUG-EYE-02** `has_issues`/`summary`/`issues[]` 배포 완료 (2026-03-25) — VERDICT 파싱 구조화, Gemini 2.0 Flash 주 AI 전환
 - [ ] **EYE-02** r/ClaudeCode 수요 설문 — "에이전트 시각 버그 경험? $19 낼 의향?" 50명 이상 (1일)
 - [ ] **EYE-03** POC 결과로 아키텍처 확정 (CF BR API or Browserless $25/월)
 
 ### HIGH (POC 통과 후)
 - ✅ **EYE-04** Remote MCP 서버 구현 (mcp.perceptdot.com/mcp) 완료 (2026-03-24) — Hono + CF Workers, visual_check 도구, initialize/tools/list/tools/call 정상 동작 확인
 - ✅ **EYE-05** 랜딩 perceptdot.com 신제품 메시지로 전환 (2026-03-24) — "Give Your AI Eyes." 헤로 교체, 메타태그 업데이트, MCP 설치 1줄 + "Try visual_check free" CTA
+- ✅ **EYE-DEMO** bug-demo.html 제작 + CF Pages 배포 (2026-03-25) — 5개 의도적 버그 (버튼 오버플로우/텍스트 클리핑/z-index/낮은 대비/레이아웃)
+- ✅ **EYE-SKILL** `/visual-test` Claude Code 스킬 제작 (2026-03-25) — example.com✅ + perceptdot.com/bug-demo✅ 시나리오
+- ✅ **PAY-DISABLE** 유료 플랜 버튼 비활성화 완료 (2026-03-25) — Pro/Unlimited "Coming Soon" disabled 처리
 - [ ] **EYE-06** 2분 데모 영상/GIF 제작 ⭐ 1순위 — 에이전트가 실제 버그 잡는 장면 (없으면 홍보 불가)
 - [ ] **EYE-07** Show HN + r/ClaudeCode 포스팅 ⭐ 2순위 — 데모 영상 완료 후
 - [ ] **EYE-11** GitHub Marketplace eye-action 등록 ⭐ 3순위 — perceptdot/eye-action repo 생성 후

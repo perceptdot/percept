@@ -1307,15 +1307,18 @@ app.post("/v1/eye/check", async (c) => {
 
   // ── CF Workers AI: 비주얼 QA 분석 (지역제한 없음) ──
   const aiStart = Date.now();
-  const verdictInstruction = `\n\nIMPORTANT: Start your response with exactly one of:\n- "VERDICT: NO ISSUES" — if the page looks visually correct\n- "VERDICT: ISSUES FOUND" — if you see clear visual bugs\nNormal design choices (dark theme, bold fonts) are NOT bugs.`;
+  const userFocus = prompt ? `Focus on: ${prompt}` : 'Look for: broken layouts, element overflow, missing images, severe misalignment, text clipping, z-index issues, extremely low color contrast.';
 
-  const analysisPrompt = prompt
-    ? `${prompt}\nURL: ${url}${verdictInstruction}`
-    : `You are a visual QA engineer. Analyze this web page screenshot for visual bugs.
+  const analysisPrompt = `You are a visual QA engineer reviewing a web page screenshot.
 URL: ${url}
 
-Look ONLY for clear bugs: broken layouts, element overflow (content outside container), missing images, severe misalignment, text clipping, z-index overlap issues, extremely low color contrast.
-${verdictInstruction}`;
+STEP 1 — Write your first line as EXACTLY one of:
+VERDICT: NO ISSUES
+VERDICT: ISSUES FOUND
+
+STEP 2 — Then briefly explain (max 80 words). ${userFocus}
+
+Rules: Normal design choices (dark themes, minimal layouts, bold fonts) are NOT bugs. Only flag clear rendering errors.`;
 
   let analysis = "";
 
@@ -1390,8 +1393,9 @@ ${verdictInstruction}`;
     const noIssueKeywords = ["no visual issues", "no issues detected", "looks good", "no problems", "no bugs", "no visual bugs"];
     hasIssues = !noIssueKeywords.some((kw) => lowerAnalysis.includes(kw));
   }
-  // summary: 첫 문장 (최대 200자)
-  const summary = analysis.split(/[.\n]/)[0]?.trim().slice(0, 200) || analysis.slice(0, 200);
+  // summary: VERDICT 접두사 제거 후 첫 문장 (최대 200자)
+  const rawFirst = analysis.replace(/^\*{0,2}VERDICT:\s*(NO ISSUES|ISSUES FOUND)\*{0,2}\s*[\n]*/i, '').split(/[.\n]/)[0]?.trim();
+  const summary = (rawFirst || analysis).slice(0, 200);
 
   const result: Record<string, unknown> = {
     ok: true,
