@@ -1470,38 +1470,38 @@ app.post("/v1/eye/check", async (c) => {
     ? `Focus on: ${prompt}`
     : "Look for: broken layouts, element overflow, missing images, severe misalignment, text clipping, z-index issues, extremely low color contrast.";
 
-  const analysisPrompt = `You are a visual QA engineer. Inspect this screenshot for rendering errors.
+  const analysisPrompt = `You are a visual QA engineer. Analyze ONLY what you can see in this screenshot.
 
-URL: ${url}
+CRITICAL RULES:
+- ONLY describe elements you can VISUALLY SEE in the screenshot
+- Do NOT use any knowledge about the URL or website — analyze only pixels
+- Do NOT invent or assume text content you cannot clearly read
+- If unsure whether something is a bug or a design choice, do NOT report it
+- Require clear visual evidence: you must see the exact pixel-level violation
+
 ${userFocus}
 
-ONLY flag these objective bugs:
-- Element clearly overflowing outside its container boundary
-- Text/button clipped or cut off at edge
-- Elements overlapping incorrectly (z-index layering issue)
-- Broken image placeholder (failed to load)
-- Layout completely collapsed or invisible
+Report a bug ONLY if you can point to a specific pixel-level violation you can clearly see:
+- Something visibly sticking out past where it should stop
+- A word or button that appears cut in half at the screen edge
+- Two distinct UI components sitting on top of each other unexpectedly
+- A gray broken-image box where content should be
 
-DO NOT flag:
-- Minimal/simple pages (example.com-style is VALID)
-- Design choices (dark theme, unusual colors, bold fonts)
-- Intentional empty sections
+Skip anything that could be a design choice. Skip anything near an edge that is not clearly cut off.
+If in doubt, do NOT report it.
 
-VERDICT: ISSUES FOUND
-- [high] exact description of specific broken element (max 80 chars)
+Respond ONLY with valid JSON — no markdown, no code block, no extra text:
+{"has_issues": false, "summary": "one sentence", "issues": []}
 
-OR if clean:
-
-VERDICT: NO ISSUES
-Summary: one sentence why the page looks correct`;
+If there are confirmed bugs:
+{"has_issues": true, "summary": "brief summary", "issues": [{"severity": "high|medium|low", "description": "specific element name + what you see wrong, max 80 chars"}]}`;
 
   /** Parse VERDICT-format response into structured fields */
   function parseVerdictText(text: string) {
     const lower = text.toLowerCase();
     const hi = lower.includes("verdict: issues found");
-    const ni = lower.includes("verdict: no issues");
-    const _foundIssues = hi ? true : ni ? false
-      : !["no visual issues", "looks good", "no bugs"].some((kw) => lower.includes(kw));
+    // 애매할 때 기본값 false (false positive 방지)
+    const _foundIssues = hi ? true : false;
 
     const rawLines = text.split("\n").map((l) => l.trim()).filter(Boolean);
     let parsedSummary = "";
@@ -1538,9 +1538,9 @@ Summary: one sentence why the page looks correct`;
       }
     }
 
+    // VERDICT: ISSUES FOUND 명시 + 실제 이슈 항목 둘 다 있어야 true (AND 조건)
     const verdictIssues = lower.includes("verdict: issues found");
-    const summaryHasIssueKeyword = /rendering error|overflow|clipping|z-index|broken|overlap|extend|outside|cut off/i.test(parsedSummary);
-    const hasIssues = issues.length > 0 || (verdictIssues && summaryHasIssueKeyword);
+    const hasIssues = verdictIssues && issues.length > 0;
     return { hasIssues, summary: parsedSummary, issues };
   }
 
@@ -1567,7 +1567,11 @@ Summary: one sentence why the page looks correct`;
               { inline_data: { mime_type: "image/jpeg", data: b64 } },
               { text: analysisPrompt },
             ]}],
-            generationConfig: { maxOutputTokens: 500, temperature: 0.1 },
+            generationConfig: {
+              maxOutputTokens: 600,
+              temperature: 0,
+              response_mime_type: "application/json",
+            },
           }),
         }
       );
@@ -1589,12 +1593,13 @@ Summary: one sentence why the page looks correct`;
             has_issues: boolean; summary: string; issues: Array<{ severity: string; description: string }>
           };
           if (typeof j.has_issues === "boolean" && j.summary) {
-            hasIssues = j.has_issues;
             tileSummary = j.summary.slice(0, 200);
             issues = (j.issues ?? []).slice(0, 5).map((i) => ({
               severity: (["high","medium","low"].includes(i.severity) ? i.severity : "medium") as "high"|"medium"|"low",
               description: (i.description ?? "").slice(0, 120),
             }));
+            // 이슈 목록이 비어있으면 has_issues 무조건 false (근거 필수)
+            hasIssues = j.has_issues && issues.length > 0;
             jsonParsed = true;
           }
         }
@@ -1606,25 +1611,11 @@ Summary: one sentence why the page looks correct`;
         issues = parsed.issues;
       }
     } catch (e) {
-      // CF Workers AI fallback
-      try {
-        const binaryStr = atob(b64);
-        const bytes = new Uint8Array(binaryStr.length);
-        for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
-        const aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
-          prompt: analysisPrompt,
-          image: [...bytes],
-          max_tokens: 500,
-        });
-        raw = typeof aiResult?.response === "string" ? aiResult.response : JSON.stringify(aiResult ?? "");
-        const parsed = parseVerdictText(raw);
-        hasIssues = parsed.hasIssues;
-        tileSummary = parsed.summary;
-        issues = parsed.issues;
-      } catch (e2) {
-        raw = `Analysis failed: ${String(e)} / ${String(e2)}`;
-        tileSummary = "Analysis failed";
-      }
+      // Gemini 실패 시 → 이슈 없음으로 처리 (Llama fallback 제거: 할루시네이션 과다)
+      raw = `Gemini unavailable: ${String(e)}`;
+      tileSummary = "Analysis skipped (Gemini unavailable)";
+      hasIssues = false;
+      issues = [];
     }
 
     return { hasIssues, summary: tileSummary, issues, raw };
@@ -1651,8 +1642,9 @@ Summary: one sentence why the page looks correct`;
     });
   }
 
-  // 타일 결과 머지
-  const hasIssues = tileResults.some(t => t.has_issues);
+  // 타일 결과 머지 — has_issues=true && issues 항목 있는 타일만 유효로 인정
+  const validIssueTiles = tileResults.filter(t => t.has_issues && t.issues.length > 0);
+  const hasIssues = validIssueTiles.length > 0;
   const parsedIssues = tileResults.flatMap(t => t.issues).slice(0, 10);
   const summary = (tileResults.find(t => t.has_issues) ?? tileResults[0])?.summary ?? "";
   const analysis = tileResults.map((t, i) => `[Tile ${i}] ${t.raw}`).join("\n---\n").slice(0, 3000);
