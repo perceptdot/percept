@@ -1292,8 +1292,8 @@ app.post("/v1/eye/check", async (c) => {
     return c.json({ error: "Invalid JSON" }, 400);
   }
 
-  const { url, prompt, include_screenshot = false, no_cache = false, full_page = true, viewport: viewportParam = "mobile" } = body;
-  // viewport: "mobile"=375px (기본), "tablet"=768px, "desktop"=1280px
+  const { url, prompt, include_screenshot = false, no_cache = false, full_page = true, viewport: viewportParam = "desktop" } = body;
+  // viewport: "desktop"=1280px (기본), "tablet"=768px, "mobile"=375px
   const VIEWPORT_WIDTH = viewportParam === "desktop" ? 1280 : viewportParam === "tablet" ? 768 : 375;
   if (!url) return c.json({ error: "url is required" }, 400);
 
