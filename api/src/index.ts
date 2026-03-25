@@ -1415,55 +1415,30 @@ app.post("/v1/eye/check", async (c) => {
     ? `Focus on: ${prompt}`
     : "Look for: broken layouts, element overflow, missing images, severe misalignment, text clipping, z-index issues, extremely low color contrast.";
 
-  const analysisPrompt = `You are a visual QA engineer. Inspect the screenshot carefully for rendering errors.
+  const analysisPrompt = `You are a visual QA engineer. Inspect this screenshot for rendering errors.
 
 URL: ${url}
+${userFocus}
 
-── TIER 1: ALWAYS REPORT (no hesitation) ──────────────────────────────
-These are objective rendering failures. Report them even if the page looks intentional:
-• Any element visibly overflowing or extending outside its parent container
-• Text or button clipped/cut off by its bounding box
-• Two elements overlapping each other (z-index stacking error)
-• Broken image placeholder icon (src failed to load)
-• Layout completely collapsed (e.g. columns stacked when they shouldn't be)
+ONLY flag these objective bugs:
+- Element clearly overflowing outside its container boundary
+- Text/button clipped or cut off at edge
+- Elements overlapping incorrectly (z-index layering issue)
+- Broken image placeholder (failed to load)
+- Layout completely collapsed or invisible
 
-── TIER 2: SKIP (design choices, not bugs) ────────────────────────────
-Do NOT report these — they are intentional design decisions:
-• Pages with minimal or sparse content (text-only, few elements) — this is a design choice, NOT a bug
-• Simple pages that look "empty" — e.g. a page with just a title, paragraph, and link is perfectly valid
-• Dark backgrounds, bold fonts, unusual color schemes
-• Tight spacing or large whitespace
-• Empty sections or missing images that appear to be placeholders by design
-• Low content density — having few elements on a page is NOT a rendering error
+DO NOT flag:
+- Minimal/simple pages (example.com-style is VALID)
+- Design choices (dark theme, unusual colors, bold fonts)
+- Intentional empty sections
 
-── EXAMPLE: Correct NO ISSUES response ────────────────────────────────
-For a simple page with readable text, a few links, standard layout:
-VERDICT: NO ISSUES
-Page renders correctly with readable text and standard layout.
-
-── CONFIDENCE RULE ────────────────────────────────────────────────────
-Before reporting ANY bug, ask yourself:
-"Can I point to a specific visible element on screen that is clearly broken?"
-If NO → do not report it. Do NOT invent or assume bugs you cannot see clearly.
-Missing content, sparse layout, or plain design are NEVER bugs.
-
-── RESPONSE FORMAT (follow exactly) ───────────────────────────────────
-VERDICT: NO ISSUES
-or
 VERDICT: ISSUES FOUND
+- [high] exact description of specific broken element (max 80 chars)
 
-[one sentence summary, max 80 chars]
+OR if clean:
 
-- [high] description of bug 1 (max 80 chars)
-- [medium] description of bug 2 (max 80 chars)
-- [low] description of bug 3 (max 80 chars)
-
-RULES:
-• Only report bugs you can SEE clearly in the screenshot — no assumptions
-• If the page renders with visible, readable content → default verdict is NO ISSUES unless a Tier 1 bug is clearly visible
-• If zero Tier 1 bugs → write VERDICT: NO ISSUES and no bullets
-
-${userFocus}`;
+VERDICT: NO ISSUES
+Summary: one sentence why the page looks correct`;
 
   let hasIssues = false;
   let summary = "";
@@ -1531,7 +1506,7 @@ ${userFocus}`;
     return { hasIssues, summary, issues };
   }
 
-  // Gemini 2.0 Flash — primary
+  // Gemini 2.0 Flash — responseMimeType JSON 강제 출력
   try {
     const geminiRes = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
@@ -1543,20 +1518,51 @@ ${userFocus}`;
             { inline_data: { mime_type: "image/jpeg", data: screenshotB64 } },
             { text: analysisPrompt },
           ]}],
-          generationConfig: { maxOutputTokens: 500, temperature: 0.1 },
+          generationConfig: {
+            maxOutputTokens: 500,
+            temperature: 0.1,
+          },
         }),
       }
     );
-    if (!geminiRes.ok) throw new Error(`Gemini ${geminiRes.status}`);
+    if (!geminiRes.ok) {
+      const errBody = await geminiRes.text();
+      throw new Error(`Gemini ${geminiRes.status}: ${errBody.slice(0, 300)}`);
+    }
     const gd = (await geminiRes.json()) as {
       candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
     };
     const raw = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
     analysis = raw;
-    const parsed = parseVerdictText(raw);
-    hasIssues = parsed.hasIssues;
-    summary = parsed.summary;
-    parsedIssues = parsed.issues;
+    // JSON 추출 시도 (JSON 코드블록, 래퍼 등 다양한 형태 처리)
+    // → 실패 시 VERDICT 텍스트 파서로 폴백
+    let jsonParsed = false;
+    try {
+      // Try to find JSON object in the text (handles ```json blocks, plain JSON, wrapped)
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed_json = JSON.parse(jsonMatch[0]);
+        // Handle possible "response" wrapper (Gemini sometimes wraps output)
+        const j = (parsed_json.has_issues !== undefined ? parsed_json : (parsed_json.response ?? parsed_json)) as {
+          has_issues: boolean; summary: string; issues: Array<{ severity: string; description: string }>
+        };
+        if (typeof j.has_issues === "boolean" && j.summary) {
+          hasIssues = j.has_issues;
+          summary = j.summary.slice(0, 200);
+          parsedIssues = (j.issues ?? []).slice(0, 5).map((i) => ({
+            severity: (["high","medium","low"].includes(i.severity) ? i.severity : "medium") as "high"|"medium"|"low",
+            description: (i.description ?? "").slice(0, 120),
+          }));
+          jsonParsed = true;
+        }
+      }
+    } catch { /* fallthrough */ }
+    if (!jsonParsed) {
+      const parsed = parseVerdictText(raw);
+      hasIssues = parsed.hasIssues;
+      summary = parsed.summary;
+      parsedIssues = parsed.issues;
+    }
   } catch (e) {
     // CF Workers AI fallback
     try {
@@ -1568,7 +1574,7 @@ ${userFocus}`;
         image: [...bytes],
         max_tokens: 500,
       });
-      const raw = aiResult?.response ?? "";
+      const raw = typeof aiResult?.response === "string" ? aiResult.response : JSON.stringify(aiResult ?? "");
       analysis = raw;
       const parsed = parseVerdictText(raw);
       hasIssues = parsed.hasIssues;
