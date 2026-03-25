@@ -1307,22 +1307,85 @@ app.post("/v1/eye/check", async (c) => {
 
   // ── CF Workers AI: 비주얼 QA 분석 (지역제한 없음) ──
   const aiStart = Date.now();
-  const userFocus = prompt ? `Focus on: ${prompt}` : 'Look for: broken layouts, element overflow, missing images, severe misalignment, text clipping, z-index issues, extremely low color contrast.';
+  const userFocus = prompt
+    ? `Focus on: ${prompt}`
+    : "Look for: broken layouts, element overflow, missing images, severe misalignment, text clipping, z-index issues, extremely low color contrast.";
 
   const analysisPrompt = `You are a visual QA engineer reviewing a web page screenshot.
 URL: ${url}
 
-STEP 1 — Write your first line as EXACTLY one of:
+STEP 1 — First line must be EXACTLY one of:
 VERDICT: NO ISSUES
 VERDICT: ISSUES FOUND
 
-STEP 2 — Then briefly explain (max 80 words). ${userFocus}
+STEP 2 — One sentence summary (max 80 chars).
 
-Rules: Normal design choices (dark themes, minimal layouts, bold fonts) are NOT bugs. Only flag clear rendering errors.`;
+STEP 3 — If issues found, list each as a bullet:
+- [high|medium|low] Specific issue description (max 80 chars each, max 5 bullets)
 
+${userFocus}
+Rules: Dark themes, minimal layouts, bold fonts are NOT bugs. Only flag clear rendering errors.`;
+
+  let hasIssues = false;
+  let summary = "";
+  let parsedIssues: Array<{ severity: "high" | "medium" | "low"; description: string }> = [];
   let analysis = "";
 
-  // Gemini 2.5 Flash — primary (빠름, 검증됨)
+  /** Parse VERDICT-format response into structured fields */
+  function parseVerdictText(text: string) {
+    const lower = text.toLowerCase();
+    const hi = lower.includes("verdict: issues found");
+    const ni = lower.includes("verdict: no issues");
+    const foundIssues = hi ? true : ni ? false
+      : !["no visual issues", "looks good", "no bugs"].some((kw) => lower.includes(kw));
+
+    // process line by line
+    const rawLines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+    let summary = "";
+    const issues: Array<{ severity: "high" | "medium" | "low"; description: string }> = [];
+
+    for (const line of rawLines) {
+      // strip markdown bold (**text**) only — keep single * for bullet detection
+      const stripped = line.replace(/\*\*([^*]+)\*\*/g, "$1").trim();
+
+      // skip VERDICT / header lines
+      if (/^VERDICT:/i.test(stripped)) continue;
+      if (/^(Summary|Issues?|Verdict):\s*$/i.test(stripped)) continue;
+
+      // bullet or numbered list item
+      const bulletMatch = stripped.match(/^[-•*]\s+(.+)/);
+      const numberedMatch = stripped.match(/^\d+[.)]\s+(.+)/);
+      const rawContent = (bulletMatch?.[1] ?? numberedMatch?.[1] ?? "").trim();
+
+      if (rawContent) {
+        // detect leading severity word: "High: ..." or "High - ..." or "[high] ..."
+        const sevMatch = rawContent.match(/^(?:\[(high|medium|low)\]|(high|medium|low)[\s:–-])\s*/i);
+        const sev: "high" | "medium" | "low" = (() => {
+          const s = (sevMatch?.[1] ?? sevMatch?.[2] ?? "").toLowerCase();
+          return s === "high" ? "high" : s === "low" ? "low" : "medium";
+        })();
+        const desc = rawContent.replace(/^(?:\[(high|medium|low)\]|(high|medium|low)[\s:–-])\s*/i, "").trim();
+        if (desc.length > 5 && issues.length < 5) issues.push({ severity: sev, description: desc.slice(0, 120) });
+        continue;
+      }
+
+      // Summary: prefix line
+      const summaryPrefixMatch = stripped.match(/^Summary:\s*(.+)/i);
+      if (summaryPrefixMatch) {
+        summary = summaryPrefixMatch[1].trim().slice(0, 200);
+        continue;
+      }
+
+      // first plain prose line (not a header, not a bullet) = summary fallback
+      if (!summary && stripped.length > 15 && !/^(ISSUES FOUND|NO ISSUES)$/i.test(stripped)) {
+        summary = stripped.slice(0, 200);
+      }
+    }
+
+    return { hasIssues: foundIssues, summary, issues };
+  }
+
+  // Gemini 2.0 Flash — primary
   try {
     const geminiRes = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
@@ -1330,28 +1393,26 @@ Rules: Normal design choices (dark themes, minimal layouts, bold fonts) are NOT 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                { inline_data: { mime_type: "image/jpeg", data: screenshotB64 } },
-                { text: analysisPrompt },
-              ],
-            },
-          ],
-          generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
+          contents: [{ parts: [
+            { inline_data: { mime_type: "image/jpeg", data: screenshotB64 } },
+            { text: analysisPrompt },
+          ]}],
+          generationConfig: { maxOutputTokens: 500, temperature: 0.1 },
         }),
       }
     );
-    if (geminiRes.ok) {
-      const gd = (await geminiRes.json()) as {
-        candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
-      };
-      analysis = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? "Analysis unavailable";
-    } else {
-      throw new Error(`Gemini ${geminiRes.status}`);
-    }
+    if (!geminiRes.ok) throw new Error(`Gemini ${geminiRes.status}`);
+    const gd = (await geminiRes.json()) as {
+      candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
+    };
+    const raw = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+    analysis = raw;
+    const parsed = parseVerdictText(raw);
+    hasIssues = parsed.hasIssues;
+    summary = parsed.summary;
+    parsedIssues = parsed.issues;
   } catch (e) {
-    // Gemini 실패 시 CF Workers AI fallback
+    // CF Workers AI fallback
     try {
       const binaryStr = atob(screenshotB64);
       const bytes = new Uint8Array(binaryStr.length);
@@ -1359,43 +1420,27 @@ Rules: Normal design choices (dark themes, minimal layouts, bold fonts) are NOT 
       const aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
         prompt: analysisPrompt,
         image: [...bytes],
-        max_tokens: 300,
+        max_tokens: 500,
       });
-      analysis = aiResult?.response ?? `All AI failed: ${String(e)}`;
+      const raw = aiResult?.response ?? "";
+      analysis = raw;
+      const parsed = parseVerdictText(raw);
+      hasIssues = parsed.hasIssues;
+      summary = parsed.summary;
+      parsedIssues = parsed.issues;
     } catch (e2) {
-      analysis = `Analysis failed: Gemini: ${String(e)} / CF AI: ${String(e2)}`;
+      analysis = `Analysis failed: ${String(e)} / ${String(e2)}`;
+      summary = "Analysis failed";
     }
   }
   const aiMs = Date.now() - aiStart;
   const totalMs = Date.now() - startTime;
 
-  // ── 비용 추정 ──
-  // CF Workers AI: ~$0.011/1000 神経ステップ (Workers paid plan)
-  // Free plan에서는 무료 (하루 10k requests)
-  // CF BR API: ~$0.001/1000 sessions (negligible)
-  const cfAiCost = 0.000011; // ~11 신경 steps for vision, $0.011/1000 = $0.000011
+  const cfAiCost = 0.000011;
   const cfBrCost = 0.000001;
   const totalCost = cfAiCost + cfBrCost;
 
-  // ── POC 통과 판정 ──
   const pocPassed = totalMs < 10_000 && totalCost < 0.05;
-
-  // ── has_issues / summary 표준화 (GitHub Action 호환) ──
-  const lowerAnalysis = analysis.toLowerCase();
-  // 구조화된 VERDICT 파싱 (primary)
-  let hasIssues: boolean;
-  if (lowerAnalysis.includes("verdict: no issues")) {
-    hasIssues = false;
-  } else if (lowerAnalysis.includes("verdict: issues found")) {
-    hasIssues = true;
-  } else {
-    // fallback: 키워드 기반
-    const noIssueKeywords = ["no visual issues", "no issues detected", "looks good", "no problems", "no bugs", "no visual bugs"];
-    hasIssues = !noIssueKeywords.some((kw) => lowerAnalysis.includes(kw));
-  }
-  // summary: VERDICT 접두사 제거 후 첫 문장 (최대 200자)
-  const cleaned = analysis.replace(/^\*{0,2}VERDICT:\s*(NO ISSUES|ISSUES FOUND)\*{0,2}\s*[\n]*/i, '').trim();
-  const summary = cleaned.split('\n\n')[0].trim().slice(0, 200);
 
   const result: Record<string, unknown> = {
     ok: true,
@@ -1404,9 +1449,7 @@ Rules: Normal design choices (dark themes, minimal layouts, bold fonts) are NOT 
     has_issues: hasIssues,
     summary,
     analysis,
-    issues: hasIssues
-      ? [{ severity: "medium" as const, description: summary }]
-      : [],
+    issues: parsedIssues,
     viewport: { width: 1280, height: 800 },
     timing: {
       total_ms: totalMs,
