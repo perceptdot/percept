@@ -127,6 +127,19 @@ Q2: /v1/benchmark 엔드포인트 + MCP 빌링 white-label
 상세: docs/bizplan.md §12
 ```
 
+## 에이전트 운영 원칙 (2026-03-25 CEO 지시)
+
+```
+[모델 선택]
+복잡하고 어려운 작업 (멀티파일 구현·아키텍처 변경) = Claude Opus 필수
+단일 기능 추가·버그 수정 = Claude Sonnet
+상태 확인·로그 조회 = Claude Haiku
+
+[병렬 작업 최우선]
+독립된 파일 읽기·수정·검색은 반드시 동시 실행
+예: 여러 파일 읽기 → 한 메시지에 모두 / TypeScript 빌드+배포 확인 → 동시
+```
+
 ## 작업 완료 Hook (필수 — 스킵 시 작업 무효)
 ```
 [HOOK: POST_TASK]

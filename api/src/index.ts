@@ -1434,6 +1434,19 @@ app.post("/v1/eye/check", async (c) => {
               ? '.' + el.className.trim().split(/\\s+/)[0] : '';
             return (tag + id + cls).slice(0, 60);
           }
+          // overflow:hidden 조상이 있으면 시각적으로 클리핑되므로 버그 아님
+          function hasClippingAncestor(el) {
+            var p = el.parentElement;
+            while (p && p !== document.documentElement) {
+              var ps = window.getComputedStyle(p);
+              var ox = ps.overflowX;
+              var ov = ps.overflow;
+              if (['hidden','scroll','auto','clip'].indexOf(ox) !== -1 ||
+                  ['hidden','scroll','auto','clip'].indexOf(ov) !== -1) return true;
+              p = p.parentElement;
+            }
+            return false;
+          }
           // 1. 뷰포트 밖 수평 이탈
           var els = document.querySelectorAll('*');
           for (var i = 0; i < els.length; i++) {
@@ -1442,11 +1455,7 @@ app.post("/v1/eye/check", async (c) => {
             if (style.display === 'none' || style.visibility === 'hidden') continue;
             var rect = el.getBoundingClientRect();
             if (rect.width === 0 || rect.height === 0) continue;
-            var parent = el.parentElement;
-            if (parent) {
-              var ps = window.getComputedStyle(parent);
-              if (['hidden','scroll','auto','clip'].indexOf(ps.overflowX) !== -1) continue;
-            }
+            if (hasClippingAncestor(el)) continue;
             if (rect.right > window.innerWidth + 5) {
               var s = sel(el);
               var key = 'vl:' + s;
