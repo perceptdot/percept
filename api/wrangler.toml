@@ -26,6 +26,15 @@ id = "4a1073d7cd884888a3b933d8813cbd06"
 binding = "VISUAL_CACHE"
 id = "b9ea4f108d7440e2984efcfc19a73b63"
 
+# ── BrowserQueue Durable Object (동시 브라우저 세션 최대 2개 제한) ──
+[[durable_objects.bindings]]
+name = "BROWSER_QUEUE"
+class_name = "BrowserQueue"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["BrowserQueue"]
+
 [env.production]
 vars = { ENVIRONMENT = "production" }
 
@@ -46,6 +55,15 @@ id = "4a1073d7cd884888a3b933d8813cbd06"
 [[env.production.kv_namespaces]]
 binding = "VISUAL_CACHE"
 id = "b375fdc172cc40d6a7a9cd61066760fa"
+
+# ── production: BrowserQueue DO ──
+[[env.production.durable_objects.bindings]]
+name = "BROWSER_QUEUE"
+class_name = "BrowserQueue"
+
+[[env.production.migrations]]
+tag = "v1"
+new_sqlite_classes = ["BrowserQueue"]
 
 [[env.production.routes]]
 pattern = "api.perceptdot.com"

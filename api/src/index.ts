@@ -23,6 +23,8 @@ interface Env {
   GEMINI_API_KEY: string;
   /** KV: 비주얼 체크 결과 캐시 (TTL 5분) */
   VISUAL_CACHE: KVNamespace;
+  /** DO: BrowserQueue — 동시 브라우저 세션 2개 제한 */
+  BROWSER_QUEUE: DurableObjectNamespace;
 }
 
 // ─── Registry 타입 ────────────────────────────────────────────────────────────
@@ -526,6 +528,71 @@ async function sendApiKeyEmail(
     return { ok: true };
   } catch (e) {
     return { ok: false, error: String(e) };
+  }
+}
+
+// ─── BrowserQueue Durable Object ─────────────────────────────────────────────
+// CF Browser Rendering 동시 세션을 MAX_CONCURRENT(2)로 제한.
+// 초과 요청은 최대 MAX_WAIT_MS(30s) 큐 대기, 초과 시 503 반환.
+
+const MAX_CONCURRENT = 2;
+const MAX_WAIT_MS = 30_000;
+
+export class BrowserQueue {
+  private active = 0;
+  private readonly queue: Array<{
+    resolve: () => void;
+    reject: (r: string) => void;
+    timer: ReturnType<typeof setTimeout>;
+  }> = [];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(_state: any) {}
+
+  async fetch(request: Request): Promise<Response> {
+    const { pathname } = new URL(request.url);
+    if (pathname === "/acquire") {
+      try {
+        await this._acquire();
+        return new Response("ok");
+      } catch (reason) {
+        return new Response(JSON.stringify({ error: reason, retry_after_ms: MAX_WAIT_MS }), {
+          status: 503,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+    if (pathname === "/release") {
+      this._release();
+      return new Response("ok");
+    }
+    return new Response("not found", { status: 404 });
+  }
+
+  private _acquire(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (this.active < MAX_CONCURRENT) {
+        this.active++;
+        resolve();
+        return;
+      }
+      const timer = setTimeout(() => {
+        const idx = this.queue.findIndex((e) => e.timer === timer);
+        if (idx !== -1) this.queue.splice(idx, 1);
+        reject("Browser queue timeout (30s)");
+      }, MAX_WAIT_MS);
+      this.queue.push({ resolve, reject, timer });
+    });
+  }
+
+  private _release(): void {
+    if (this.queue.length > 0) {
+      const next = this.queue.shift()!;
+      clearTimeout(next.timer);
+      next.resolve();
+    } else {
+      this.active = Math.max(0, this.active - 1);
+    }
   }
 }
 
@@ -1264,6 +1331,22 @@ app.post("/v1/eye/check", async (c) => {
     }
   }
 
+  // ── BrowserQueue DO: 동시 브라우저 슬롯 획득 ──
+  let doStub: DurableObjectStub | null = null;
+  if (c.env.BROWSER_QUEUE) {
+    try {
+      doStub = c.env.BROWSER_QUEUE.get(c.env.BROWSER_QUEUE.idFromName("singleton"));
+      const acquireRes = await doStub.fetch("https://do-internal/acquire");
+      if (!acquireRes.ok) {
+        const err = await acquireRes.json() as { error: string; retry_after_ms: number };
+        return c.json({ ok: false, error: "서버가 혼잡합니다. 잠시 후 재시도해주세요.", detail: err.error, retry_after_ms: err.retry_after_ms }, 503);
+      }
+    } catch {
+      // DO 실패 시 무시하고 계속 (안전 장치)
+      doStub = null;
+    }
+  }
+
   // ── CF Browser Rendering API: 스크린샷 ──
   const browserStart = Date.now();
   let screenshotB64: string;
@@ -1308,6 +1391,8 @@ app.post("/v1/eye/check", async (c) => {
     screenshotB64 = shot as string;
     screenshotBytes = Math.round((screenshotB64.length * 3) / 4);
   } catch (e) {
+    // 브라우저 에러 시 슬롯 반환
+    if (doStub) await doStub.fetch("https://do-internal/release").catch(() => {});
     return c.json(
       {
         ok: false,
@@ -1318,6 +1403,10 @@ app.post("/v1/eye/check", async (c) => {
       500
     );
   }
+
+  // 브라우저 완료 → 슬롯 즉시 반환 (AI 분석은 브라우저 불필요)
+  if (doStub) await doStub.fetch("https://do-internal/release").catch(() => {});
+
   const browserMs = Date.now() - browserStart;
 
   // ── CF Workers AI: 비주얼 QA 분석 (지역제한 없음) ──
