@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>perceptdot — Pricing</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: monospace; background: #0a0a0a; color: #e0e0e0; padding: 40px 20px; }
+    h1 { text-align: center; font-size: 32px; margin-bottom: 8px; color: #fff; }
+    .subtitle { text-align: center; color: #888; margin-bottom: 48px; }
+
+    /* BUG 1: 카드 컨테이너 overflow hidden 없음 → 버튼이 삐져나옴 */
+    .cards {
+      display: flex;
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 32px 24px;
+      flex: 1;
+      position: relative;
+    }
+
+    .card.featured { border-color: #7c6dfa; }
+
+    .plan-name { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
+    .price { font-size: 36px; font-weight: bold; color: #7c6dfa; margin-bottom: 4px; }
+    .price span { font-size: 14px; color: #666; }
+
+    /* BUG 2: 기능 목록 텍스트가 카드 밖으로 넘침 (white-space: nowrap) */
+    .features { margin: 24px 0; list-style: none; }
+    .features li {
+      padding: 6px 0;
+      color: #aaa;
+      font-size: 13px;
+      white-space: nowrap; /* ← BUG: 긴 텍스트 잘림 */
+      overflow: visible;   /* ← BUG: 카드 밖으로 넘침 */
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .features li::before { content: "✓ "; color: #7c6dfa; }
+
+    /* BUG 3: 버튼이 카드 밖으로 삐져나옴 (position absolute + 잘못된 값) */
+    .btn {
+      position: absolute;
+      bottom: -18px;  /* ← BUG: 카드 아래로 18px 삐져나옴 */
+      left: 24px;
+      right: 24px;
+      background: #7c6dfa;
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: monospace;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn.outline {
+      background: transparent;
+      border: 1px solid #7c6dfa;
+      color: #7c6dfa;
+    }
+
+    /* BUG 4: 배지가 z-index 문제로 텍스트 위에 겹침 */
+    .badge {
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      background: #ff1a3c;
+      color: #fff;
+      font-size: 10px;
+      padding: 4px 12px;
+      border-radius: 0 12px 0 12px;
+      z-index: 0; /* ← BUG: z-index 낮아서 카드 내용에 가려짐 */
+    }
+
+    /* BUG 5: 하단 섹션 레이아웃 깨짐 */
+    .faq {
+      max-width: 900px;
+      margin: 80px auto 0; /* BUG: 버튼이 -18px 삐져나와서 이 margin이 충분하지 않음 */
+    }
+    .faq h2 { font-size: 22px; margin-bottom: 24px; }
+    .faq-item {
+      background: #111;
+      border: 1px solid #222;
+      padding: 16px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+    }
+
+    /* BUG 6: 텍스트 색상 대비 문제 */
+    .faq-item p {
+      color: #333; /* ← BUG: 배경 #111에 #333 텍스트 = 대비 부족 */
+      font-size: 13px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple, Transparent Pricing</h1>
+  <p class="subtitle">Give your AI agent eyes. No credit card required to start.</p>
+
+  <div class="cards">
+    <!-- Free -->
+    <div class="card">
+      <div class="plan-name">Free</div>
+      <div class="price">$0 <span>/month</span></div>
+      <ul class="features">
+        <li>50 visual checks per month</li>
+        <li>1 URL monitored continuously</li>
+        <li>Standard response time (may vary)</li>
+        <li>Community support via GitHub Issues</li>
+      </ul>
+      <button class="btn outline">Get Started Free</button>
+    </div>
+
+    <!-- Pro (featured) -->
+    <div class="card featured">
+      <div class="badge">MOST POPULAR</div>
+      <div class="plan-name">Pro</div>
+      <div class="price">$19 <span>/month</span></div>
+      <ul class="features">
+        <li>Unlimited visual checks</li>
+        <li>Unlimited URLs monitored</li>
+        <li>Priority processing (under 10s guaranteed)</li>
+        <li>Baseline comparison & visual diff detection</li>
+      </ul>
+      <button class="btn">Start Pro Trial</button>
+    </div>
+
+    <!-- Unlimited -->
+    <div class="card">
+      <div class="plan-name">Unlimited</div>
+      <div class="price">$49 <span>/month</span></div>
+      <ul class="features">
+        <li>Everything in Pro</li>
+        <li>GitHub Action integration</li>
+        <li>CI/CD pipeline visual QA</li>
+        <li>Dedicated support & SLA guarantee</li>
+      </ul>
+      <button class="btn outline">Contact Sales</button>
+    </div>
+  </div>
+
+  <div class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <strong>How does visual_check work?</strong>
+      <p>perceptdot takes a screenshot of your URL using Cloudflare Browser Rendering, then analyzes it with Gemini 2.0 Flash to detect layout issues, overflow bugs, and visual regressions.</p>
+    </div>
+    <div class="faq-item">
+      <strong>What counts as a visual check?</strong>
+      <p>Each call to visual_check() counts as one check. Baseline comparisons count as two checks (before + after).</p>
+    </div>
+    <div class="faq-item">
+      <strong>Can I use this in CI/CD?</strong>
+      <p>Yes. Use the GitHub Action or call the API directly from your pipeline. Pro and Unlimited plans support CI/CD use cases.</p>
+    </div>
+  </div>
+</body>
+</html>
