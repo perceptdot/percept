@@ -2,10 +2,10 @@
 
 ---
 
-## What is Claude Code?
+## Which AI tools does perceptdot work with?
 
-Claude Code is an AI coding tool by Anthropic. Run it from your terminal with the `claude` command and give it tasks in plain English.\
-[Get Claude Code →](https://claude.ai/download)
+Any **MCP-compatible** AI tool: Claude Code, Cursor, Windsurf, Cline, and more.\
+As long as the tool supports HTTP MCP servers, perceptdot works out of the box.
 
 ---
 
@@ -15,9 +15,29 @@ No. Just enter your email at [perceptdot.com](https://perceptdot.com) and your A
 
 ---
 
+## Where do I put my API key?
+
+Add it to the MCP server URL as a query parameter:
+
+```
+https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY
+```
+
+See [⚡ Quick Install](install.md) for tool-specific instructions.
+
+---
+
 ## Can I check any website?
 
 Any publicly accessible website works. Pages that require login or are behind a firewall may not be fully analyzed.
+
+---
+
+## What viewports are supported?
+
+Three options: **desktop** (1280px, default), **tablet** (768px), **mobile** (375px).
+
+Tell your AI: *"Check https://mysite.com on mobile"* — the agent will use the `viewport` parameter automatically.
 
 ---
 
@@ -27,9 +47,23 @@ Page height determines the number of tiles. A short landing page = 1 tile (~5s).
 
 ---
 
+## What is a tile?
+
+perceptdot splits tall pages into 1280×1600px sections (tiles) for analysis.\
+Short pages = 1 tile. Long pages = multiple tiles.\
+**1 tile = 1 credit.** The scan output always shows how many tiles were analyzed.
+
+---
+
 ## I'm getting false positives
 
-Sometimes the AI flags intentional design choices as issues. Use `no_cache=true` to re-run, or simply ignore the report if it doesn't match what you see.
+Sometimes the AI flags intentional design choices as issues. Use `no_cache: true` to re-run, or simply ignore the report if it doesn't match what you see.
+
+---
+
+## I entered my email but didn't receive a key
+
+Visit [perceptdot.com](https://perceptdot.com) and enter your email again — the key will be **resent instantly**. Check your spam folder too.
 
 ---
 

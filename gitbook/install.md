@@ -1,34 +1,76 @@
 # ⚡ Quick Install
 
-Open your terminal and paste this one command:
-
-{% hint style="info" %}
-**Don't have a terminal?**\
-Mac: Press ⌘+Space → type "Terminal" → Enter\
-Windows: Press Win → type "cmd" → Enter
-{% endhint %}
-
-```bash
-claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp
-```
-
-That's it. Seriously. 😄
+perceptdot works with **Claude Code, Cursor, Windsurf, Cline**, and any MCP-compatible AI tool.
 
 ---
 
-## Verify it's working
+## Step 1 — Get your free API key
 
-In Claude Code, just say:
+Go to [perceptdot.com](https://perceptdot.com), enter your email, and your **free API key is sent instantly** — no account required.
+
+---
+
+## Step 2 — Install the MCP server
+
+Pick your tool and run the command:
+
+### Claude Code
+
+```bash
+claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+```
+
+### Cursor
+
+Add to your **MCP settings** (`~/.cursor/mcp.json` or Cursor → Settings → MCP):
+
+```json
+{
+  "mcpServers": {
+    "perceptdot": {
+      "url": "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+    }
+  }
+}
+```
+
+### Windsurf
+
+Add to **Windsurf MCP config** (`~/.windsurf/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "perceptdot": {
+      "url": "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+    }
+  }
+}
+```
+
+### Cline
+
+In Cline → **MCP Servers** → Add Server → HTTP:
+
+```
+https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY
+```
+
+---
+
+## Step 3 — Verify it's working
+
+Tell your AI:
 
 ```
 Check https://example.com with perceptdot
 ```
 
-If you see a result — you're all set! 🎉
+If you see a scan result — you're all set! 🎉
 
 ---
 
-## Get your API key
-
-You'll need an API key on first use.\
-Go to [perceptdot.com](https://perceptdot.com), enter your email, and get a **free key instantly** — no account required.
+{% hint style="info" %}
+**Replace `YOUR_KEY`** with the API key you received by email.\
+If you didn't receive it, visit [perceptdot.com](https://perceptdot.com) and enter your email again — it'll be resent instantly.
+{% endhint %}
