@@ -1285,14 +1285,16 @@ app.post("/v1/eye/check", async (c) => {
   const startTime = Date.now();
 
   // ── 요청 파싱 ──
-  let body: { url?: string; prompt?: string; include_screenshot?: boolean; no_cache?: boolean; full_page?: boolean; api_key?: string };
+  let body: { url?: string; prompt?: string; include_screenshot?: boolean; no_cache?: boolean; full_page?: boolean; api_key?: string; viewport?: string };
   try {
     body = await c.req.json();
   } catch {
     return c.json({ error: "Invalid JSON" }, 400);
   }
 
-  const { url, prompt, include_screenshot = false, no_cache = false, full_page = true } = body;
+  const { url, prompt, include_screenshot = false, no_cache = false, full_page = true, viewport: viewportParam = "mobile" } = body;
+  // viewport: "mobile"=375px (기본), "tablet"=768px, "desktop"=1280px
+  const VIEWPORT_WIDTH = viewportParam === "desktop" ? 1280 : viewportParam === "tablet" ? 768 : 375;
   if (!url) return c.json({ error: "url is required" }, 400);
 
   // URL 유효성 검사 (SSRF 방지: http/https만 허용)
@@ -1375,7 +1377,7 @@ app.post("/v1/eye/check", async (c) => {
     }
   }
 
-  // ── CF Browser Rendering API: 스크린샷 (EYE-08: full-page tiling) ──
+  // ── CF Browser Rendering API: DOM Audit + 스크린샷 ──
   const browserStart = Date.now();
   const TILE_H = 1600;
   const OVERLAP = 100;
@@ -1383,10 +1385,14 @@ app.post("/v1/eye/check", async (c) => {
   let screenshotBytes = 0;
   let capturedPageHeight = 800;
 
+  // DOM Audit 결과 (결정론적 — JS 측정)
+  type DomIssue = { type: string; selector: string; detail: string };
+  let domFindings: DomIssue[] = [];
+
   try {
     const browser = await puppeteer.launch(c.env.BROWSER);
     const page = await browser.newPage();
-    await page.setViewport({ width: 1280, height: 800 });
+    await page.setViewport({ width: VIEWPORT_WIDTH, height: 800 });
 
     // 느린 외부 스크립트 차단 (Paddle, GTM 등 — 비주얼 QA에 불필요)
     await page.setRequestInterception(true);
@@ -1411,7 +1417,67 @@ app.post("/v1/eye/check", async (c) => {
         timeout: 5000,
       });
     } catch {
-      // timeout OK — 부분 로드 상태로 스크린샷
+      // timeout OK — 부분 로드 상태로 계속
+    }
+
+    // ── DOM Audit: JS로 뷰포트 이탈·이미지 깨짐 직접 측정 ──
+    try {
+      // page.evaluate 내부는 브라우저에서 실행 — CF Workers TS가 DOM 타입을 모르므로 string으로 전달
+      const domScript = `
+        (function() {
+          var issues = [];
+          var seen = {};
+          function sel(el) {
+            var tag = el.tagName.toLowerCase();
+            var id = el.id ? '#' + el.id : '';
+            var cls = el.className && typeof el.className === 'string'
+              ? '.' + el.className.trim().split(/\\s+/)[0] : '';
+            return (tag + id + cls).slice(0, 60);
+          }
+          // 1. 뷰포트 밖 수평 이탈
+          var els = document.querySelectorAll('*');
+          for (var i = 0; i < els.length; i++) {
+            var el = els[i];
+            var style = window.getComputedStyle(el);
+            if (style.display === 'none' || style.visibility === 'hidden') continue;
+            var rect = el.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) continue;
+            var parent = el.parentElement;
+            if (parent) {
+              var ps = window.getComputedStyle(parent);
+              if (['hidden','scroll','auto','clip'].indexOf(ps.overflowX) !== -1) continue;
+            }
+            if (rect.right > window.innerWidth + 5) {
+              var s = sel(el);
+              var key = 'vl:' + s;
+              if (!seen[key]) {
+                seen[key] = true;
+                issues.push({
+                  type: 'viewport_leak',
+                  selector: s,
+                  detail: 'right=' + Math.round(rect.right) + 'px, viewport=' + window.innerWidth + 'px (+' + Math.round(rect.right - window.innerWidth) + 'px 초과)'
+                });
+              }
+            }
+          }
+          // 2. 깨진 이미지
+          var imgs = document.querySelectorAll('img');
+          for (var j = 0; j < imgs.length; j++) {
+            var img = imgs[j];
+            if (img.complete && img.naturalWidth === 0 && img.src && img.src.indexOf('data:') !== 0) {
+              issues.push({
+                type: 'broken_image',
+                selector: sel(img),
+                detail: '로드 실패: ...' + img.src.slice(-40)
+              });
+            }
+          }
+          return issues.slice(0, 15);
+        })()
+      `;
+      domFindings = await page.evaluate(domScript) as DomIssue[];
+    } catch {
+      domFindings = [];
     }
 
     // EYE-08: 페이지 전체 높이 측정 후 타일링
@@ -1422,7 +1488,7 @@ app.post("/v1/eye/check", async (c) => {
         ) as number;
       } catch { capturedPageHeight = 800; }
       if (capturedPageHeight > 800) {
-        await page.setViewport({ width: 1280, height: Math.min(capturedPageHeight, 16000) });
+        await page.setViewport({ width: VIEWPORT_WIDTH, height: Math.min(capturedPageHeight, 16000) });
       }
     }
 
@@ -1466,18 +1532,25 @@ app.post("/v1/eye/check", async (c) => {
 
   // ── Gemini 2.0 Flash: 타일별 비주얼 QA 분석 ──
   const aiStart = Date.now();
+  // DOM Audit 결과를 AI 컨텍스트로 변환
+  const domContext = domFindings.length > 0
+    ? `\nDOM audit detected ${domFindings.length} structural issue(s) — confirm visually:\n` +
+      domFindings.map((d) => `- [${d.type}] ${d.selector}: ${d.detail}`).join("\n")
+    : "\nDOM audit: no structural issues detected.";
+
   const userFocus = prompt
     ? `Focus on: ${prompt}`
-    : "Look for: broken layouts, element overflow, missing images, severe misalignment, text clipping, z-index issues, extremely low color contrast.";
+    : "Look for visual evidence of the DOM issues listed above, plus any other rendering problems visible in the screenshot.";
 
-  const analysisPrompt = `You are a visual QA engineer. Analyze ONLY what you can see in this screenshot.
+  const analysisPrompt = `You are a visual QA engineer. Analyze this screenshot.
+${domContext}
 
 CRITICAL RULES:
-- ONLY describe elements you can VISUALLY SEE in the screenshot
-- Do NOT use any knowledge about the URL or website — analyze only pixels
-- Do NOT invent or assume text content you cannot clearly read
-- If unsure whether something is a bug or a design choice, do NOT report it
-- Require clear visual evidence: you must see the exact pixel-level violation
+- DOM audit results above are mathematically measured — treat them as confirmed
+- For DOM issues: describe what you visually see that matches the measurement
+- For anything NOT in DOM audit: only report if you can see a clear pixel-level violation
+- Do NOT invent element names or text you cannot clearly read
+- If unsure, do NOT report it
 
 ${userFocus}
 
@@ -1675,18 +1748,25 @@ If there are confirmed bugs:
     }
   }
 
+  // DOM 이슈 우선: DOM 0이면 AI는 high severity만 신뢰 (medium/low 필터링)
+  const trustedAiIssues = domFindings.length === 0
+    ? parsedIssues.filter((i) => i.severity === "high")
+    : parsedIssues;
+  const finalHasIssues = domFindings.length > 0 || trustedAiIssues.length > 0;
+
   const result: Record<string, unknown> = {
     ok: true,
     poc_passed: pocPassed,
     url,
-    has_issues: hasIssues,
+    has_issues: finalHasIssues,
     summary,
     analysis,
-    issues: parsedIssues,
+    dom_issues: domFindings,          // 결정론적 DOM 측정 결과
+    issues: domFindings.length > 0 ? parsedIssues : trustedAiIssues,
     tiles_analyzed: tilesAnalyzed,
     credits_used: tilesAnalyzed,
     page_height_px: capturedPageHeight,
-    viewport: { width: 1280, height: capturedPageHeight },
+    viewport: { width: VIEWPORT_WIDTH, height: capturedPageHeight },
     timing: {
       total_ms: totalMs,
       browser_ms: browserMs,

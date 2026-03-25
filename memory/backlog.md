@@ -101,6 +101,8 @@
   - logo-profile.png (400×400, 픽셀 아이콘)
   - x-banner.png (1500×500, X 프로필 배너)
 - ✅ **PRICE-01** 가격 개편 완료 (2026-03-24→25) — Team($99, 10멤버) → Unlimited($49, 개인 무제한)
+- ✅ **BRAND-02** OG 이미지 피벗 재제작 + 배포 완료 (2026-03-25) — Press Start 2P 폰트, #ff1a3c 레드, SVG 픽셀 로고 직접 렌더링, visual_check() 결과 터미널 시각화. 커밋 db7b40d
+- ✅ **BRAND-03** 브랜드 가이드 문서 작성 완료 (2026-03-25) — `docs/brand-guide.md` (컬러/폰트/컴포넌트/OG 스펙 단일 진실 소스)
 - ✅ **AARRR-01** AARRR + ROI 분석 완료 (2026-03-24) — Pro LTV $380~950, 마진 94.8%, 우선순위: 데모>ShowHN>GHMarketplace
 
 ### 폐기된 방향
