@@ -21,6 +21,8 @@ interface Env {
   AI: any;
   /** Gemini API 키 (wrangler secret put GEMINI_API_KEY) — fallback용 */
   GEMINI_API_KEY: string;
+  /** KV: 비주얼 체크 결과 캐시 (TTL 5분) */
+  VISUAL_CACHE: KVNamespace;
 }
 
 // ─── Registry 타입 ────────────────────────────────────────────────────────────
@@ -1249,6 +1251,19 @@ app.post("/v1/eye/check", async (c) => {
     return c.json({ error: "Invalid URL" }, 400);
   }
 
+  // ── KV 캐시 조회 (prompt 없는 표준 요청만 캐시) ──
+  const cacheKey = `eye:${url}`;
+  if (!prompt && c.env.VISUAL_CACHE) {
+    try {
+      const cached = await c.env.VISUAL_CACHE.get(cacheKey, "json");
+      if (cached) {
+        return c.json({ ...(cached as object), cached: true, cache_age_note: "Result from KV cache (TTL 5min)" });
+      }
+    } catch {
+      // 캐시 실패 시 무시하고 계속
+    }
+  }
+
   // ── CF Browser Rendering API: 스크린샷 ──
   const browserStart = Date.now();
   let screenshotB64: string;
@@ -1488,6 +1503,11 @@ Be conservative. If unsure whether something is a bug, do NOT list it.`;
   // 스크린샷은 요청 시에만 포함 (프로덕션에서는 생략)
   if (include_screenshot) {
     result.screenshot_b64 = screenshotB64;
+  }
+
+  // ── KV 캐시 저장 (TTL 5분 = 300s, prompt 없는 성공 요청만) ──
+  if (!prompt && c.env.VISUAL_CACHE && result.ok === true) {
+    await c.env.VISUAL_CACHE.put(cacheKey, JSON.stringify(result), { expirationTtl: 300 }).catch(() => {});
   }
 
   return c.json(result);

@@ -22,6 +22,10 @@ id = "ab9b493f77ae443197620421f259365b"
 binding = "RECOMMEND_LOG"
 id = "4a1073d7cd884888a3b933d8813cbd06"
 
+[[kv_namespaces]]
+binding = "VISUAL_CACHE"
+id = "b9ea4f108d7440e2984efcfc19a73b63"
+
 [env.production]
 vars = { ENVIRONMENT = "production" }
 
@@ -38,6 +42,10 @@ id = "ab9b493f77ae443197620421f259365b"
 [[env.production.kv_namespaces]]
 binding = "RECOMMEND_LOG"
 id = "4a1073d7cd884888a3b933d8813cbd06"
+
+[[env.production.kv_namespaces]]
+binding = "VISUAL_CACHE"
+id = "b375fdc172cc40d6a7a9cd61066760fa"
 
 [[env.production.routes]]
 pattern = "api.perceptdot.com"
