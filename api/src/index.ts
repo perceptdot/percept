@@ -718,18 +718,21 @@ app.post("/v1/free-key", async (c) => {
     return c.json({ error: "유효한 이메일이 필요합니다." }, 400);
   }
 
-  // 이미 발급된 키 있으면 재발급 대신 기존 키 반환
+  // 이미 발급된 키 있으면 기존 키 재발송 (재입력 시 이메일 재발송)
   const existingRaw = await c.env.API_KEYS.get(`apikey:${email}`);
   if (existingRaw) {
     const existing = JSON.parse(existingRaw) as ApiKeyRecord;
     if (existing.plan === "free") {
+      // 기존 키를 이메일로 다시 발송
+      await sendApiKeyEmail(c.env.RESEND_API_KEY, email, existing.key, "free");
       return c.json({
         ok: true,
         api_key: existing.key,
         plan: "free",
         quota: existing.quota,
         calls_used: existing.calls_used,
-        note: "existing key returned",
+        email_sent: true,
+        note: "existing key resent",
       });
     }
     // 유료 플랜 사용자 → 이미 더 좋은 키 있음
