@@ -1415,36 +1415,43 @@ app.post("/v1/eye/check", async (c) => {
     ? `Focus on: ${prompt}`
     : "Look for: broken layouts, element overflow, missing images, severe misalignment, text clipping, z-index issues, extremely low color contrast.";
 
-  const analysisPrompt = `You are a strict visual QA engineer. Your job is to find ONLY clear, objective rendering errors — NOT design opinions.
+  const analysisPrompt = `You are a visual QA engineer. Inspect the screenshot carefully for rendering errors.
 
 URL: ${url}
 
-WHAT COUNTS AS A REAL BUG (flag these):
-- Element visibly cut off or clipped by its container
-- Button/text extending outside its parent box
-- Overlapping elements that obscure each other (z-index)
-- Completely broken layout (columns collapsed, content stacked wrong)
-- Images showing a broken icon (src failed to load)
+── TIER 1: ALWAYS REPORT (no hesitation) ──────────────────────────────
+These are objective rendering failures. Report them even if the page looks intentional:
+• Any element visibly overflowing or extending outside its parent container
+• Text or button clipped/cut off by its bounding box
+• Two elements overlapping each other (z-index stacking error)
+• Broken image placeholder icon (src failed to load)
+• Layout completely collapsed (e.g. columns stacked when they shouldn't be)
 
-WHAT IS NOT A BUG (do NOT flag these):
-- Minimalist or simple design
-- Dark backgrounds, bold fonts, unusual colors
-- Small margins or tight spacing
-- Any element that is INTENTIONALLY designed that way
-- Placeholder or example pages with little content
-- "Missing" content that is just empty by design
+── TIER 2: SKIP (design choices, not bugs) ────────────────────────────
+Do NOT report these — they are intentional design decisions:
+• Minimalist pages with little content (e.g. example.com)
+• Dark backgrounds, bold fonts, unusual color schemes
+• Tight spacing or large whitespace
+• Empty sections that appear to be placeholders by design
 
-STEP 1 — First line EXACTLY one of:
+── RESPONSE FORMAT (follow exactly) ───────────────────────────────────
 VERDICT: NO ISSUES
+or
 VERDICT: ISSUES FOUND
 
-STEP 2 — One sentence summary (max 80 chars).
+[one sentence summary, max 80 chars]
 
-STEP 3 — Only if you found a REAL BUG above, list it:
-- [high|medium|low] Exact description of the rendering error (max 80 chars, max 5 bullets)
+- [high] description of bug 1 (max 80 chars)
+- [medium] description of bug 2 (max 80 chars)
+- [low] description of bug 3 (max 80 chars)
 
-${userFocus}
-Be conservative. If unsure whether something is a bug, do NOT list it.`;
+RULES:
+• If you found ANY Tier 1 bug → write VERDICT: ISSUES FOUND and list each bug as a bullet
+• If zero Tier 1 bugs → write VERDICT: NO ISSUES and no bullets
+• Do NOT describe bugs in the summary line — bullets only
+• Do NOT skip the bullet list if verdict is ISSUES FOUND
+
+${userFocus}`;
 
   let hasIssues = false;
   let summary = "";
@@ -1502,9 +1509,14 @@ Be conservative. If unsure whether something is a bug, do NOT list it.`;
       }
     }
 
-    // has_issues는 issues[] 개수로만 결정 — VERDICT 텍스트는 신뢰하지 않음
-    // Gemini가 VERDICT와 본문을 모순되게 쓰는 경우가 잦아 issues[] 자체가 진실
-    return { hasIssues: issues.length > 0, summary, issues };
+    // has_issues 결정:
+    // 1순위: issues[] 존재하면 true
+    // 2순위: VERDICT: ISSUES FOUND 이고 summary에 이슈 관련 키워드 있으면 true (Gemini가 불릿 빠뜨린 케이스)
+    // 3순위: false
+    const verdictIssues = lower.includes("verdict: issues found");
+    const summaryHasIssueKeyword = /rendering error|overflow|clipping|z-index|broken|overlap|extend|outside|cut off/i.test(summary);
+    const hasIssues = issues.length > 0 || (verdictIssues && summaryHasIssueKeyword);
+    return { hasIssues, summary, issues };
   }
 
   // Gemini 2.0 Flash — primary
