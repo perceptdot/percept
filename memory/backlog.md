@@ -74,10 +74,18 @@
 - [ ] **EYE-07** Show HN + r/ClaudeCode 포스팅 ⭐ 2순위 — 데모 영상 완료 후
 - [ ] **EYE-11** GitHub Marketplace eye-action 등록 ⭐ 3순위 — perceptdot/eye-action repo 생성 후
 
+### CRITICAL — Full-Page QA 방향 전환 (2026-03-25 CEO 확정)
+> 방향: "단일 뷰포트 스냅샷" → "사이트 전체 물리 QA" / 크레딧 단위: URL → 타일
+- ✅ **EYE-08** Full-Page Tiling POC + 구현 완료 (2026-03-25) — 1600px 타일, OVERLAP 100px, max 10타일, tiles_analyzed/credits_used 응답 추가. perceptdot.com 6203px → 5타일 정상 분석
+- [ ] **EYE-09** Multi-Viewport — desktop(1280)/tablet(768)/mobile(375) 뷰포트 파라미터
+- [ ] **EYE-10** visual_crawl — 사이트 전체 페이지 순회 (같은 도메인, depth 파라미터)
+- [ ] **EYE-11-NEW** GitHub Action PR 연동 — 변경 페이지만 타겟 QA + 리포트
+- [ ] **EYE-CREDIT** 크레딧 모델 재편 — Free 100타일 / Pro 10,000타일 / Unlimited 무제한
+
 ### MEDIUM (이후)
-- [ ] **EYE-08** 영속 베이스라인 (Cloudflare R2)
-- [ ] **EYE-09** visual_diff 도구 추가
-- [ ] **EYE-10** Gumroad Free/Pro 결제 연동
+- [ ] **EYE-BASELINE** 영속 베이스라인 (Cloudflare R2)
+- [ ] **EYE-DIFF** visual_diff 도구 추가
+- [ ] **EYE-PAY** Paddle 결제 크레딧 모델 반영
 
 - ✅ **EYE-GHA** GitHub Action MVP 빌드 완료 (2026-03-24) — eye-action/ (action.yml + src/index.js + dist/ 번들 + README), CF API has_issues+summary 표준화
 - ✅ **EYE-REDESIGN** 랜딩 전면 리디자인 완료 (2026-03-24) — RED 컬러(#ff1a3c), eye 제품 9개 섹션, 모바일 반응형

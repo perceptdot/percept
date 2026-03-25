@@ -1285,14 +1285,14 @@ app.post("/v1/eye/check", async (c) => {
   const startTime = Date.now();
 
   // ── 요청 파싱 ──
-  let body: { url?: string; prompt?: string; include_screenshot?: boolean; no_cache?: boolean };
+  let body: { url?: string; prompt?: string; include_screenshot?: boolean; no_cache?: boolean; full_page?: boolean };
   try {
     body = await c.req.json();
   } catch {
     return c.json({ error: "Invalid JSON" }, 400);
   }
 
-  const { url, prompt, include_screenshot = false, no_cache = false } = body;
+  const { url, prompt, include_screenshot = false, no_cache = false, full_page = true } = body;
   if (!url) return c.json({ error: "url is required" }, 400);
 
   // URL 유효성 검사 (SSRF 방지: http/https만 허용)
@@ -1347,10 +1347,13 @@ app.post("/v1/eye/check", async (c) => {
     }
   }
 
-  // ── CF Browser Rendering API: 스크린샷 ──
+  // ── CF Browser Rendering API: 스크린샷 (EYE-08: full-page tiling) ──
   const browserStart = Date.now();
-  let screenshotB64: string;
-  let screenshotBytes: number;
+  const TILE_H = 1600;
+  const OVERLAP = 100;
+  let tiles: Array<{ b64: string; y: number; height: number }> = [];
+  let screenshotBytes = 0;
+  let capturedPageHeight = 800;
 
   try {
     const browser = await puppeteer.launch(c.env.BROWSER);
@@ -1377,19 +1380,43 @@ app.post("/v1/eye/check", async (c) => {
     try {
       await page.goto(parsedUrl.toString(), {
         waitUntil: "domcontentloaded",
-        timeout: 5000, // 5s 내 domcontentloaded 안 되면 현재 상태 스크린샷
+        timeout: 5000,
       });
     } catch {
-      // timeout은 OK — 부분 로드 상태로 스크린샷 (비주얼 QA 목적에 충분)
+      // timeout OK — 부분 로드 상태로 스크린샷
     }
-    const shot = await page.screenshot({
-      encoding: "base64",
-      type: "jpeg",
-      quality: 80,
-    });
+
+    // EYE-08: 페이지 전체 높이 측정 후 타일링
+    if (full_page) {
+      try {
+        capturedPageHeight = await page.evaluate(
+          "Math.max(document.body ? document.body.scrollHeight : 800, document.documentElement ? document.documentElement.scrollHeight : 800, 800)"
+        ) as number;
+      } catch { capturedPageHeight = 800; }
+      if (capturedPageHeight > 800) {
+        await page.setViewport({ width: 1280, height: Math.min(capturedPageHeight, 16000) });
+      }
+    }
+
+    const tileCount = full_page
+      ? Math.min(10, Math.ceil(capturedPageHeight / (TILE_H - OVERLAP)))
+      : 1;
+
+    for (let i = 0; i < tileCount; i++) {
+      const y = i * (TILE_H - OVERLAP);
+      const clipH = full_page ? Math.min(TILE_H, capturedPageHeight - y) : 800;
+      if (clipH <= 0) break;
+      const shot = await page.screenshot({
+        encoding: "base64",
+        type: "jpeg",
+        quality: 80,
+        clip: { x: 0, y: full_page ? y : 0, width: 1280, height: clipH },
+      }) as string;
+      tiles.push({ b64: shot, y: full_page ? y : 0, height: clipH });
+      screenshotBytes += Math.round((shot.length * 3) / 4);
+    }
+
     await browser.close();
-    screenshotB64 = shot as string;
-    screenshotBytes = Math.round((screenshotB64.length * 3) / 4);
   } catch (e) {
     // 브라우저 에러 시 슬롯 반환
     if (doStub) await doStub.fetch("https://do-internal/release").catch(() => {});
@@ -1409,7 +1436,7 @@ app.post("/v1/eye/check", async (c) => {
 
   const browserMs = Date.now() - browserStart;
 
-  // ── CF Workers AI: 비주얼 QA 분석 (지역제한 없음) ──
+  // ── Gemini 2.0 Flash: 타일별 비주얼 QA 분석 ──
   const aiStart = Date.now();
   const userFocus = prompt
     ? `Focus on: ${prompt}`
@@ -1440,39 +1467,28 @@ OR if clean:
 VERDICT: NO ISSUES
 Summary: one sentence why the page looks correct`;
 
-  let hasIssues = false;
-  let summary = "";
-  let parsedIssues: Array<{ severity: "high" | "medium" | "low"; description: string }> = [];
-  let analysis = "";
-
   /** Parse VERDICT-format response into structured fields */
   function parseVerdictText(text: string) {
     const lower = text.toLowerCase();
     const hi = lower.includes("verdict: issues found");
     const ni = lower.includes("verdict: no issues");
-    const foundIssues = hi ? true : ni ? false
+    const _foundIssues = hi ? true : ni ? false
       : !["no visual issues", "looks good", "no bugs"].some((kw) => lower.includes(kw));
 
-    // process line by line
     const rawLines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-    let summary = "";
+    let parsedSummary = "";
     const issues: Array<{ severity: "high" | "medium" | "low"; description: string }> = [];
 
     for (const line of rawLines) {
-      // strip markdown bold (**text**) only — keep single * for bullet detection
       const stripped = line.replace(/\*\*([^*]+)\*\*/g, "$1").trim();
-
-      // skip VERDICT / header lines
       if (/^VERDICT:/i.test(stripped)) continue;
       if (/^(Summary|Issues?|Verdict):\s*$/i.test(stripped)) continue;
 
-      // bullet or numbered list item
       const bulletMatch = stripped.match(/^[-•*]\s+(.+)/);
       const numberedMatch = stripped.match(/^\d+[.)]\s+(.+)/);
       const rawContent = (bulletMatch?.[1] ?? numberedMatch?.[1] ?? "").trim();
 
       if (rawContent) {
-        // detect leading severity word: "High: ..." or "High - ..." or "[high] ..."
         const sevMatch = rawContent.match(/^(?:\[(high|medium|low)\]|(high|medium|low)[\s:–-])\s*/i);
         const sev: "high" | "medium" | "low" = (() => {
           const s = (sevMatch?.[1] ?? sevMatch?.[2] ?? "").toLowerCase();
@@ -1483,116 +1499,145 @@ Summary: one sentence why the page looks correct`;
         continue;
       }
 
-      // Summary: prefix line
       const summaryPrefixMatch = stripped.match(/^Summary:\s*(.+)/i);
       if (summaryPrefixMatch) {
-        summary = summaryPrefixMatch[1].trim().slice(0, 200);
+        parsedSummary = summaryPrefixMatch[1].trim().slice(0, 200);
         continue;
       }
 
-      // first plain prose line (not a header, not a bullet) = summary fallback
-      if (!summary && stripped.length > 15 && !/^(ISSUES FOUND|NO ISSUES)$/i.test(stripped)) {
-        summary = stripped.slice(0, 200);
+      if (!parsedSummary && stripped.length > 15 && !/^(ISSUES FOUND|NO ISSUES)$/i.test(stripped)) {
+        parsedSummary = stripped.slice(0, 200);
       }
     }
 
-    // has_issues 결정:
-    // 1순위: issues[] 존재하면 true
-    // 2순위: VERDICT: ISSUES FOUND 이고 summary에 이슈 관련 키워드 있으면 true (Gemini가 불릿 빠뜨린 케이스)
-    // 3순위: false
     const verdictIssues = lower.includes("verdict: issues found");
-    const summaryHasIssueKeyword = /rendering error|overflow|clipping|z-index|broken|overlap|extend|outside|cut off/i.test(summary);
+    const summaryHasIssueKeyword = /rendering error|overflow|clipping|z-index|broken|overlap|extend|outside|cut off/i.test(parsedSummary);
     const hasIssues = issues.length > 0 || (verdictIssues && summaryHasIssueKeyword);
-    return { hasIssues, summary, issues };
+    return { hasIssues, summary: parsedSummary, issues };
   }
 
-  // Gemini 2.0 Flash — responseMimeType JSON 강제 출력
-  try {
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [
-            { inline_data: { mime_type: "image/jpeg", data: screenshotB64 } },
-            { text: analysisPrompt },
-          ]}],
-          generationConfig: {
-            maxOutputTokens: 500,
-            temperature: 0.1,
-          },
-        }),
-      }
-    );
-    if (!geminiRes.ok) {
-      const errBody = await geminiRes.text();
-      throw new Error(`Gemini ${geminiRes.status}: ${errBody.slice(0, 300)}`);
-    }
-    const gd = (await geminiRes.json()) as {
-      candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
-    };
-    const raw = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-    analysis = raw;
-    // JSON 추출 시도 (JSON 코드블록, 래퍼 등 다양한 형태 처리)
-    // → 실패 시 VERDICT 텍스트 파서로 폴백
-    let jsonParsed = false;
+  // 타일별 분석 헬퍼
+  async function analyzeOneTile(b64: string): Promise<{
+    hasIssues: boolean;
+    summary: string;
+    issues: Array<{ severity: "high" | "medium" | "low"; description: string }>;
+    raw: string;
+  }> {
+    let hasIssues = false;
+    let tileSummary = "";
+    let issues: Array<{ severity: "high" | "medium" | "low"; description: string }> = [];
+    let raw = "";
+
     try {
-      // Try to find JSON object in the text (handles ```json blocks, plain JSON, wrapped)
-      const jsonMatch = raw.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const parsed_json = JSON.parse(jsonMatch[0]);
-        // Handle possible "response" wrapper (Gemini sometimes wraps output)
-        const j = (parsed_json.has_issues !== undefined ? parsed_json : (parsed_json.response ?? parsed_json)) as {
-          has_issues: boolean; summary: string; issues: Array<{ severity: string; description: string }>
-        };
-        if (typeof j.has_issues === "boolean" && j.summary) {
-          hasIssues = j.has_issues;
-          summary = j.summary.slice(0, 200);
-          parsedIssues = (j.issues ?? []).slice(0, 5).map((i) => ({
-            severity: (["high","medium","low"].includes(i.severity) ? i.severity : "medium") as "high"|"medium"|"low",
-            description: (i.description ?? "").slice(0, 120),
-          }));
-          jsonParsed = true;
+      const geminiRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [
+              { inline_data: { mime_type: "image/jpeg", data: b64 } },
+              { text: analysisPrompt },
+            ]}],
+            generationConfig: { maxOutputTokens: 500, temperature: 0.1 },
+          }),
         }
+      );
+      if (!geminiRes.ok) {
+        const errBody = await geminiRes.text();
+        throw new Error(`Gemini ${geminiRes.status}: ${errBody.slice(0, 300)}`);
       }
-    } catch { /* fallthrough */ }
-    if (!jsonParsed) {
-      const parsed = parseVerdictText(raw);
-      hasIssues = parsed.hasIssues;
-      summary = parsed.summary;
-      parsedIssues = parsed.issues;
+      const gd = (await geminiRes.json()) as {
+        candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
+      };
+      raw = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+
+      let jsonParsed = false;
+      try {
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed_json = JSON.parse(jsonMatch[0]);
+          const j = (parsed_json.has_issues !== undefined ? parsed_json : (parsed_json.response ?? parsed_json)) as {
+            has_issues: boolean; summary: string; issues: Array<{ severity: string; description: string }>
+          };
+          if (typeof j.has_issues === "boolean" && j.summary) {
+            hasIssues = j.has_issues;
+            tileSummary = j.summary.slice(0, 200);
+            issues = (j.issues ?? []).slice(0, 5).map((i) => ({
+              severity: (["high","medium","low"].includes(i.severity) ? i.severity : "medium") as "high"|"medium"|"low",
+              description: (i.description ?? "").slice(0, 120),
+            }));
+            jsonParsed = true;
+          }
+        }
+      } catch { /* fallthrough */ }
+      if (!jsonParsed) {
+        const parsed = parseVerdictText(raw);
+        hasIssues = parsed.hasIssues;
+        tileSummary = parsed.summary;
+        issues = parsed.issues;
+      }
+    } catch (e) {
+      // CF Workers AI fallback
+      try {
+        const binaryStr = atob(b64);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+        const aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
+          prompt: analysisPrompt,
+          image: [...bytes],
+          max_tokens: 500,
+        });
+        raw = typeof aiResult?.response === "string" ? aiResult.response : JSON.stringify(aiResult ?? "");
+        const parsed = parseVerdictText(raw);
+        hasIssues = parsed.hasIssues;
+        tileSummary = parsed.summary;
+        issues = parsed.issues;
+      } catch (e2) {
+        raw = `Analysis failed: ${String(e)} / ${String(e2)}`;
+        tileSummary = "Analysis failed";
+      }
     }
-  } catch (e) {
-    // CF Workers AI fallback
-    try {
-      const binaryStr = atob(screenshotB64);
-      const bytes = new Uint8Array(binaryStr.length);
-      for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
-      const aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
-        prompt: analysisPrompt,
-        image: [...bytes],
-        max_tokens: 500,
-      });
-      const raw = typeof aiResult?.response === "string" ? aiResult.response : JSON.stringify(aiResult ?? "");
-      analysis = raw;
-      const parsed = parseVerdictText(raw);
-      hasIssues = parsed.hasIssues;
-      summary = parsed.summary;
-      parsedIssues = parsed.issues;
-    } catch (e2) {
-      analysis = `Analysis failed: ${String(e)} / ${String(e2)}`;
-      summary = "Analysis failed";
-    }
+
+    return { hasIssues, summary: tileSummary, issues, raw };
   }
+
+  // 타일 순차 분석 (max 2 병렬 가능하나 안전하게 순차로)
+  type TileResult = {
+    tile_index: number;
+    has_issues: boolean;
+    summary: string;
+    issues: Array<{ severity: "high" | "medium" | "low"; description: string; tile_index: number }>;
+    raw: string;
+  };
+  const tileResults: TileResult[] = [];
+
+  for (let i = 0; i < tiles.length; i++) {
+    const res = await analyzeOneTile(tiles[i].b64);
+    tileResults.push({
+      tile_index: i,
+      has_issues: res.hasIssues,
+      summary: res.summary,
+      issues: res.issues.map(issue => ({ ...issue, tile_index: i })),
+      raw: res.raw,
+    });
+  }
+
+  // 타일 결과 머지
+  const hasIssues = tileResults.some(t => t.has_issues);
+  const parsedIssues = tileResults.flatMap(t => t.issues).slice(0, 10);
+  const summary = (tileResults.find(t => t.has_issues) ?? tileResults[0])?.summary ?? "";
+  const analysis = tileResults.map((t, i) => `[Tile ${i}] ${t.raw}`).join("\n---\n").slice(0, 3000);
+
   const aiMs = Date.now() - aiStart;
   const totalMs = Date.now() - startTime;
 
-  const cfAiCost = 0.000011;
+  const tilesAnalyzed = tiles.length;
+  const cfAiCost = 0.000011 * tilesAnalyzed;
   const cfBrCost = 0.000001;
   const totalCost = cfAiCost + cfBrCost;
 
-  const pocPassed = totalMs < 10_000 && totalCost < 0.05;
+  const pocPassed = totalMs < 10_000 + (tilesAnalyzed - 1) * 5_000 && totalCost < 0.05 * tilesAnalyzed;
 
   const result: Record<string, unknown> = {
     ok: true,
@@ -1602,26 +1647,30 @@ Summary: one sentence why the page looks correct`;
     summary,
     analysis,
     issues: parsedIssues,
-    viewport: { width: 1280, height: 800 },
+    tiles_analyzed: tilesAnalyzed,
+    credits_used: tilesAnalyzed,
+    page_height_px: capturedPageHeight,
+    viewport: { width: 1280, height: capturedPageHeight },
     timing: {
       total_ms: totalMs,
       browser_ms: browserMs,
       ai_ms: aiMs,
-      under_10s: totalMs < 10_000,
+      under_10s: totalMs < 10_000 + (tilesAnalyzed - 1) * 5_000,
     },
     cost: {
       estimated_usd: Math.round(totalCost * 1_000_000) / 1_000_000,
-      under_5cents: totalCost < 0.05,
-      note: "CF Workers AI vision (~$0.011/1000req free tier on paid plan)",
+      per_tile_usd: Math.round((cfAiCost / tilesAnalyzed) * 1_000_000) / 1_000_000,
+      under_5cents: totalCost < 0.05 * tilesAnalyzed,
+      note: "1 credit = 1 tile (1280×1600px analysis)",
     },
     duration_ms: totalMs,
     cost_usd: Math.round(totalCost * 1_000_000) / 1_000_000,
     screenshot_size_bytes: screenshotBytes,
   };
 
-  // 스크린샷은 요청 시에만 포함 (프로덕션에서는 생략)
-  if (include_screenshot) {
-    result.screenshot_b64 = screenshotB64;
+  // 스크린샷은 요청 시에만 포함 (첫 번째 타일)
+  if (include_screenshot && tiles.length > 0) {
+    result.screenshot_b64 = tiles[0].b64;
   }
 
   // ── KV 캐시 저장 (TTL 5분 = 300s, prompt 없는 성공 요청만) ──
