@@ -1411,6 +1411,10 @@ app.post("/v1/eye/check", async (c) => {
   const apiKeyVal = c.req.header("X-Percept-Key") ?? body.api_key ?? null;
   let keyRecord: ApiKeyRecord | null = null;
 
+  if (!apiKeyVal) {
+    return c.json({ ok: false, error: "API key required. Get a free key at perceptdot.com" }, 401);
+  }
+
   if (apiKeyVal) {
     const keyRaw = await c.env.API_KEYS.get(`key:${apiKeyVal}`);
     if (!keyRaw) {

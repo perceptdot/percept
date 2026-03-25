@@ -485,6 +485,17 @@
       color: #ff8c40;
     }
 
+    .hero-code .code-key {
+      color: var(--green, #22c55e);
+      font-weight: 700;
+    }
+
+    .install-tabs { margin-top: 32px; }
+    .install-tab-btns { display:flex; gap:4px; margin-bottom:8px; justify-content:center; }
+    .itab { background:transparent; border:1px solid var(--border); color:var(--muted); padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; font-family:inherit; transition:all .15s; }
+    .itab.active { background:var(--red); border-color:var(--red); color:#fff; }
+    .itab:hover:not(.active) { border-color:var(--red); color:var(--text); }
+
     .hero-btns {
       display: flex;
       gap: 14px;
@@ -1619,9 +1630,29 @@
       <strong>Your AI writes code fast. Does it look right?</strong>
     </p>
 
-    <div class="hero-code">
-      <span class="code-comment"># One command to install via MCP</span><br>
-      <span class="code-cmd">claude mcp add</span> <span class="code-cmd">--transport http</span> perceptdot <span class="code-str">https://mcp.perceptdot.com/mcp</span>
+    <div class="install-tabs">
+      <div class="install-tab-btns">
+        <button class="itab active" onclick="switchTab('claude')">Claude Code</button>
+        <button class="itab" onclick="switchTab('cursor')">Cursor</button>
+        <button class="itab" onclick="switchTab('windsurf')">Windsurf</button>
+        <button class="itab" onclick="switchTab('cline')">Cline</button>
+      </div>
+      <div class="hero-code" id="tab-claude">
+        <span class="code-comment"># Replace YOUR_KEY with your API key</span><br>
+        <span class="code-cmd">claude mcp add</span> <span class="code-cmd">--transport http</span> perceptdot <span class="code-str">"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"</span>
+      </div>
+      <div class="hero-code" id="tab-cursor" style="display:none">
+        <span class="code-comment"># Add to ~/.cursor/mcp.json</span><br>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"}}}</span>
+      </div>
+      <div class="hero-code" id="tab-windsurf" style="display:none">
+        <span class="code-comment"># Add to ~/.codeium/windsurf/mcp_config.json</span><br>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"}}}</span>
+      </div>
+      <div class="hero-code" id="tab-cline" style="display:none">
+        <span class="code-comment"># Cline MCP settings (VS Code extension)</span><br>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>","transport":"http"}}}</span>
+      </div>
     </div>
 
     <div class="hero-btns">
@@ -2099,12 +2130,20 @@
         <p>Your API key:</p>
         <code id="free-key-display"></code>
         <div class="mcp-install-cmd">
-          <p>Install via MCP:</p>
-          <code style="font-size:11px;word-break:break-all;">claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp</code>
+          <p>Claude Code:</p>
+          <code id="modal-cmd-claude" style="font-size:11px;word-break:break-all;">claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"</code>
+        </div>
+        <div class="mcp-install-cmd" style="margin-top:10px;">
+          <p>Cursor (~/.cursor/mcp.json):</p>
+          <code id="modal-cmd-cursor" style="font-size:11px;word-break:break-all;">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"}}}</code>
+        </div>
+        <div class="mcp-install-cmd" style="margin-top:10px;">
+          <p>Windsurf (~/.codeium/windsurf/mcp_config.json):</p>
+          <code id="modal-cmd-windsurf" style="font-size:11px;word-break:break-all;">{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"}}}</code>
         </div>
         <div class="mcp-install-cmd" style="margin-top:10px;">
           <p>Or call the API directly:</p>
-          <code style="font-size:11px;word-break:break-all;">POST https://api.perceptdot.com/v1/eye/check</code>
+          <code style="font-size:11px;word-break:break-all;">curl -X POST https://api.perceptdot.com/v1/eye/check -H "Content-Type: application/json" -H "X-Percept-Key: <span id="modal-api-key-hint">YOUR_KEY</span>" -d '{"url":"https://example.com"}'</code>
         </div>
       </div>
     </div>
@@ -2237,6 +2276,18 @@
       document.getElementById(subId).textContent = 'Available soon — contact us to upgrade.';
     }
 
+    // ---- Install tab switcher ----
+    function switchTab(name) {
+      var tabs = ['claude','cursor','windsurf','cline'];
+      tabs.forEach(function(t) {
+        document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
+      });
+      var btns = document.querySelectorAll('.itab');
+      btns.forEach(function(b, i) {
+        b.classList.toggle('active', tabs[i]===name);
+      });
+    }
+
     // ---- Free key form ----
     async function submitFreeKey() {
       const email = document.getElementById('free-email').value.trim();
@@ -2268,6 +2319,11 @@
           const key = data.key || data.api_key || 'pdot_' + Math.random().toString(36).slice(2, 18);
           document.getElementById('free-form').style.display = 'none';
           document.getElementById('free-key-display').textContent = key;
+          // Update install commands with actual key
+          document.getElementById('modal-cmd-claude').textContent = 'claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=' + key + '"';
+          document.getElementById('modal-cmd-cursor').textContent = '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=' + key + '"}}}';
+          document.getElementById('modal-cmd-windsurf').textContent = '{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp?api_key=' + key + '"}}}';
+          document.getElementById('modal-api-key-hint').textContent = key;
           document.getElementById('free-result').classList.add('show');
           gtag('event', 'free_key_success', { event_category: 'conversion' });
         } else {

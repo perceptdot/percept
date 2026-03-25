@@ -14,12 +14,13 @@ app.get('/', (c) => c.json({ service: 'perceptdot MCP', version: '1.0.0', status
 
 // MCP Streamable HTTP endpoint
 app.post('/mcp', async (c) => {
+  const apiKey = c.req.query('api_key') ?? null
   const body = await c.req.json()
   const requests = Array.isArray(body) ? body : [body]
   const responses: any[] = []
 
   for (const req of requests) {
-    const res = await handleRpc(req)
+    const res = await handleRpc(req, apiKey)
     if (res !== null) responses.push(res)
   }
 
@@ -32,7 +33,7 @@ app.get('/mcp', (c) => {
   return c.json({ error: 'Use POST for MCP requests' }, 405)
 })
 
-async function handleRpc(req: any): Promise<any | null> {
+async function handleRpc(req: any, apiKey: string | null = null): Promise<any | null> {
   const { jsonrpc, id, method, params } = req
 
   // Notifications — no response needed
@@ -100,10 +101,15 @@ async function handleRpc(req: any): Promise<any | null> {
         for (let attempt = 1; attempt <= 4; attempt++) {
           resp = await fetch('https://api.perceptdot.com/v1/eye/check', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              ...(apiKey ? { 'X-Percept-Key': apiKey } : {})
+            },
             body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache }),
           })
           if (resp.ok) break
+          // 인증/결제 오류는 재시도 무의미
+          if (resp.status === 401 || resp.status === 402) break
           if (attempt < 4) await new Promise(r => setTimeout(r, delays[attempt - 1]))
         }
 
