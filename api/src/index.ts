@@ -1258,10 +1258,32 @@ app.post("/v1/eye/check", async (c) => {
     const browser = await puppeteer.launch(c.env.BROWSER);
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
-    await page.goto(parsedUrl.toString(), {
-      waitUntil: "load",
-      timeout: 7000,
+
+    // 느린 외부 스크립트 차단 (Paddle, GTM 등 — 비주얼 QA에 불필요)
+    await page.setRequestInterception(true);
+    page.on("request", (req: any) => {
+      const u = req.url();
+      if (
+        u.includes("paddle.com") ||
+        u.includes("paddle.js") ||
+        u.includes("googletagmanager") ||
+        u.includes("google-analytics") ||
+        u.includes("gtag")
+      ) {
+        req.abort();
+      } else {
+        req.continue();
+      }
     });
+
+    try {
+      await page.goto(parsedUrl.toString(), {
+        waitUntil: "domcontentloaded",
+        timeout: 5000, // 5s 내 domcontentloaded 안 되면 현재 상태 스크린샷
+      });
+    } catch {
+      // timeout은 OK — 부분 로드 상태로 스크린샷 (비주얼 QA 목적에 충분)
+    }
     const shot = await page.screenshot({
       encoding: "base64",
       type: "jpeg",
@@ -1295,75 +1317,48 @@ Max 150 words.`;
 
   let analysis = "";
 
+  // Gemini 2.5 Flash — primary (빠름, 검증됨)
   try {
-    // CF Workers AI — @cf/meta/llama-3.2-11b-vision-instruct
-    // screenshot을 Uint8Array로 변환
-    const binaryStr = atob(screenshotB64);
-    const bytes = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-      bytes[i] = binaryStr.charCodeAt(i);
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { inline_data: { mime_type: "image/jpeg", data: screenshotB64 } },
+                { text: analysisPrompt },
+              ],
+            },
+          ],
+          generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
+        }),
+      }
+    );
+    if (geminiRes.ok) {
+      const gd = (await geminiRes.json()) as {
+        candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
+      };
+      analysis = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? "Analysis unavailable";
+    } else {
+      throw new Error(`Gemini ${geminiRes.status}`);
     }
-
-    // Llama 3.2 11B Vision — CF에서 제공하는 최고 품질 비전 모델
-    // 첫 사용 시 라이선스 동의 필요 (자동 처리)
-    let aiResult;
+  } catch (e) {
+    // Gemini 실패 시 CF Workers AI fallback
     try {
-      aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
+      const binaryStr = atob(screenshotB64);
+      const bytes = new Uint8Array(binaryStr.length);
+      for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+      const aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
         prompt: analysisPrompt,
         image: [...bytes],
         max_tokens: 300,
       });
-    } catch (licenseErr) {
-      const msg = String(licenseErr);
-      if (msg.includes("5016") || msg.includes("agree")) {
-        // 라이선스 동의 자동 처리
-        await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
-          prompt: "agree",
-          image: [...bytes],
-          max_tokens: 10,
-        });
-        aiResult = await c.env.AI.run("@cf/meta/llama-3.2-11b-vision-instruct", {
-          prompt: analysisPrompt,
-          image: [...bytes],
-          max_tokens: 300,
-        });
-      } else {
-        throw licenseErr;
-      }
-    }
-
-    analysis = aiResult?.response ?? "Analysis unavailable";
-  } catch (e) {
-    // CF AI 실패 시 Gemini fallback
-    try {
-      const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${c.env.GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  { inline_data: { mime_type: "image/jpeg", data: screenshotB64 } },
-                  { text: analysisPrompt },
-                ],
-              },
-            ],
-            generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
-          }),
-        }
-      );
-      if (geminiRes.ok) {
-        const gd = (await geminiRes.json()) as {
-          candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
-        };
-        analysis = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? `CF AI failed: ${String(e)}`;
-      } else {
-        analysis = `Analysis failed (CF AI: ${String(e)}, Gemini: ${geminiRes.status})`;
-      }
+      analysis = aiResult?.response ?? `All AI failed: ${String(e)}`;
     } catch (e2) {
-      analysis = `Analysis failed: CF AI: ${String(e)} / Gemini: ${String(e2)}`;
+      analysis = `Analysis failed: Gemini: ${String(e)} / CF AI: ${String(e2)}`;
     }
   }
   const aiMs = Date.now() - aiStart;
