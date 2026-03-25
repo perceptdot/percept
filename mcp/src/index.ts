@@ -114,6 +114,11 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
         }
 
         if (!resp || !resp.ok) {
+          // 인증/결제 에러는 백엔드 메시지를 그대로 전달
+          if (resp && (resp.status === 401 || resp.status === 402)) {
+            const errBody: any = await resp.json().catch(() => ({}))
+            throw new Error(errBody.error || `API key error (${resp.status})`)
+          }
           throw new Error(`API error ${resp?.status ?? 'unknown'} (after 4 attempts)`)
         }
 
