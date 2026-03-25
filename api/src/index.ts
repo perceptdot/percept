@@ -468,41 +468,138 @@ async function sendApiKeyEmail(
   plan: "free" | "pro" | "team"
 ): Promise<{ ok: boolean; error?: string }> {
   const planLabel =
-    plan === "team" ? "Team ($99/mo · 10 seats)" :
-    plan === "pro"  ? "Pro ($19/mo)" :
-                      "Free (200 calls)";
+    plan === "team"  ? "Unlimited" :
+    plan === "pro"   ? "Pro" :
+                       "Free";
 
-  const freeNote = plan === "free" ? `
-  <div style="background:#1a1a2e;border:1px solid #7c6dfa;padding:16px;border-radius:6px;margin-top:16px;">
-    <p style="color:#a78bfa;font-size:12px;margin:0 0 8px;">FREE PLAN — 200 calls</p>
-    <p style="color:#aaa;font-size:12px;margin:0;">First 100 calls are ready. After 100 calls, submit a quick feedback to unlock 100 more.</p>
-  </div>` : "";
+  const planQuota =
+    plan === "free" ? "100 tiles / month" : "Unlimited tiles";
+
+  const planColor = plan === "free" ? "#888" : "#ff1a3c";
 
   const html = `<!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"></head>
-<body style="font-family:monospace;background:#0a0a0a;color:#e0e0e0;padding:32px;max-width:600px;">
-  <h1 style="color:#7c6dfa;font-size:20px;">perceptdot ${planLabel}</h1>
-  <p style="color:#aaa;">Your API key is ready. Add it to your MCP config.</p>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body style="margin:0;padding:0;background:#07000d;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#07000d;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
 
-  <h2 style="color:#e0e0e0;font-size:14px;margin-top:24px;">API KEY</h2>
-  <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:14px;color:#a78bfa;word-break:break-all;">${apiKey}</pre>
+        <!-- HEADER -->
+        <tr><td style="padding:0 0 32px 0;">
+          <table cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="padding-right:10px;vertical-align:middle;">
+                <!-- pixel eye logo (SVG inline) -->
+                <svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8"  y="0"  width="16" height="4" fill="#cc0030"/>
+                  <rect x="4"  y="4"  width="4"  height="4" fill="#cc0030"/>
+                  <rect x="24" y="4"  width="4"  height="4" fill="#cc0030"/>
+                  <rect x="0"  y="8"  width="4"  height="16" fill="#cc0030"/>
+                  <rect x="28" y="8"  width="4"  height="16" fill="#cc0030"/>
+                  <rect x="4"  y="4"  width="24" height="24" fill="#ff1a3c"/>
+                  <rect x="8"  y="8"  width="16" height="16" fill="#ff6080"/>
+                  <rect x="12" y="12" width="8"  height="8"  fill="#ff1a3c"/>
+                  <rect x="4"  y="28" width="4"  height="4"  fill="#cc0030"/>
+                  <rect x="24" y="28" width="4"  height="4"  fill="#cc0030"/>
+                  <rect x="8"  y="28" width="16" height="4"  fill="#cc0030"/>
+                </svg>
+              </td>
+              <td style="vertical-align:middle;">
+                <span style="font-size:18px;font-weight:700;color:#f2f0f5;letter-spacing:-0.5px;">percept<span style="color:#ff1a3c;">dot</span></span>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
 
-  <h2 style="color:#e0e0e0;font-size:14px;margin-top:24px;">MCP CONFIG (.mcp.json)</h2>
-  <pre style="background:#111;border:1px solid #333;padding:16px;border-radius:6px;font-size:12px;overflow-x:auto;">{
-  "mcpServers": {
-    "@perceptdot/ga4": {
-      "command": "npx",
-      "args": ["-y", "@perceptdot/ga4"],
-      "env": { "PERCEPT_API_KEY": "${apiKey}" }
-    }
-  }
-}</pre>
-  ${freeNote}
+        <!-- TITLE -->
+        <tr><td style="padding:0 0 8px 0;">
+          <h1 style="margin:0;font-size:24px;font-weight:700;color:#f2f0f5;line-height:1.3;">
+            Your API key is ready 👁️
+          </h1>
+        </td></tr>
+        <tr><td style="padding:0 0 28px 0;">
+          <p style="margin:0;font-size:15px;color:#888;line-height:1.6;">
+            Give your AI agent eyes. Connect perceptdot to Claude Code and start catching visual bugs automatically.
+          </p>
+        </td></tr>
 
-  <p style="color:#666;font-size:12px;margin-top:24px;">
-    Docs: <a href="https://perceptdot.com" style="color:#7c6dfa;">perceptdot.com</a>
-  </p>
+        <!-- PLAN BADGE -->
+        <tr><td style="padding:0 0 20px 0;">
+          <span style="display:inline-block;background:${planColor}22;border:1px solid ${planColor}44;color:${planColor};font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:0.5px;">
+            ${planLabel.toUpperCase()} PLAN &nbsp;·&nbsp; ${planQuota}
+          </span>
+        </td></tr>
+
+        <!-- API KEY BOX -->
+        <tr><td style="padding:0 0 8px 0;">
+          <p style="margin:0 0 8px;font-size:11px;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;">Your API Key</p>
+          <div style="background:#160024;border:1px solid rgba(255,26,60,0.25);border-radius:8px;padding:16px 20px;">
+            <code style="font-family:'Courier New',monospace;font-size:14px;color:#ff6080;word-break:break-all;letter-spacing:0.5px;">${apiKey}</code>
+          </div>
+          <p style="margin:8px 0 0;font-size:12px;color:#555;">Keep this key private. Don't commit it to public repos.</p>
+        </td></tr>
+
+        <!-- DIVIDER -->
+        <tr><td style="padding:28px 0;">
+          <div style="height:1px;background:rgba(255,26,60,0.1);"></div>
+        </td></tr>
+
+        <!-- INSTALL STEP -->
+        <tr><td style="padding:0 0 8px 0;">
+          <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:#f2f0f5;">① Install the MCP server</p>
+          <div style="background:#160024;border:1px solid rgba(255,26,60,0.15);border-radius:8px;padding:14px 16px;">
+            <code style="font-family:'Courier New',monospace;font-size:12px;color:#ccc;">claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp</code>
+          </div>
+        </td></tr>
+
+        <!-- USE STEP -->
+        <tr><td style="padding:16px 0 0 0;">
+          <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:#f2f0f5;">② Ask Claude to check a site</p>
+          <div style="background:#160024;border:1px solid rgba(255,26,60,0.15);border-radius:8px;padding:14px 16px;">
+            <code style="font-family:'Courier New',monospace;font-size:12px;color:#ccc;">Check https://yoursite.com for visual bugs</code>
+          </div>
+        </td></tr>
+
+        <!-- DIVIDER -->
+        <tr><td style="padding:28px 0;">
+          <div style="height:1px;background:rgba(255,26,60,0.1);"></div>
+        </td></tr>
+
+        ${plan === "free" ? `
+        <!-- FREE TIER NOTE -->
+        <tr><td style="padding:0 0 28px 0;">
+          <div style="background:#160024;border:1px solid rgba(255,26,60,0.2);border-radius:8px;padding:16px 20px;">
+            <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#ff6080;">FREE PLAN — 100 tiles</p>
+            <p style="margin:0;font-size:12px;color:#888;line-height:1.6;">
+              100 tiles ready to use. After that, leave a quick feedback to unlock more.<br>
+              1 tile = one 1280×1600px section of a page.
+            </p>
+          </div>
+        </td></tr>
+        ` : ""}
+
+        <!-- CTA -->
+        <tr><td style="padding:0 0 32px 0;" align="center">
+          <a href="https://perceptdot.com" style="display:inline-block;background:#ff1a3c;color:#fff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 32px;border-radius:6px;">
+            View Docs →
+          </a>
+        </td></tr>
+
+        <!-- FOOTER -->
+        <tr><td style="border-top:1px solid rgba(255,255,255,0.06);padding:24px 0 0 0;">
+          <p style="margin:0;font-size:12px;color:#444;line-height:1.8;">
+            perceptdot · AI Visual QA · <a href="https://perceptdot.com" style="color:#666;text-decoration:none;">perceptdot.com</a><br>
+            Questions? <a href="mailto:service@perceptdot.com" style="color:#666;text-decoration:none;">service@perceptdot.com</a>
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
 </body>
 </html>`;
 
