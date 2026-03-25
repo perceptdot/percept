@@ -75,6 +75,11 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
                   no_cache: {
                     type: 'boolean',
                     description: 'Optional: set true to bypass cache and always run a fresh analysis'
+                  },
+                  viewport: {
+                    type: 'string',
+                    enum: ['desktop', 'tablet', 'mobile'],
+                    description: 'Optional: viewport size — desktop (1280px, default), tablet (768px), mobile (375px)'
                   }
                 },
                 required: ['url']
@@ -105,7 +110,7 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
               'Content-Type': 'application/json',
               ...(apiKey ? { 'X-Percept-Key': apiKey } : {})
             },
-            body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache }),
+            body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache, viewport: args?.viewport }),
           })
           if (resp.ok) break
           // 인증/결제 오류는 재시도 무의미
@@ -128,9 +133,12 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
           .map((i: any) => `  [${(i.severity ?? 'info').toUpperCase()}] ${i.description}`)
           .join('\n')
 
+        const tiles = result.tiles_analyzed ?? 1
+        const vp = args?.viewport ?? 'desktop'
+        const scanLine = `Full-page scan complete — ${tiles} tile${tiles !== 1 ? 's' : ''} analyzed (${vp}) in ${((result.duration_ms ?? 0) / 1000).toFixed(1)}s`
         const text = result.has_issues
-          ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}\n\nCost: $${result.cost_usd?.toFixed(6)} | Duration: ${result.duration_ms}ms`
-          : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}\n\nCost: $${result.cost_usd?.toFixed(6)} | Duration: ${result.duration_ms}ms`
+          ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}`
+          : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}`
 
         return {
           jsonrpc: '2.0', id,
