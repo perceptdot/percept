@@ -1382,6 +1382,16 @@ Rules: Dark themes, minimal layouts, bold fonts are NOT bugs. Only flag clear re
       }
     }
 
+    // 최종 보정: VERDICT와 실제 내용이 모순될 때
+    // — issues[]가 비어있고 summary가 "no issues" 계열이면 false로 덮어씀
+    // — Gemini가 VERDICT: ISSUES FOUND라 쓰고 본문에서 "no visible issues"라 하는 경우 방지
+    const noIssueSignals = ["no visible issues", "no issues", "no visual issues", "no problems", "looks good", "well-designed", "no bugs", "renders correctly", "no rendering"];
+    const summaryLower = summary.toLowerCase();
+    const summaryClean = noIssueSignals.some((kw) => summaryLower.includes(kw));
+    if (issues.length === 0 && summaryClean) {
+      return { hasIssues: false, summary, issues };
+    }
+
     return { hasIssues: foundIssues, summary, issues };
   }
 
