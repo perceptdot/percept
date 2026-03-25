@@ -77,6 +77,7 @@
 ### CRITICAL — Full-Page QA 방향 전환 (2026-03-25 CEO 확정)
 > 방향: "단일 뷰포트 스냅샷" → "사이트 전체 물리 QA" / 크레딧 단위: URL → 타일
 - ✅ **EYE-08** Full-Page Tiling POC + 구현 완료 (2026-03-25) — 1600px 타일, OVERLAP 100px, max 10타일, tiles_analyzed/credits_used 응답 추가. perceptdot.com 6203px → 5타일 정상 분석
+- ✅ **EYE-CREDIT** 크레딧 차감 시스템 완료 (2026-03-25) — X-Percept-Key 헤더/body api_key 지원, Free 타일단위 차감, Pro 무제한, 401/402 에러, 가상 스테이징 3키 생성, docs/staging-test.md
 - [ ] **EYE-09** Multi-Viewport — desktop(1280)/tablet(768)/mobile(375) 뷰포트 파라미터
 - [ ] **EYE-10** visual_crawl — 사이트 전체 페이지 순회 (같은 도메인, depth 파라미터)
 - [ ] **EYE-11-NEW** GitHub Action PR 연동 — 변경 페이지만 타겟 QA + 리포트

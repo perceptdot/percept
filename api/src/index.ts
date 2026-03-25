@@ -1285,7 +1285,7 @@ app.post("/v1/eye/check", async (c) => {
   const startTime = Date.now();
 
   // ── 요청 파싱 ──
-  let body: { url?: string; prompt?: string; include_screenshot?: boolean; no_cache?: boolean; full_page?: boolean };
+  let body: { url?: string; prompt?: string; include_screenshot?: boolean; no_cache?: boolean; full_page?: boolean; api_key?: string };
   try {
     body = await c.req.json();
   } catch {
@@ -1316,6 +1316,34 @@ app.post("/v1/eye/check", async (c) => {
     }
   } catch {
     return c.json({ error: "Invalid URL" }, 400);
+  }
+
+  // ── API 키 검증 + 크레딧 사전 확인 (EYE-CREDIT) ──
+  const apiKeyVal = c.req.header("X-Percept-Key") ?? body.api_key ?? null;
+  let keyRecord: ApiKeyRecord | null = null;
+
+  if (apiKeyVal) {
+    const keyRaw = await c.env.API_KEYS.get(`key:${apiKeyVal}`);
+    if (!keyRaw) {
+      return c.json({ ok: false, error: "Invalid API key. Get a free key at perceptdot.com" }, 401);
+    }
+    keyRecord = JSON.parse(keyRaw) as ApiKeyRecord;
+
+    // 무료 플랜: 쿼터 사전 확인 (브라우저 슬롯 낭비 방지)
+    if (keyRecord.plan === "free") {
+      if (keyRecord.calls_used >= keyRecord.quota) {
+        const needsFeedback = keyRecord.feedback_count < 1 && keyRecord.quota === 100;
+        return c.json({
+          ok: false,
+          error: needsFeedback
+            ? "Free quota reached (100 tiles). Submit feedback to unlock 100 more → use percept_feedback tool."
+            : "Free plan exhausted (200 tiles). Upgrade to Pro ($19/mo) → https://perceptdot.com",
+          quota_remaining: 0,
+          calls_used: keyRecord.calls_used,
+          needs_feedback: needsFeedback,
+        }, 402);
+      }
+    }
   }
 
   // ── KV 캐시 조회 (no_cache=true 또는 prompt 있으면 스킵) ──
@@ -1639,6 +1667,22 @@ Summary: one sentence why the page looks correct`;
 
   const pocPassed = totalMs < 10_000 + (tilesAnalyzed - 1) * 5_000 && totalCost < 0.05 * tilesAnalyzed;
 
+  // ── 크레딧 차감 (성공 시 타일 수만큼) ──
+  let quotaRemaining: number | null = null;
+  if (keyRecord && apiKeyVal) {
+    if (keyRecord.plan === "free") {
+      keyRecord.calls_used = Math.min(keyRecord.calls_used + tilesAnalyzed, keyRecord.quota);
+      await Promise.all([
+        c.env.API_KEYS.put(`key:${apiKeyVal}`, JSON.stringify(keyRecord)),
+        c.env.API_KEYS.put(`apikey:${keyRecord.email}`, JSON.stringify(keyRecord)),
+      ]);
+      quotaRemaining = Math.max(0, keyRecord.quota - keyRecord.calls_used);
+    } else {
+      // pro/team: 무제한 (-1)
+      quotaRemaining = -1;
+    }
+  }
+
   const result: Record<string, unknown> = {
     ok: true,
     poc_passed: pocPassed,
@@ -1666,6 +1710,10 @@ Summary: one sentence why the page looks correct`;
     duration_ms: totalMs,
     cost_usd: Math.round(totalCost * 1_000_000) / 1_000_000,
     screenshot_size_bytes: screenshotBytes,
+    // 크레딧 잔여 (API 키 있을 때만)
+    ...(quotaRemaining !== null && {
+      quota_remaining: quotaRemaining === -1 ? "unlimited" : quotaRemaining,
+    }),
   };
 
   // 스크린샷은 요청 시에만 포함 (첫 번째 타일)
