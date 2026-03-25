@@ -438,7 +438,7 @@ function generateFreeKey(): string {
   return `pd_free_${hex}`;
 }
 
-/** Resend 내부 알림 (service@perceptdot.com으로) */
+/** Resend 내부 알림 (thunova0318@gmail.com으로 — service@perceptdot.com은 bounce) */
 async function sendInternalAlert(
   resendApiKey: string,
   subject: string,
@@ -450,7 +450,7 @@ async function sendInternalAlert(
       headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: "perceptdot <service@perceptdot.com>",
-        to: ["service@perceptdot.com"],
+        to: ["thunova0318@gmail.com"],
         subject,
         text,
       }),
