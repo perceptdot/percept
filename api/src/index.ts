@@ -1310,10 +1310,15 @@ app.post("/v1/eye/check", async (c) => {
   const analysisPrompt =
     prompt ||
     `You are a visual QA engineer. Analyze this web page screenshot for visual bugs.
-Look for: broken layouts, element overflow, missing images, misalignment, text clipping, z-index issues, color/contrast problems.
 URL: ${url}
-Be specific (what, where on page). If none found, say "No visual issues detected."
-Max 150 words.`;
+
+Look ONLY for clear bugs: broken layouts, element overflow (content outside container), missing images, severe misalignment, text clipping, z-index overlap issues, extremely low color contrast.
+
+IMPORTANT: Start your response with exactly one of:
+- "VERDICT: NO ISSUES" — if the page looks visually correct
+- "VERDICT: ISSUES FOUND" — if you see clear visual bugs
+
+Then briefly describe what you found (max 100 words). Normal design choices (dark theme, minimal layout, bold fonts) are NOT bugs.`;
 
   let analysis = "";
 
@@ -1376,17 +1381,18 @@ Max 150 words.`;
   const pocPassed = totalMs < 10_000 && totalCost < 0.05;
 
   // ── has_issues / summary 표준화 (GitHub Action 호환) ──
-  const noIssueKeywords = [
-    "no visual issues",
-    "no issues detected",
-    "looks good",
-    "no problems",
-    "no bugs",
-    "nothing wrong",
-    "no visual bugs",
-  ];
   const lowerAnalysis = analysis.toLowerCase();
-  const hasIssues = !noIssueKeywords.some((kw) => lowerAnalysis.includes(kw));
+  // 구조화된 VERDICT 파싱 (primary)
+  let hasIssues: boolean;
+  if (lowerAnalysis.includes("verdict: no issues")) {
+    hasIssues = false;
+  } else if (lowerAnalysis.includes("verdict: issues found")) {
+    hasIssues = true;
+  } else {
+    // fallback: 키워드 기반
+    const noIssueKeywords = ["no visual issues", "no issues detected", "looks good", "no problems", "no bugs", "no visual bugs"];
+    hasIssues = !noIssueKeywords.some((kw) => lowerAnalysis.includes(kw));
+  }
   // summary: 첫 문장 (최대 200자)
   const summary = analysis.split(/[.\n]/)[0]?.trim().slice(0, 200) || analysis.slice(0, 200);
 
