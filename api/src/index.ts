@@ -1583,6 +1583,94 @@ app.post("/v1/eye/check", async (c) => {
               });
             }
           }
+          // 3. 텍스트 클리핑 (overflow:hidden + 내용 잘림)
+          var textEls = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div');
+          for (var k = 0; k < textEls.length && issues.length < 15; k++) {
+            var te = textEls[k];
+            var ts = window.getComputedStyle(te);
+            if (ts.display === 'none' || ts.visibility === 'hidden') continue;
+            if (te.scrollHeight > te.clientHeight + 2 && (ts.overflow === 'hidden' || ts.overflowY === 'hidden')) {
+              var clipped = te.scrollHeight - te.clientHeight;
+              if (clipped > 10) {
+                var sk = 'tc:' + sel(te);
+                if (!seen[sk]) {
+                  seen[sk] = true;
+                  issues.push({ type: 'text_clipping', selector: sel(te),
+                    detail: 'scrollH=' + te.scrollHeight + 'px, clientH=' + te.clientHeight + 'px (' + clipped + 'px 잘림)' });
+                }
+              }
+            }
+            if (te.scrollWidth > te.clientWidth + 2 && (ts.overflow === 'hidden' || ts.overflowX === 'hidden') && ts.textOverflow !== 'ellipsis') {
+              var clippedX = te.scrollWidth - te.clientWidth;
+              if (clippedX > 10) {
+                var skx = 'tcx:' + sel(te);
+                if (!seen[skx]) {
+                  seen[skx] = true;
+                  issues.push({ type: 'text_clipping_x', selector: sel(te),
+                    detail: 'scrollW=' + te.scrollWidth + 'px, clientW=' + te.clientWidth + 'px (' + clippedX + 'px 잘림)' });
+                }
+              }
+            }
+          }
+          // 4. z-index 겹침 (서로 다른 요소가 같은 위치에 겹침)
+          var positioned = [];
+          for (var m = 0; m < els.length && positioned.length < 50; m++) {
+            var pe = els[m];
+            var ps2 = window.getComputedStyle(pe);
+            if (ps2.display === 'none' || ps2.visibility === 'hidden') continue;
+            var zi = parseInt(ps2.zIndex, 10);
+            if (isNaN(zi) || ps2.position === 'static') continue;
+            var pr = pe.getBoundingClientRect();
+            if (pr.width < 20 || pr.height < 20) continue;
+            positioned.push({ el: pe, rect: pr, z: zi, sel: sel(pe) });
+          }
+          for (var a = 0; a < positioned.length && issues.length < 15; a++) {
+            for (var b = a + 1; b < positioned.length; b++) {
+              var ra = positioned[a].rect, rb = positioned[b].rect;
+              var overlapX = Math.max(0, Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left));
+              var overlapY = Math.max(0, Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top));
+              var overlapArea = overlapX * overlapY;
+              var smallerArea = Math.min(ra.width * ra.height, rb.width * rb.height);
+              if (overlapArea > smallerArea * 0.3 && !positioned[a].el.contains(positioned[b].el) && !positioned[b].el.contains(positioned[a].el)) {
+                var ozk = 'zi:' + positioned[a].sel + '+' + positioned[b].sel;
+                if (!seen[ozk]) {
+                  seen[ozk] = true;
+                  issues.push({ type: 'z_index_overlap', selector: positioned[a].sel + ' ↔ ' + positioned[b].sel,
+                    detail: 'z:' + positioned[a].z + ' vs z:' + positioned[b].z + ', 겹침 ' + Math.round(overlapArea) + 'px²' });
+                }
+              }
+            }
+          }
+          // 5. 낮은 대비 (텍스트 vs 배경)
+          function luminance(r,g,b) {
+            var a2 = [r,g,b].map(function(v) { v /= 255; return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
+            return 0.2126*a2[0] + 0.7152*a2[1] + 0.0722*a2[2];
+          }
+          function parseColor(c) {
+            var m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            return m ? [parseInt(m[1]),parseInt(m[2]),parseInt(m[3])] : null;
+          }
+          var textNodes = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, label');
+          for (var n = 0; n < textNodes.length && issues.length < 15; n++) {
+            var tn = textNodes[n];
+            var tns = window.getComputedStyle(tn);
+            if (tns.display === 'none' || tns.visibility === 'hidden' || !tn.textContent.trim()) continue;
+            var fg = parseColor(tns.color);
+            var bg = parseColor(tns.backgroundColor);
+            if (fg && bg && bg[3] !== 0) {
+              var l1 = luminance(fg[0],fg[1],fg[2]);
+              var l2 = luminance(bg[0],bg[1],bg[2]);
+              var ratio = (Math.max(l1,l2) + 0.05) / (Math.min(l1,l2) + 0.05);
+              if (ratio < 3.0) {
+                var ck = 'lc:' + sel(tn);
+                if (!seen[ck]) {
+                  seen[ck] = true;
+                  issues.push({ type: 'low_contrast', selector: sel(tn),
+                    detail: '대비 ' + ratio.toFixed(1) + ':1 (최소 4.5:1 필요), color:' + tns.color + ' bg:' + tns.backgroundColor });
+                }
+              }
+            }
+          }
           return issues.slice(0, 15);
         })()
       `;
@@ -1665,14 +1753,16 @@ CRITICAL RULES:
 
 ${userFocus}
 
-Report a bug ONLY if you can point to a specific pixel-level violation you can clearly see:
-- Something visibly sticking out past where it should stop
-- A word or button that appears cut in half at the screen edge
-- Two distinct UI components sitting on top of each other unexpectedly
-- A gray broken-image box where content should be
+Report a bug if you can see any of these violations:
+- Something visibly sticking out past where it should stop (overflow)
+- A word or button that appears cut in half or truncated without ellipsis (clipping)
+- Two distinct UI components sitting on top of each other unexpectedly (z-index)
+- A gray broken-image box where content should be (broken asset)
+- Text that is nearly invisible against its background (low contrast)
+- Elements misaligned or breaking the visual grid (layout break)
 
-Skip anything that could be a design choice. Skip anything near an edge that is not clearly cut off.
-If in doubt, do NOT report it.
+Skip purely subjective aesthetic preferences (color choices, font sizes, spacing).
+If a DOM audit issue is listed above, you MUST report it — these are measured facts.
 
 Respond ONLY with valid JSON — no markdown, no code block, no extra text:
 {"has_issues": false, "summary": "one sentence", "issues": []}
@@ -1805,7 +1895,7 @@ If there are confirmed bugs:
     return { hasIssues, summary: tileSummary, issues, raw };
   }
 
-  // 타일 순차 분석 (max 2 병렬 가능하나 안전하게 순차로)
+  // 타일 병렬 분석 (최대 3개 동시 — Gemini rate limit 안전 범위)
   type TileResult = {
     tile_index: number;
     has_issues: boolean;
@@ -1813,17 +1903,36 @@ If there are confirmed bugs:
     issues: Array<{ severity: "high" | "medium" | "low"; description: string; tile_index: number }>;
     raw: string;
   };
-  const tileResults: TileResult[] = [];
 
-  for (let i = 0; i < tiles.length; i++) {
-    const res = await analyzeOneTile(tiles[i].b64);
-    tileResults.push({
-      tile_index: i,
-      has_issues: res.hasIssues,
-      summary: res.summary,
-      issues: res.issues.map(issue => ({ ...issue, tile_index: i })),
-      raw: res.raw,
+  const PARALLEL_LIMIT = 3;
+  const tileResults: TileResult[] = new Array(tiles.length);
+
+  for (let batch = 0; batch < tiles.length; batch += PARALLEL_LIMIT) {
+    const chunk = tiles.slice(batch, batch + PARALLEL_LIMIT);
+    const promises = chunk.map(async (tile, j) => {
+      const idx = batch + j;
+      const res = await analyzeOneTile(tile.b64);
+      return {
+        tile_index: idx,
+        has_issues: res.hasIssues,
+        summary: res.summary,
+        issues: res.issues.map(issue => ({ ...issue, tile_index: idx })),
+        raw: res.raw,
+      };
     });
+    const results = await Promise.allSettled(promises);
+    for (const r of results) {
+      if (r.status === "fulfilled") {
+        tileResults[r.value.tile_index] = r.value;
+      } else {
+        // 실패한 타일은 이슈 없음 처리
+        const failIdx = batch + results.indexOf(r);
+        tileResults[failIdx] = {
+          tile_index: failIdx, has_issues: false,
+          summary: "Analysis failed", issues: [], raw: String(r.reason),
+        };
+      }
+    }
   }
 
   // 타일 결과 머지 — has_issues=true && issues 항목 있는 타일만 유효로 인정
@@ -1859,9 +1968,9 @@ If there are confirmed bugs:
     }
   }
 
-  // DOM 이슈 우선: DOM 0이면 AI는 high severity만 신뢰 (medium/low 필터링)
+  // DOM 이슈 우선: DOM 0이면 AI는 high+medium 신뢰 (low만 필터링)
   const trustedAiIssues = domFindings.length === 0
-    ? parsedIssues.filter((i) => i.severity === "high")
+    ? parsedIssues.filter((i) => i.severity === "high" || i.severity === "medium")
     : parsedIssues;
   const finalHasIssues = domFindings.length > 0 || trustedAiIssues.length > 0;
 
