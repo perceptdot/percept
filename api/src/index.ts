@@ -1959,15 +1959,26 @@ If there are confirmed bugs:
     }
   }
 
-  // DOM 이슈 우선: DOM 0이면 AI는 high+medium 신뢰 (low만 필터링)
+  // DOM 이슈 → issues 형식으로 변환
+  const domAsIssues = domFindings.map((d) => {
+    const sev: "high" | "medium" | "low" =
+      d.type === "viewport_leak" || d.type === "parent_overflow" ? "high" :
+      d.type === "low_contrast" ? "medium" : "medium";
+    return { severity: sev, description: `[DOM] ${d.type}: ${d.selector} — ${d.detail}`.slice(0, 120), tile_index: 0 };
+  });
+
+  // AI 이슈: DOM 없으면 high+medium만 신뢰
   const trustedAiIssues = domFindings.length === 0
     ? parsedIssues.filter((i) => i.severity === "high" || i.severity === "medium")
     : parsedIssues;
-  const finalHasIssues = domFindings.length > 0 || trustedAiIssues.length > 0;
 
-  // summary가 has_issues와 일치하도록 보정
+  // DOM + AI 이슈 합산
+  const allIssues = [...domAsIssues, ...trustedAiIssues].slice(0, 10);
+  const finalHasIssues = allIssues.length > 0;
+
+  // summary 보정
   const finalSummary = finalHasIssues
-    ? summary || "Visual issues detected."
+    ? summary || `${allIssues.length} visual issue(s) detected.`
     : "No visual rendering issues detected.";
 
   const result: Record<string, unknown> = {
@@ -1978,7 +1989,7 @@ If there are confirmed bugs:
     summary: finalSummary,
     analysis,
     dom_issues: domFindings,          // 결정론적 DOM 측정 결과
-    issues: domFindings.length > 0 ? parsedIssues : trustedAiIssues,
+    issues: allIssues,
     tiles_analyzed: tilesAnalyzed,
     credits_used: tilesAnalyzed,
     page_height_px: capturedPageHeight,
