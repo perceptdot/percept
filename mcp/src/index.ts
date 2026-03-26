@@ -111,7 +111,7 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
               'Content-Type': 'application/json',
               ...(apiKey ? { 'X-Percept-Key': apiKey } : {})
             },
-            body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache, viewport: args?.viewport }),
+            body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache, viewport: args?.viewport, api_key: apiKey }),
           })
           if (resp.ok) break
           // 인증/결제 오류는 재시도 무의미
