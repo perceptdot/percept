@@ -1901,6 +1901,131 @@ If there are confirmed bugs:
   return c.json(result, 200, { "Cache-Control": "no-store, no-cache, must-revalidate" });
 });
 
+// ─── MCP Streamable HTTP (1홉 — api.perceptdot.com/mcp) ──────────────────────
+// mcp.perceptdot.com MCP Worker → api.perceptdot.com 2홉 구조에서
+// CF Worker-to-Worker custom domain fetch 시 인증 header 손실 문제 발생.
+// 근본 해결: API Worker에 MCP 엔드포인트 직접 내장 (1홉).
+
+const MCP_TOOLS = [
+  {
+    name: "visual_check",
+    description:
+      "Screenshot a URL and analyze it for visual bugs using AI. " +
+      "Returns whether issues exist, a summary, and a detailed issues list. " +
+      "Use this after deployments, PRs, or any UI change to catch layout problems.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        url: { type: "string", description: "URL to visually check (must be publicly accessible)" },
+        prompt: { type: "string", description: "Optional: specific aspect to focus on" },
+        no_cache: { type: "boolean", description: "Optional: bypass cache" },
+        viewport: {
+          type: "string",
+          enum: ["desktop", "tablet", "mobile"],
+          description: "Optional: viewport size — desktop (1280px), tablet (768px), mobile (375px)",
+        },
+      },
+      required: ["url"],
+    },
+  },
+];
+
+function mcpRpc(id: unknown, result: unknown) {
+  return { jsonrpc: "2.0", id, result };
+}
+function mcpErr(id: unknown, code: number, message: string) {
+  return { jsonrpc: "2.0", id, error: { code, message } };
+}
+
+app.post("/mcp", async (c) => {
+  const apiKey = c.req.query("api_key") ?? c.req.header("x-percept-key") ?? null;
+  const body = await c.req.json();
+  const requests: any[] = Array.isArray(body) ? body : [body];
+  const responses: any[] = [];
+
+  for (const req of requests) {
+    const { id, method, params } = req;
+
+    // Notifications
+    if (id === undefined && method?.startsWith("notifications/")) continue;
+
+    switch (method) {
+      case "initialize":
+        responses.push(mcpRpc(id, {
+          protocolVersion: "2024-11-05",
+          capabilities: { tools: {} },
+          serverInfo: { name: "perceptdot", version: "1.1.0" },
+        }));
+        break;
+
+      case "tools/list":
+        responses.push(mcpRpc(id, { tools: MCP_TOOLS }));
+        break;
+
+      case "tools/call": {
+        const { name, arguments: args } = params ?? {};
+        if (name !== "visual_check") {
+          responses.push(mcpErr(id, -32601, `Unknown tool: ${name}`));
+          break;
+        }
+
+        try {
+          // 내부 호출: app.fetch()로 /v1/eye/check 직접 실행 (외부 HTTP 없음)
+          const internalReq = new Request("https://internal/v1/eye/check", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(apiKey ? { "X-Percept-Key": apiKey } : {}),
+            },
+            body: JSON.stringify({
+              url: args?.url,
+              prompt: args?.prompt,
+              no_cache: args?.no_cache,
+              viewport: args?.viewport,
+            }),
+          });
+
+          const resp = await app.fetch(internalReq, c.env, c.executionCtx);
+
+          if (!resp.ok) {
+            const errBody: any = await resp.json().catch(() => ({}));
+            throw new Error(errBody.error || `Eye check failed (${resp.status})`);
+          }
+
+          const result: any = await resp.json();
+
+          const issueLines = (result.issues ?? [])
+            .map((i: any) => `  [${(i.severity ?? "info").toUpperCase()}] ${i.description}`)
+            .join("\n");
+
+          const tiles = result.tiles_analyzed ?? 1;
+          const vp = args?.viewport ?? "desktop";
+          const scanLine = `Full-page scan: ${tiles} tile${tiles !== 1 ? "s" : ""} (${vp}) in ${((result.duration_ms ?? 0) / 1000).toFixed(1)}s`;
+          const text = result.has_issues
+            ? `⚠️ Visual issues on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits: ${result.credits_used ?? tiles}`
+            : `✅ No visual issues on ${args?.url}\n\n${result.summary}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits: ${result.credits_used ?? tiles}`;
+
+          responses.push(mcpRpc(id, { content: [{ type: "text", text }], isError: false }));
+        } catch (e: any) {
+          responses.push(mcpRpc(id, {
+            content: [{ type: "text", text: `Error: ${e.message}` }],
+            isError: true,
+          }));
+        }
+        break;
+      }
+
+      default:
+        responses.push(mcpErr(id, -32601, `Method not found: ${method}`));
+    }
+  }
+
+  if (responses.length === 0) return c.body(null, 204);
+  return c.json(Array.isArray(body) ? responses : responses[0]);
+});
+
+app.get("/mcp", (c) => c.json({ error: "Use POST for MCP requests" }, 405));
+
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────
 
 app.notFound((c) => {
