@@ -6,7 +6,10 @@ import json, os, sys
 import urllib.request, urllib.error
 
 NAMESPACE_ID = "ab9b493f77ae443197620421f259365b"
-KEY = "pd_live_5309def4e5c689d4cdec0a6c0aee0b8a"
+KEY = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("PERCEPT_NEW_KEY", "")
+if not KEY:
+    print("사용법: python3 store_key_direct.py <pd_live_...키>")
+    sys.exit(1)
 
 # 1) 토큰 읽기
 token = ""
@@ -66,8 +69,7 @@ try:
     resp = urllib.request.urlopen(req)
     result = json.load(resp)
     if result.get("success"):
-        print(f"✅ KV 저장 성공!")
-        print(f"키: {KEY}")
+        print(f"✅ KV 저장 성공! (키 앞 12자: {KEY[:12]}...)")
     else:
         print(f"❌ KV 저장 실패: {result}")
 except urllib.error.HTTPError as e:
