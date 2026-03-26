@@ -14,7 +14,7 @@ app.get('/', (c) => c.json({ service: 'perceptdot MCP', version: '1.0.0', status
 
 // MCP Streamable HTTP endpoint
 app.post('/mcp', async (c) => {
-  const apiKey = c.req.query('api_key') ?? null
+  const apiKey = c.req.query('api_key') ?? c.req.header('x-percept-key') ?? null
   const body = await c.req.json()
   const requests = Array.isArray(body) ? body : [body]
   const responses: any[] = []
