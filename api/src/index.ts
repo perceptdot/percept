@@ -1536,7 +1536,6 @@ app.post("/v1/eye/check", async (c) => {
               ? '.' + el.className.trim().split(/\\s+/)[0] : '';
             return (tag + id + cls).slice(0, 60);
           }
-          // overflow:hidden 조상이 있으면 시각적으로 클리핑되므로 버그 아님
           function hasClippingAncestor(el) {
             var p = el.parentElement;
             while (p && p !== document.documentElement) {
@@ -1550,127 +1549,117 @@ app.post("/v1/eye/check", async (c) => {
             return false;
           }
           // 1. 뷰포트 밖 수평 이탈
-          var els = document.querySelectorAll('*');
-          for (var i = 0; i < els.length; i++) {
-            var el = els[i];
-            var style = window.getComputedStyle(el);
-            if (style.display === 'none' || style.visibility === 'hidden') continue;
-            var rect = el.getBoundingClientRect();
-            if (rect.width === 0 || rect.height === 0) continue;
-            if (hasClippingAncestor(el)) continue;
-            if (rect.right > window.innerWidth + 5) {
-              var s = sel(el);
-              var key = 'vl:' + s;
-              if (!seen[key]) {
-                seen[key] = true;
+          try {
+            var els = document.querySelectorAll('*');
+            for (var i = 0; i < els.length; i++) {
+              var el = els[i];
+              var style = window.getComputedStyle(el);
+              if (style.display === 'none' || style.visibility === 'hidden') continue;
+              var rect = el.getBoundingClientRect();
+              if (rect.width === 0 || rect.height === 0) continue;
+              if (hasClippingAncestor(el)) continue;
+              if (rect.right > window.innerWidth + 5) {
+                var s = sel(el);
+                var key = 'vl:' + s;
+                if (!seen[key]) {
+                  seen[key] = true;
+                  issues.push({
+                    type: 'viewport_leak',
+                    selector: s,
+                    detail: 'right=' + Math.round(rect.right) + 'px, viewport=' + window.innerWidth + 'px (+' + Math.round(rect.right - window.innerWidth) + 'px)'
+                  });
+                }
+              }
+            }
+          } catch(e1) { issues.push({ type: 'audit_error', selector: 'check1_viewport', detail: String(e1).slice(0, 80) }); }
+          // 2. 깨진 이미지
+          try {
+            var imgs = document.querySelectorAll('img');
+            for (var j = 0; j < imgs.length; j++) {
+              var img = imgs[j];
+              if (img.complete && img.naturalWidth === 0 && img.src && img.src.indexOf('data:') !== 0) {
                 issues.push({
-                  type: 'viewport_leak',
-                  selector: s,
-                  detail: 'right=' + Math.round(rect.right) + 'px, viewport=' + window.innerWidth + 'px (+' + Math.round(rect.right - window.innerWidth) + 'px 초과)'
+                  type: 'broken_image',
+                  selector: sel(img),
+                  detail: '...' + img.src.slice(-40)
                 });
               }
             }
-          }
-          // 2. 깨진 이미지
-          var imgs = document.querySelectorAll('img');
-          for (var j = 0; j < imgs.length; j++) {
-            var img = imgs[j];
-            if (img.complete && img.naturalWidth === 0 && img.src && img.src.indexOf('data:') !== 0) {
-              issues.push({
-                type: 'broken_image',
-                selector: sel(img),
-                detail: '로드 실패: ...' + img.src.slice(-40)
-              });
-            }
-          }
-          // 3. 텍스트 클리핑 (overflow:hidden + 내용 잘림)
-          var textEls = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div');
-          for (var k = 0; k < textEls.length && issues.length < 15; k++) {
-            var te = textEls[k];
-            var ts = window.getComputedStyle(te);
-            if (ts.display === 'none' || ts.visibility === 'hidden') continue;
-            if (te.scrollHeight > te.clientHeight + 2 && (ts.overflow === 'hidden' || ts.overflowY === 'hidden')) {
-              var clipped = te.scrollHeight - te.clientHeight;
-              if (clipped > 10) {
-                var sk = 'tc:' + sel(te);
-                if (!seen[sk]) {
-                  seen[sk] = true;
-                  issues.push({ type: 'text_clipping', selector: sel(te),
-                    detail: 'scrollH=' + te.scrollHeight + 'px, clientH=' + te.clientHeight + 'px (' + clipped + 'px 잘림)' });
+          } catch(e2) { issues.push({ type: 'audit_error', selector: 'check2_images', detail: String(e2).slice(0, 80) }); }
+          // 3. 부모 컨테이너 밖 overflow (absolute/fixed 자식이 부모 경계 초과)
+          try {
+            var allEls = document.querySelectorAll('*');
+            for (var q = 0; q < allEls.length && issues.length < 15; q++) {
+              var ce = allEls[q];
+              var cs2 = window.getComputedStyle(ce);
+              if (cs2.display === 'none' || cs2.visibility === 'hidden') continue;
+              if (cs2.position !== 'absolute' && cs2.position !== 'fixed') continue;
+              var cr = ce.getBoundingClientRect();
+              if (cr.width < 10 || cr.height < 10) continue;
+              var par = ce.offsetParent || ce.parentElement;
+              if (!par || par === document.body || par === document.documentElement) continue;
+              var parS = window.getComputedStyle(par);
+              if (['hidden','scroll','auto','clip'].indexOf(parS.overflow) !== -1) continue;
+              var parR = par.getBoundingClientRect();
+              var oB = cr.bottom - parR.bottom;
+              var oR = cr.right - parR.right;
+              var oL = parR.left - cr.left;
+              var oT = parR.top - cr.top;
+              var mx = Math.max(oB, oR, oL, oT);
+              if (mx > 10) {
+                var pk = 'po:' + sel(ce);
+                if (!seen[pk]) {
+                  seen[pk] = true;
+                  var dir = oB === mx ? 'bottom +' + Math.round(oB) + 'px' :
+                            oR === mx ? 'right +' + Math.round(oR) + 'px' :
+                            oL === mx ? 'left +' + Math.round(oL) + 'px' :
+                            'top +' + Math.round(oT) + 'px';
+                  issues.push({ type: 'parent_overflow', selector: sel(ce) + ' > ' + sel(par), detail: dir });
                 }
               }
             }
-            if (te.scrollWidth > te.clientWidth + 2 && (ts.overflow === 'hidden' || ts.overflowX === 'hidden') && ts.textOverflow !== 'ellipsis') {
-              var clippedX = te.scrollWidth - te.clientWidth;
-              if (clippedX > 10) {
-                var skx = 'tcx:' + sel(te);
-                if (!seen[skx]) {
-                  seen[skx] = true;
-                  issues.push({ type: 'text_clipping_x', selector: sel(te),
-                    detail: 'scrollW=' + te.scrollWidth + 'px, clientW=' + te.clientWidth + 'px (' + clippedX + 'px 잘림)' });
+          } catch(e3) { issues.push({ type: 'audit_error', selector: 'check3_overflow', detail: String(e3).slice(0, 80) }); }
+          // 4. 낮은 대비 (텍스트 vs 실제 배경 — 부모 탐색)
+          try {
+            function lum(r,g,b) {
+              var c = [r,g,b].map(function(v) { v /= 255; return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
+              return 0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2];
+            }
+            function pCol(str) {
+              var m = str.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*([0-9.]+))?/);
+              return m ? { r: parseInt(m[1]), g: parseInt(m[2]), b: parseInt(m[3]), a: m[4] !== undefined ? parseFloat(m[4]) : 1 } : null;
+            }
+            function effBg(node) {
+              var c = node;
+              while (c && c !== document.documentElement) {
+                var bg = pCol(window.getComputedStyle(c).backgroundColor);
+                if (bg && bg.a > 0.1) return bg;
+                c = c.parentElement;
+              }
+              return { r: 255, g: 255, b: 255, a: 1 };
+            }
+            var txEls = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, label');
+            for (var n = 0; n < txEls.length && issues.length < 15; n++) {
+              var tn = txEls[n];
+              var tns = window.getComputedStyle(tn);
+              if (tns.display === 'none' || tns.visibility === 'hidden' || !tn.textContent.trim()) continue;
+              var fg = pCol(tns.color);
+              var bg = effBg(tn);
+              if (fg && bg) {
+                var l1 = lum(fg.r,fg.g,fg.b);
+                var l2 = lum(bg.r,bg.g,bg.b);
+                var ratio = (Math.max(l1,l2) + 0.05) / (Math.min(l1,l2) + 0.05);
+                if (ratio < 3.0) {
+                  var lk = 'lc:' + sel(tn);
+                  if (!seen[lk]) {
+                    seen[lk] = true;
+                    issues.push({ type: 'low_contrast', selector: sel(tn),
+                      detail: ratio.toFixed(1) + ':1 (min 4.5:1)' });
+                  }
                 }
               }
             }
-          }
-          // 4. z-index 겹침 (서로 다른 요소가 같은 위치에 겹침)
-          var positioned = [];
-          for (var m = 0; m < els.length && positioned.length < 50; m++) {
-            var pe = els[m];
-            var ps2 = window.getComputedStyle(pe);
-            if (ps2.display === 'none' || ps2.visibility === 'hidden') continue;
-            var zi = parseInt(ps2.zIndex, 10);
-            if (isNaN(zi) || ps2.position === 'static') continue;
-            var pr = pe.getBoundingClientRect();
-            if (pr.width < 20 || pr.height < 20) continue;
-            positioned.push({ el: pe, rect: pr, z: zi, sel: sel(pe) });
-          }
-          for (var a = 0; a < positioned.length && issues.length < 15; a++) {
-            for (var b = a + 1; b < positioned.length; b++) {
-              var ra = positioned[a].rect, rb = positioned[b].rect;
-              var overlapX = Math.max(0, Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left));
-              var overlapY = Math.max(0, Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top));
-              var overlapArea = overlapX * overlapY;
-              var smallerArea = Math.min(ra.width * ra.height, rb.width * rb.height);
-              if (overlapArea > smallerArea * 0.3 && !positioned[a].el.contains(positioned[b].el) && !positioned[b].el.contains(positioned[a].el)) {
-                var ozk = 'zi:' + positioned[a].sel + '+' + positioned[b].sel;
-                if (!seen[ozk]) {
-                  seen[ozk] = true;
-                  issues.push({ type: 'z_index_overlap', selector: positioned[a].sel + ' ↔ ' + positioned[b].sel,
-                    detail: 'z:' + positioned[a].z + ' vs z:' + positioned[b].z + ', 겹침 ' + Math.round(overlapArea) + 'px²' });
-                }
-              }
-            }
-          }
-          // 5. 낮은 대비 (텍스트 vs 배경)
-          function luminance(r,g,b) {
-            var a2 = [r,g,b].map(function(v) { v /= 255; return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
-            return 0.2126*a2[0] + 0.7152*a2[1] + 0.0722*a2[2];
-          }
-          function parseColor(c) {
-            var m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-            return m ? [parseInt(m[1]),parseInt(m[2]),parseInt(m[3])] : null;
-          }
-          var textNodes = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, label');
-          for (var n = 0; n < textNodes.length && issues.length < 15; n++) {
-            var tn = textNodes[n];
-            var tns = window.getComputedStyle(tn);
-            if (tns.display === 'none' || tns.visibility === 'hidden' || !tn.textContent.trim()) continue;
-            var fg = parseColor(tns.color);
-            var bg = parseColor(tns.backgroundColor);
-            if (fg && bg && bg[3] !== 0) {
-              var l1 = luminance(fg[0],fg[1],fg[2]);
-              var l2 = luminance(bg[0],bg[1],bg[2]);
-              var ratio = (Math.max(l1,l2) + 0.05) / (Math.min(l1,l2) + 0.05);
-              if (ratio < 3.0) {
-                var ck = 'lc:' + sel(tn);
-                if (!seen[ck]) {
-                  seen[ck] = true;
-                  issues.push({ type: 'low_contrast', selector: sel(tn),
-                    detail: '대비 ' + ratio.toFixed(1) + ':1 (최소 4.5:1 필요), color:' + tns.color + ' bg:' + tns.backgroundColor });
-                }
-              }
-            }
-          }
+          } catch(e4) { issues.push({ type: 'audit_error', selector: 'check4_contrast', detail: String(e4).slice(0, 80) }); }
           return issues.slice(0, 15);
         })()
       `;
@@ -2125,10 +2114,16 @@ app.post("/mcp", async (c) => {
 
           const tiles = result.tiles_analyzed ?? 1;
           const vp = args?.viewport ?? "desktop";
-          const scanLine = `Full-page scan: ${tiles} tile${tiles !== 1 ? "s" : ""} (${vp}) in ${((result.duration_ms ?? 0) / 1000).toFixed(1)}s`;
+          const timing = result.timing ?? {};
+          const scanLine = `Full-page scan complete — ${tiles} tile${tiles !== 1 ? "s" : ""} analyzed (${vp}) in ${((result.duration_ms ?? 0) / 1000).toFixed(1)}s`;
+          const domIssueLines = (result.dom_issues ?? []).length > 0
+            ? `\n\nDOM audit (${result.dom_issues.length}):\n` + (result.dom_issues as any[]).map((d: any) => `  [${d.type}] ${d.selector}: ${d.detail}`).join("\n")
+            : "";
+          const timingLine = timing.browser_ms ? `\nTiming: browser=${Math.round(timing.browser_ms)}ms, ai=${Math.round(timing.ai_ms ?? 0)}ms` : "";
+          const analysisSnippet = result.analysis ? `\n\n[Debug] AI raw: ${String(result.analysis).slice(0, 400)}` : "";
           const text = result.has_issues
-            ? `⚠️ Visual issues on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits: ${result.credits_used ?? tiles}`
-            : `✅ No visual issues on ${args?.url}\n\n${result.summary}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits: ${result.credits_used ?? tiles}`;
+            ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}${domIssueLines}\n\n${scanLine}${timingLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}${analysisSnippet}`
+            : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}${domIssueLines}\n\n${scanLine}${timingLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}${analysisSnippet}`;
 
           responses.push(mcpRpc(id, { content: [{ type: "text", text }], isError: false }));
         } catch (e: any) {
