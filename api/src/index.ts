@@ -1831,7 +1831,7 @@ If there are confirmed bugs:
               { text: analysisPrompt },
             ]}],
             generationConfig: {
-              maxOutputTokens: 600,
+              maxOutputTokens: 1024,
               temperature: 0,
               response_mime_type: "application/json",
             },
@@ -1845,7 +1845,9 @@ If there are confirmed bugs:
       const gd = (await geminiRes.json()) as {
         candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
       };
-      raw = gd.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+      // Gemini 2.5 Flash: thinking part가 parts[0]에 올 수 있음 → 모든 text parts 결합
+      const allParts = gd.candidates?.[0]?.content?.parts ?? [];
+      raw = allParts.map((p: any) => p.text ?? "").filter(Boolean).join("\n");
 
       let jsonParsed = false;
       try {
