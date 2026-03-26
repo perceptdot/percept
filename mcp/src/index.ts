@@ -1,7 +1,8 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
-const app = new Hono()
+type Bindings = { PERCEPT_API_KEY: string }
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('*', cors({
   origin: '*',
@@ -14,7 +15,7 @@ app.get('/', (c) => c.json({ service: 'perceptdot MCP', version: '1.0.0', status
 
 // MCP Streamable HTTP endpoint
 app.post('/mcp', async (c) => {
-  const apiKey = c.req.query('api_key') ?? c.req.header('x-percept-key') ?? null
+  const apiKey = c.env.PERCEPT_API_KEY ?? c.req.query('api_key') ?? c.req.header('x-percept-key') ?? null
   const body = await c.req.json()
   const requests = Array.isArray(body) ? body : [body]
   const responses: any[] = []
