@@ -311,6 +311,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
     }
 
+    const safeDate = (v: unknown): string | null => {
+      try { const d = new Date(v as any); return isNaN(d.getTime()) ? null : d.toISOString(); } catch { return null; }
+    };
+
     // Deployment list
     if (name === "vercel_deployments") {
       const a = args as Record<string, unknown>;
@@ -327,8 +331,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         project: d.name,
         url: `https://${d.url}`,
         state: d.state,
-        created_at: new Date(d.created).toISOString(),
-        ready_at: d.ready ? new Date(d.ready).toISOString() : null,
+        created_at: safeDate(d.created),
+        ready_at: safeDate(d.ready),
         duration_sec: d.ready
           ? Math.round((d.ready - (d.buildingAt ?? d.created)) / 1000)
           : null,
@@ -384,7 +388,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         state: `${stateEmoji[d.state] ?? "❓"} ${d.state}`,
         project: d.name,
         url: `https://${d.url}`,
-        deployed_at: new Date(d.created).toISOString(),
+        deployed_at: safeDate(d.created),
         duration_sec: d.ready
           ? Math.round((d.ready - (d.buildingAt ?? d.created)) / 1000)
           : null,
@@ -417,7 +421,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           ? {
               state: p.latestDeployments[0].state,
               url: `https://${p.latestDeployments[0].url}`,
-              created_at: new Date(p.latestDeployments[0].created).toISOString(),
+              created_at: safeDate(p.latestDeployments[0].created),
             }
           : null,
       }));
