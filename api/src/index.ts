@@ -2120,10 +2120,16 @@ app.post("/mcp", async (c) => {
             ? `\n\nDOM audit (${result.dom_issues.length}):\n` + (result.dom_issues as any[]).map((d: any) => `  [${d.type}] ${d.selector}: ${d.detail}`).join("\n")
             : "";
           const timingLine = timing.browser_ms ? `\nTiming: browser=${Math.round(timing.browser_ms)}ms, ai=${Math.round(timing.ai_ms ?? 0)}ms` : "";
-          const analysisSnippet = result.analysis ? `\n\n[Debug] AI raw: ${String(result.analysis).slice(0, 400)}` : "";
+          const debugLines = [
+            `dom_issues: ${(result.dom_issues ?? []).length}`,
+            `ai_issues: ${(result.issues ?? []).length}`,
+            `browser_ms: ${result.timing?.browser_ms ?? "?"}`,
+            `ai_ms: ${result.timing?.ai_ms ?? "?"}`,
+            `raw: ${String(result.analysis ?? "").slice(0, 300)}`,
+          ].join(" | ");
           const text = result.has_issues
-            ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}${domIssueLines}\n\n${scanLine}${timingLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}${analysisSnippet}`
-            : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}${domIssueLines}\n\n${scanLine}${timingLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}${analysisSnippet}`;
+            ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}${domIssueLines}\n\n${scanLine}${timingLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}\n\n[DBG] ${debugLines}`
+            : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}${domIssueLines}\n\n${scanLine}${timingLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}\n\n[DBG] ${debugLines}`;
 
           responses.push(mcpRpc(id, { content: [{ type: "text", text }], isError: false }));
         } catch (e: any) {
