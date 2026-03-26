@@ -61,6 +61,7 @@
 - ✅ **EYE-INFRA-02** `no_cache` 파라미터 추가 (2026-03-25) — 데모/테스트용 캐시 우회, /visual-test 스킬 업데이트
 - ✅ **EYE-INFRA-03** 프롬프트 Tier 1/2 분리 + 파서 보강 (2026-03-25) — Tier 1(overflow/clipping 등) 무조건 리포트, summary 키워드 폴백
 - ✅ **EYE-INFRA-04** Gemini 2.0 Flash → 2.5 Flash 마이그레이션 (2026-03-25) — MMMU +8%p(71.7→79.7%), thinkingBudget:0, 2.5 Flash Lite 비교 후 Lite 탈락(false positive)
+- ✅ **BUG-EYE-03** MCP 401 인증 + 블랙스크린 + summary 불일치 완전 해결 (2026-03-26) — CF Worker-to-Worker header 손실 → body api_key 전달, JS 렌더링 waitForFunction 3s 대기, has_issues/summary 보정. API Worker `/mcp` 1홉 엔드포인트 추가
 - [ ] **EYE-02** r/ClaudeCode 수요 설문 — "에이전트 시각 버그 경험? $19 낼 의향?" 50명 이상 (1일)
 - [ ] **EYE-03** POC 결과로 아키텍처 확정 (CF BR API or Browserless $25/월)
 

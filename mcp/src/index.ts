@@ -15,7 +15,8 @@ app.get('/', (c) => c.json({ service: 'perceptdot MCP', version: '1.0.0', status
 
 // MCP Streamable HTTP endpoint
 app.post('/mcp', async (c) => {
-  const apiKey = c.env.PERCEPT_API_KEY ?? c.req.query('api_key') ?? c.req.header('x-percept-key') ?? null
+  // 유저 제공 키 우선, Worker secret은 fallback (외부 사용자 자기 쿼터 사용 가능)
+  const apiKey = c.req.query('api_key') ?? c.req.header('x-percept-key') ?? c.env.PERCEPT_API_KEY ?? null
   const body = await c.req.json()
   const requests = Array.isArray(body) ? body : [body]
   const responses: any[] = []

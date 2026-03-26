@@ -1511,6 +1511,17 @@ app.post("/v1/eye/check", async (c) => {
       // timeout OK — 부분 로드 상태로 계속
     }
 
+    // JS 프레임워크 렌더링 대기 (Next.js, React, Vue 등 CSR/SSR hydration)
+    // domcontentloaded 후 JS 번들이 실행되어야 실제 콘텐츠가 그려짐
+    try {
+      await page.waitForFunction(
+        '(document.body && document.body.innerText && document.body.innerText.length > 50) || document.querySelector("img, canvas, svg, video")',
+        { timeout: 3000 }
+      );
+    } catch {
+      // 3초 내 콘텐츠 없으면 그대로 진행 (빈 페이지 리포트)
+    }
+
     // ── DOM Audit: JS로 뷰포트 이탈·이미지 깨짐 직접 측정 ──
     try {
       // page.evaluate 내부는 브라우저에서 실행 — CF Workers TS가 DOM 타입을 모르므로 string으로 전달
@@ -1854,12 +1865,17 @@ If there are confirmed bugs:
     : parsedIssues;
   const finalHasIssues = domFindings.length > 0 || trustedAiIssues.length > 0;
 
+  // summary가 has_issues와 일치하도록 보정
+  const finalSummary = finalHasIssues
+    ? summary || "Visual issues detected."
+    : "No visual rendering issues detected.";
+
   const result: Record<string, unknown> = {
     ok: true,
     poc_passed: pocPassed,
     url,
     has_issues: finalHasIssues,
-    summary,
+    summary: finalSummary,
     analysis,
     dom_issues: domFindings,          // 결정론적 DOM 측정 결과
     issues: domFindings.length > 0 ? parsedIssues : trustedAiIssues,
