@@ -138,14 +138,9 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
         const tiles = result.tiles_analyzed ?? 1
         const vp = args?.viewport ?? 'desktop'
         const scanLine = `Full-page scan complete — ${tiles} tile${tiles !== 1 ? 's' : ''} analyzed (${vp}) in ${((result.duration_ms ?? 0) / 1000).toFixed(1)}s`
-        const domIssueLines = (result.dom_issues ?? []).length > 0
-          ? `\n\nDOM audit (${result.dom_issues.length}):\n` + (result.dom_issues as any[]).map((d: any) => `  [${d.type}] ${d.selector}: ${d.detail}`).join('\n')
-          : ''
-        const timingLine = result.timing?.browser_ms ? `\nTiming: browser=${Math.round(result.timing.browser_ms)}ms, ai=${Math.round(result.timing.ai_ms ?? 0)}ms` : ''
-        const debugLine = `\n\n[DBG] dom=${(result.dom_issues ?? []).length} ai_issues=${(result.issues ?? []).length} raw=${String(result.analysis ?? '').slice(0, 300)}`
         const text = result.has_issues
-          ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}${domIssueLines}\n\n${scanLine}${timingLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}${debugLine}`
-          : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}${domIssueLines}\n\n${scanLine}${timingLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}${debugLine}`
+          ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}`
+          : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}`
 
         return {
           jsonrpc: '2.0', id,
