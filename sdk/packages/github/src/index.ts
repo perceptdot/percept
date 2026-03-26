@@ -1,6 +1,22 @@
 #!/usr/bin/env node
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { readFileSync } from "fs";
+import { homedir } from "os";
+
+// ─── Token helper: reads from settings.json to bypass Claude Code env cache ───
+function readEnvKey(key: string): string {
+  // 1차: process.env (wrapper script 또는 정상 주입)
+  const fromEnv = process.env[key];
+  // 2차: settings.json (Claude Code 내부 캐시 우회)
+  try {
+    const settingsPath = `${homedir()}/.claude/settings.json`;
+    const settings = JSON.parse(readFileSync(settingsPath, "utf8")) as { env?: Record<string, string> };
+    const fromSettings = settings.env?.[key];
+    if (fromSettings) return fromSettings;
+  } catch { /* ignore */ }
+  return fromEnv ?? "";
+}
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -117,9 +133,9 @@ function getRoiSummary(): string {
 }
 
 // ─── Environment variable validation ─────────────────────────────────────────
-const githubToken = process.env.GITHUB_TOKEN;
-const owner = process.env.GITHUB_OWNER;
-const repo = process.env.GITHUB_REPO;
+const githubToken = readEnvKey("GITHUB_TOKEN");
+const owner = readEnvKey("GITHUB_OWNER");
+const repo = readEnvKey("GITHUB_REPO");
 
 if (!githubToken || !owner || !repo) {
   process.stderr.write(

@@ -190,6 +190,12 @@
 
 ## HIGH — 장기 비전 (2026-03-22 CPO+CEO 확정)
 
+- [ ] **VISION-04** `@perceptdot/memory` MCP 서버 — AI 에이전트용 지속 메모리 (2026-03-26 CEO 지시)
+  - ByteRover 대비 차별점: MCP 네이티브(툴 호출 실패 시 자동 캡처), 실시간 툴 연동, B2A2H
+  - 핵심 기능: `memory_log(bug, context)` / `memory_query(keyword)` / 툴 실패 자동 로깅
+  - 참고: `memory/known_bugs.md` (자체 데모 케이스), ByteRover 분석 (03-26 세션)
+  - 선행 조건: EYE-10 Site Crawl 완료 후
+
 - [ ] **VISION-01** 장기 방향 최종 선택 — Q3 데이터 기반 (에이전트 광고 네트워크 / 에이전트 Stripe / CFO 에이전트)
   - MCP 서버 = 씨앗 (데이터 수집기), 진짜 사업 = 데이터 위의 인프라
   - 상세: docs/bizplan.md §12

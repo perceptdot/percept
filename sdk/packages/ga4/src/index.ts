@@ -1,6 +1,20 @@
 #!/usr/bin/env node
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { readFileSync } from "fs";
+import { homedir } from "os";
+
+// ─── Token helper: reads from settings.json to bypass Claude Code env cache ───
+function readEnvKey(key: string): string {
+  const fromEnv = process.env[key];
+  try {
+    const settingsPath = `${homedir()}/.claude/settings.json`;
+    const settings = JSON.parse(readFileSync(settingsPath, "utf8")) as { env?: Record<string, string> };
+    const fromSettings = settings.env?.[key];
+    if (fromSettings) return fromSettings;
+  } catch { /* ignore */ }
+  return fromEnv ?? "";
+}
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -36,7 +50,7 @@ function trackCall(duration_ms: number): void {
 }
 
 // ─── 플랜 검증 ────────────────────────────────────────────────────────────────
-const PERCEPT_API_KEY = process.env.PERCEPT_API_KEY;
+const PERCEPT_API_KEY = readEnvKey("PERCEPT_API_KEY");
 const PERCEPT_API_BASE = "https://perceptdot-api.perceptdot.workers.dev";
 const SESSION_FREE_LIMIT = 10;
 
@@ -118,9 +132,9 @@ function getRoiSummary(): string {
 // Named Profiles: GA4_PROFILES={"k-saju":"528574308","perceptdot":"XXXX"}
 //                 GA4_DEFAULT_PROFILE=k-saju
 // Legacy fallback: GA4_PROPERTY_ID=528574308
-const profilesRaw = process.env.GA4_PROFILES;
-const defaultProfile = process.env.GA4_DEFAULT_PROFILE;
-const legacyPropertyId = process.env.GA4_PROPERTY_ID;
+const profilesRaw = readEnvKey("GA4_PROFILES");
+const defaultProfile = readEnvKey("GA4_DEFAULT_PROFILE");
+const legacyPropertyId = readEnvKey("GA4_PROPERTY_ID");
 
 let profiles: Record<string, string> = {};
 if (profilesRaw) {
