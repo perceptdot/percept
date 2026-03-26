@@ -14,13 +14,18 @@ if not key:
 print(f"✅ 키 확인됨 (앞 12자: {key[:12]}...)")
 
 # validate 확인
-import urllib.request
-resp = urllib.request.urlopen(f"https://api.perceptdot.com/v1/validate?key={key}")
-result = json.load(resp)
-print(f"KV 상태: valid={result.get('valid')}, plan={result.get('plan')}")
-
-if not result.get('valid'):
-    print("❌ KV에 키 없음 — 먼저 KV에 등록 필요")
+import urllib.request, urllib.error
+try:
+    resp = urllib.request.urlopen(f"https://api.perceptdot.com/v1/validate?key={key}")
+    result = json.load(resp)
+    if not result.get('valid'):
+        print("❌ KV에 키 없음 — 먼저 KV에 등록 필요")
+        sys.exit(1)
+    print(f"✅ KV 유효: plan={result.get('plan')}")
+except urllib.error.HTTPError as e:
+    print(f"⚠️ validate {e.code} — settings.json 키가 KV에 없거나 만료됨")
+    print("→ 대신 KV에 직접 저장한 키 사용: store_key_direct.py 실행 후 아래 명령 사용")
+    print("   python3 update_mcp_url.py --key pd_live_5309def4e5c689d4cdec0a6c0aee0b8a")
     sys.exit(1)
 
 # MCP URL 업데이트
