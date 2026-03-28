@@ -52,7 +52,9 @@ app.post("/v1/free-key", async (c) => {
   // 이미 발급된 키 있으면 기존 키 재발송 (재입력 시 이메일 재발송)
   const existingRaw = await c.env.API_KEYS.get(`apikey:${email}`);
   if (existingRaw) {
-    const existing = JSON.parse(existingRaw) as ApiKeyRecord;
+    let existing: ApiKeyRecord;
+    try { existing = JSON.parse(existingRaw) as ApiKeyRecord; }
+    catch { return c.json({ error: "Key record corrupted. Contact support." }, 500); }
     if (existing.plan === "free") {
       // 기존 키를 이메일로 다시 발송
       await sendApiKeyEmail(c.env.RESEND_API_KEY, email, existing.key, "free");
@@ -139,7 +141,9 @@ app.post("/v1/use", async (c) => {
   const raw = await c.env.API_KEYS.get(`key:${key}`);
   if (!raw) return c.json({ allowed: false, needs_feedback: false, message: "Invalid key. Get a free key at perceptdot.com" }, 404);
 
-  const record = JSON.parse(raw) as ApiKeyRecord;
+  let record: ApiKeyRecord;
+  try { record = JSON.parse(raw) as ApiKeyRecord; }
+  catch { return c.json({ allowed: false, needs_feedback: false, message: "Key record corrupted." }, 500); }
 
   // 유료 플랜은 이 엔드포인트 불필요 (무제한)
   if (record.plan !== "free") {
@@ -198,14 +202,16 @@ app.post("/v1/feedback", async (c) => {
 
   const { key, rating, comment } = body;
   if (!key) return c.json({ error: "key 필드가 필요합니다." }, 400);
-  if (!rating || rating < 1 || rating > 5) return c.json({ error: "rating은 1~5 정수여야 합니다." }, 400);
+  if (!rating || !Number.isInteger(rating) || rating < 1 || rating > 5) return c.json({ error: "rating은 1~5 정수여야 합니다." }, 400);
   if (!comment || comment.trim().length === 0) return c.json({ error: "comment가 필요합니다." }, 400);
   if (comment.length > 150) return c.json({ error: "comment는 150자 이내여야 합니다." }, 400);
 
   const raw = await c.env.API_KEYS.get(`key:${key}`);
   if (!raw) return c.json({ error: "Invalid key." }, 404);
 
-  const record = JSON.parse(raw) as ApiKeyRecord;
+  let record: ApiKeyRecord;
+  try { record = JSON.parse(raw) as ApiKeyRecord; }
+  catch { return c.json({ error: "Key record corrupted. Contact support." }, 500); }
 
   // 이미 피드백 제출 완료 (무료 플랜 1회 제한)
   if (record.feedback_count >= 1) {
@@ -227,7 +233,8 @@ app.post("/v1/feedback", async (c) => {
   };
 
   const feedListRaw = await c.env.API_KEYS.get("feedbacks:list");
-  const feedList: FeedbackRecord[] = feedListRaw ? JSON.parse(feedListRaw) : [];
+  let feedList: FeedbackRecord[] = [];
+  try { feedList = feedListRaw ? JSON.parse(feedListRaw) : []; } catch { feedList = []; }
   feedList.unshift(feedback); // 최신 순
   if (feedList.length > 100) feedList.splice(100); // 최대 100개 보관
   await c.env.API_KEYS.put("feedbacks:list", JSON.stringify(feedList));
@@ -746,27 +753,29 @@ app.post("/v1/eye/check", async (c) => {
     return c.json({ ok: false, error: "API key required. Get a free key at perceptdot.com" }, 401);
   }
 
-  if (apiKeyVal) {
-    const keyRaw = await c.env.API_KEYS.get(`key:${apiKeyVal}`);
-    if (!keyRaw) {
-      return c.json({ ok: false, error: "Invalid API key. Get a free key at perceptdot.com" }, 401);
-    }
+  const keyRaw = await c.env.API_KEYS.get(`key:${apiKeyVal}`);
+  if (!keyRaw) {
+    return c.json({ ok: false, error: "Invalid API key. Get a free key at perceptdot.com" }, 401);
+  }
+  try {
     keyRecord = JSON.parse(keyRaw) as ApiKeyRecord;
+  } catch {
+    return c.json({ ok: false, error: "Key record corrupted. Contact support." }, 500);
+  }
 
-    // 무료 플랜: 쿼터 사전 확인 (브라우저 슬롯 낭비 방지)
-    if (keyRecord.plan === "free") {
-      if (keyRecord.calls_used >= keyRecord.quota) {
-        const needsFeedback = keyRecord.feedback_count < 1 && keyRecord.quota === 100;
-        return c.json({
-          ok: false,
-          error: needsFeedback
-            ? "Free quota reached (100 tiles). Submit feedback to unlock 100 more → use percept_feedback tool."
-            : "Free plan exhausted (200 tiles). Upgrade to Pro ($19/mo) → https://perceptdot.com",
-          quota_remaining: 0,
-          calls_used: keyRecord.calls_used,
-          needs_feedback: needsFeedback,
-        }, 402);
-      }
+  // 무료 플랜: 쿼터 사전 확인 (브라우저 슬롯 낭비 방지)
+  if (keyRecord.plan === "free") {
+    if (keyRecord.calls_used >= keyRecord.quota) {
+      const needsFeedback = keyRecord.feedback_count < 1 && keyRecord.quota === 100;
+      return c.json({
+        ok: false,
+        error: needsFeedback
+          ? "Free quota reached (100 tiles). Submit feedback to unlock 100 more → use percept_feedback tool."
+          : "Free plan exhausted (200 tiles). Upgrade to Pro ($19/mo) → https://perceptdot.com",
+        quota_remaining: 0,
+        calls_used: keyRecord.calls_used,
+        needs_feedback: needsFeedback,
+      }, 402);
     }
   }
 
@@ -1228,12 +1237,13 @@ or
       };
     });
     const results = await Promise.allSettled(promises);
-    for (const r of results) {
+    for (let i = 0; i < results.length; i++) {
+      const r = results[i];
       if (r.status === "fulfilled") {
         tileResults[r.value.tile_index] = r.value;
       } else {
         // 실패한 타일은 이슈 없음 처리
-        const failIdx = batch + results.indexOf(r);
+        const failIdx = batch + i;
         tileResults[failIdx] = {
           tile_index: failIdx, has_issues: false,
           summary: "Analysis failed", issues: [], raw: String(r.reason),
@@ -1327,7 +1337,7 @@ or
     screenshot_size_bytes: screenshotBytes,
     // 크레딧 잔여 (API 키 있을 때만)
     ...(quotaRemaining !== null && {
-      quota_remaining: quotaRemaining === -1 ? "unlimited" : quotaRemaining,
+      quota_remaining: quotaRemaining,  // -1 = unlimited (pro/team), ≥0 = remaining tiles
     }),
   };
 
