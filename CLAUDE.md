@@ -11,7 +11,7 @@
 ```
 [HOOK: PRE_TASK]
 1. 이 CLAUDE.md 전체 읽기
-2. docs/agents/{내 역할}.md 읽기
+2. ../agents/{내 역할}.md 읽기 (공통) 또는 ../agents/extensions/{역할}.md (devrel/research)
 3. docs/bizplan.md 관련 섹션 확인
 4. memory/backlog.md 현재 우선순위 확인
 5. 싱크 체크:
@@ -78,14 +78,6 @@ perceptdot/
 ├── IDEA.md                    ← 최초 아이디어 기록
 ├── docs/
 │   ├── bizplan.md             ← 사업계획서
-│   ├── agents/
-│   │   ├── cpo.md
-│   │   ├── pm.md
-│   │   ├── dev.md
-│   │   ├── research.md
-│   │   ├── devrel.md
-│   │   ├── qa.md
-│   │   └── growth.md
 │   └── outputs/               ← 에이전트 산출물
 ├── memory/
 │   ├── MEMORY.md
@@ -93,6 +85,9 @@ perceptdot/
 ├── sdk/                       ← TypeScript MCP 서버 코드
 │   └── @perceptdot/              ← 패키지 루트
 └── scripts/
+
+공통 에이전트: ../agents/{cpo,pm,dev,qa,growth}.md
+perceptdot 전용: ../agents/extensions/{devrel,research}.md
 ```
 
 ---
@@ -106,7 +101,7 @@ perceptdot/
 ---
 
 ### 🏆 CPO 에이전트
-- **역할 문서**: `docs/agents/cpo.md`
+- **역할 문서**: `../agents/cpo.md`
 - **모델**: Claude Opus
 - **책임**: 제품 전략 · 로드맵 · OKR · 에이전트 산출물 품질 총괄
 - **호출 예시**: `"@CPO MVP 범위 정의해줘"`
@@ -114,7 +109,7 @@ perceptdot/
 ---
 
 ### 📋 PM 에이전트
-- **역할 문서**: `docs/agents/pm.md`
+- **역할 문서**: `../agents/pm.md`
 - **모델**: Claude Sonnet
 - **책임**: PRD 작성 · 스프린트 계획 · 태스크 분배 · 진척 추적
 - **호출 예시**: `"@PM 이번 주 태스크 분해해줘"`
@@ -122,7 +117,7 @@ perceptdot/
 ---
 
 ### 💻 Dev 에이전트
-- **역할 문서**: `docs/agents/dev.md`
+- **역할 문서**: `../agents/dev.md`
 - **모델**: Claude Sonnet
 - **책임**: TypeScript MCP 서버 개발 · Hono 백엔드 · npm 패키지 · 토큰 측정 모듈
 - **호출 예시**: `"@Dev @perceptdot/ga4 MCP 서버 만들어줘"`, `"@Dev Hono 백엔드 기초 셋업해줘"`
@@ -160,7 +155,7 @@ interface PerceptMetrics {
 ---
 
 ### 🔬 Research 에이전트
-- **역할 문서**: `docs/agents/research.md`
+- **역할 문서**: `../agents/extensions/research.md`
 - **모델**: Claude Sonnet + WebSearch
 - **책임**: 경쟁사 모니터링 · 에이전트 생태계 트렌드 · 기술 벤치마크
 - **호출 예시**: `"@Research Composio 최신 업데이트 조사해줘"`
@@ -168,7 +163,7 @@ interface PerceptMetrics {
 ---
 
 ### 📖 DevRel 에이전트
-- **역할 문서**: `docs/agents/devrel.md`
+- **역할 문서**: `../agents/extensions/devrel.md`
 - **모델**: Claude Sonnet
 - **책임**: 에이전트용 문서 · README · 온보딩 가이드
 - **호출 예시**: `"@DevRel @perceptdot/ga4 README 작성해줘"`
@@ -183,7 +178,7 @@ interface PerceptMetrics {
 ---
 
 ### 🔍 QA 에이전트
-- **역할 문서**: `docs/agents/qa.md`
+- **역할 문서**: `../agents/qa.md`
 - **모델**: Claude Haiku (자동) + Claude Sonnet (판단)
 - **책임**: MCP 서버 통합 테스트 · ROI 측정 정확도 검증 · npm 릴리즈 게이트
 - **호출 예시**: `"@QA @perceptdot/ga4 릴리즈 전 검증해줘"`
@@ -191,7 +186,7 @@ interface PerceptMetrics {
 ---
 
 ### 📈 Growth 에이전트
-- **역할 문서**: `docs/agents/growth.md`
+- **역할 문서**: `../agents/growth.md`
 - **모델**: Claude Sonnet
 - **책임**: B2A2H 세일즈 플로우 설계 · 에이전트 생태계 진입 · 얼리어답터 확보
 - **호출 예시**: `"@Growth B2A2H 결제 플로우 설계해줘"`
