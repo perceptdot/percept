@@ -1,6 +1,6 @@
 # percept — 백로그
 
-> 업데이트: 2026-03-22
+> 업데이트: 2026-03-29
 
 ---
 
@@ -79,6 +79,9 @@
 > 방향: "단일 뷰포트 스냅샷" → "사이트 전체 물리 QA" / 크레딧 단위: URL → 타일
 - ✅ **EYE-08** Full-Page Tiling POC + 구현 완료 (2026-03-25) — 1600px 타일, OVERLAP 100px, max 10타일, tiles_analyzed/credits_used 응답 추가. perceptdot.com 6203px → 5타일 정상 분석
 - ✅ **EYE-CREDIT** 크레딧 차감 시스템 완료 (2026-03-25) — X-Percept-Key 헤더/body api_key 지원, Free 타일단위 차감, Pro 무제한, 401/402 에러, 가상 스테이징 3키 생성, docs/staging-test.md
+- ✅ **REFACTOR-01** index.ts 모듈 분리 완료 (2026-03-29) — 2162→1478줄(-32%), types/registry/utils/email/browser-queue 5모듈 분리, tsc 0 errors
+- ✅ **BUG-API-01** P0/P1 버그 6종 수정 완료 (2026-03-29) — Promise.allSettled 인덱스, rating 정수 검증, JSON.parse try-catch, quota_remaining 타입 통일
+- ✅ **INFRA-AGENTS** 에이전트 경로 통합 완료 (2026-03-29) — docs/agents/ 삭제 → symlink, 출력 파일 네이밍 DATE_role 통일(11개)
 - ✅ **DOM-FP-FIX** DOM false positive 수정 완료 (2026-03-25) — 조상 overflow:hidden 체크 추가, ticker/carousel 내부 요소 더 이상 false positive 없음. 커밋: 957d363
 - ✅ **VIEWPORT-FIX** viewport default mobile→desktop 수정 + 배포 완료 (2026-03-25) — 커밋: e483c03
 - 🔴 **RESEND-FIX** ⚠️ CEO 액션 필요 — RESEND_API_KEY wrangler secret put --env production 미설정. 코드 수정(내부알림 주소)은 완료, 배포만 남음
