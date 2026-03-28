@@ -24,6 +24,25 @@ Connect it to Claude Code or any MCP-compatible AI tool, and your agent can auto
 
 ---
 
+## Two ways to use perceptdot
+
+| | MCP Server | GitHub Action |
+|---|---|---|
+| **Best for** | AI-assisted development | CI/CD automation |
+| **Works with** | Claude Code, Cursor, Windsurf, Cline | Any GitHub workflow |
+| **Trigger** | Ask your AI | Every deployment |
+| **Setup** | 1 command | ~10 lines of YAML |
+
+---
+
+## Performance
+
+- **5–20s** for a first scan (depends on page height)
+- **~0.3s** for cached results
+- Supports **desktop** (1280px) · **tablet** (768px) · **mobile** (375px)
+
+---
+
 ## Ready in 1 minute
 
 Jump straight to setup 👉 [⚡ Quick Install](install.md)

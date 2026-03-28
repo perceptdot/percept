@@ -55,9 +55,25 @@ Short pages = 1 tile. Long pages = multiple tiles.\
 
 ---
 
+## Can I use perceptdot in CI/CD without an AI tool?
+
+Yes — use the **GitHub Action**. It runs automatically on every deployment and posts results to your workflow summary.
+
+```yaml
+- uses: perceptdot/eye-action@v1
+  with:
+    url: ${{ steps.deploy.outputs.url }}
+    api_key: ${{ secrets.PERCEPT_API_KEY }}
+```
+
+See [🤖 GitHub Action](github-action.md) for the full setup guide.
+
+---
+
 ## I'm getting false positives
 
-Sometimes the AI flags intentional design choices as issues. Use `no_cache: true` to re-run, or simply ignore the report if it doesn't match what you see.
+Sometimes the AI flags intentional design choices as issues. Use `no_cache: true` to re-run, or simply ignore the report if it doesn't match what you see.\
+You can also send feedback (`percept_feedback`) to help improve detection accuracy.
 
 ---
 

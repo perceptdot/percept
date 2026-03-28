@@ -78,6 +78,22 @@ Cost: $0.001033 | Credits used: 5
 
 ---
 
+## Send feedback to unlock extra credits
+
+After a scan, tell your AI:
+
+```
+That result was accurate — send feedback
+```
+
+```
+That was a false positive — send feedback
+```
+
+Your AI uses the `percept_feedback` tool to submit the rating. **Accurate feedback earns bonus credits** and helps improve detection quality.
+
+---
+
 ## Good to know
 
 {% hint style="info" %}
