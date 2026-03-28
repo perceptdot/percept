@@ -12,3 +12,4 @@ marketing_sns/
 .DS_Store
 input/
 .mcp.json
+/agents
