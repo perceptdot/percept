@@ -23,7 +23,7 @@
 **작업 완료 후**
 ```
 [HOOK: POST_TASK]
-1. 산출물을 docs/outputs/{에이전트명}_{날짜}.md 에 저장
+1. 산출물을 docs/outputs/{날짜}_{에이전트명}.md 에 저장  ← 날짜 prefix 필수
 2. 다음 에이전트에게 인수인계 내용 작성
 3. 작업 완료 선언: "## [에이전트명] 작업 완료 - {결과 요약 3줄} (모바일/데스크탑 Claude, HH:MM KST)"
 ```
@@ -196,7 +196,7 @@ interface PerceptMetrics {
 ## 에이전트 간 협업 규칙
 
 ```
-모든 산출물 → docs/outputs/{에이전트명}_{YYYYMMDD}.md 저장
+모든 산출물 → docs/outputs/{YYYYMMDD}_{에이전트명}.md 저장  ← 날짜 prefix 필수
 
 호출 순서:
 CEO → CPO → PM → Dev/Research (병렬)
