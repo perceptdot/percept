@@ -1730,34 +1730,19 @@ app.post("/v1/eye/check", async (c) => {
     ? `Focus on: ${prompt}`
     : "Look for visual evidence of the DOM issues listed above, plus any other rendering problems visible in the screenshot.";
 
-  const analysisPrompt = `You are a visual QA engineer. Analyze this screenshot.
+  const analysisPrompt = `Visual QA. Find pixel-visible bugs only.
 ${domContext}
-
-CRITICAL RULES:
-- DOM audit results above are mathematically measured — treat them as confirmed
-- For DOM issues: describe what you visually see that matches the measurement
-- For anything NOT in DOM audit: only report if you can see a clear pixel-level violation
-- Do NOT invent element names or text you cannot clearly read
-- If unsure, do NOT report it
-
 ${userFocus}
 
-Report a bug if you can see any of these violations:
-- Something visibly sticking out past where it should stop (overflow)
-- A word or button that appears cut in half or truncated without ellipsis (clipping)
-- Two distinct UI components sitting on top of each other unexpectedly (z-index)
-- A gray broken-image box where content should be (broken asset)
-- Text that is nearly invisible against its background (low contrast)
-- Elements misaligned or breaking the visual grid (layout break)
+Report ONLY: overflow|clipping|z-index overlap|broken image|low contrast|layout break.
+DOM audit items above = confirmed facts, MUST report them.
+Skip: color choices, font sizes, spacing preferences.
+No invented element names. If unsure → skip.
 
-Skip purely subjective aesthetic preferences (color choices, font sizes, spacing).
-If a DOM audit issue is listed above, you MUST report it — these are measured facts.
-
-Respond ONLY with valid JSON — no markdown, no code block, no extra text:
-{"has_issues": false, "summary": "one sentence", "issues": []}
-
-If there are confirmed bugs:
-{"has_issues": true, "summary": "brief summary", "issues": [{"severity": "high|medium|low", "description": "specific element name + what you see wrong, max 80 chars"}]}`;
+JSON only (no markdown):
+{"has_issues":false,"summary":"one sentence","issues":[]}
+or
+{"has_issues":true,"summary":"brief","issues":[{"severity":"high|medium|low","description":"element+problem, max 80 chars"}]}`;
 
   /** Parse VERDICT-format response into structured fields */
   function parseVerdictText(text: string) {
@@ -1831,7 +1816,7 @@ If there are confirmed bugs:
               { text: analysisPrompt },
             ]}],
             generationConfig: {
-              maxOutputTokens: 1024,
+              maxOutputTokens: 512,
               temperature: 0,
               response_mime_type: "application/json",
             },
