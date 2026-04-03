@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'perceptdot/landing/**'
+      - 'landing/**'
       - '.github/workflows/deploy-landing.yml'
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
         run: npm install -g @cloudflare/wrangler
 
       - name: Deploy to Cloudflare Pages
-        run: cd perceptdot/landing && wrangler pages deploy .
+        run: cd landing && wrangler pages deploy .
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
