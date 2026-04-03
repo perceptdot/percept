@@ -338,6 +338,38 @@ CEO 지시사항:
 ### 모두의 창업
 - 지원 확정, GEO/AEO 방향, 기술 트랙, 마감 5/15
 
+### check MVP 완성 (2026-04-03 세션 7~8)
+- perceptdot.com/check 라이브 ✅
+- 브라우저 사이드 Gemini 2.5 Flash (CF HKG 지역 제한 우회)
+- /v1/gemini-key 엔드포인트 + Origin 보호 + IP 레이트 리밋 30req/hr
+- 검증: Notion 3/3 found, kfortunewave 0/3 (페인포인트 실증)
+
+### GEO = AI Search Console / AEO = AI GA4 (2026-04-03 세션 9 확정)
+```
+CEO 결정: "서치콘솔과 GA4를 대신할 수 있으면 해볼만하다"
+
+AI Search Console (GEO side):
+  "어떤 AI 쿼리에서 내 제품이 나오는가" 모니터링
+
+AI GA4 (AEO side):
+  "AI 레퍼럴이 실제 트래픽/결제로 얼마나 연결되는가" 측정
+```
+
+### AI 트래픽 실측 데이터 (2026-04-03 리서치 확인)
+| 지표 | 수치 |
+|------|------|
+| AI 레퍼럴 YoY | +527% |
+| Claude 전환율 | 16.8% (vs Google 1.76~2.8%) |
+| GA4 undercount | 30~40% (direct 오분류) |
+| Canva ChatGPT 레퍼럴 | top 10 도메인 진입 |
+| GA4 측정 regex | `chatgpt\.com|claude\.ai|gemini\.google\.com` |
+
+→ GA4 상관관계 가설 검증됨. perceptdot이 만들 수 있는 영역.
+
+### 다음 검증 단계
+- CHECK-03: 20명 크리에이터 DM → "GA4에서 chatgpt.com 레퍼러 보이냐?" 겸 물어보기
+- 10명 "돈 낼 의향" 확보 → MODOO-01 지원서 + AEO 스펙 작성
+
 ## 전략 피벗 1차 확정 (2026-03-24 · 데스크탑 Claude)
 
 **기존 제품 (B2A2H 메트릭 추적) → 폐기**
