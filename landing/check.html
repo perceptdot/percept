@@ -97,8 +97,8 @@
 
     <h1>Is your product visible to AI?</h1>
     <p class="subtitle">
-      Check if ChatGPT, Claude, or Gemini recommends your digital product<br/>
-      when users ask for it. Free, takes 10 seconds.
+      Check if Gemini recommends your digital product when users ask for it.<br/>
+      Free, takes ~5 seconds. Powered by Google Gemini.
     </p>
 
     <div class="card">
@@ -215,8 +215,8 @@
         result.className = 'result ' + (visible ? 'visible' : 'invisible');
 
         document.getElementById('resultMsg').textContent = visible
-          ? `✅ "${product_name}" appeared in ${found_count}/${queries.length} AI queries.`
-          : `❌ "${product_name}" was not found in AI recommendations. Here's how to fix it.`;
+          ? `✅ "${product_name}" appeared in ${found_count}/${queries.length} Gemini queries.`
+          : `❌ "${product_name}" was not found in Gemini's recommendations.`;
 
         const list = document.getElementById('queryList');
         list.innerHTML = '';
@@ -231,9 +231,10 @@
           list.appendChild(li);
         }
 
-        document.getElementById('resultCta').innerHTML = visible
+        const note = `<div style="font-size:0.75rem;color:#6b7280;margin-top:0.75rem;">Based on Gemini's training data. Results may differ on ChatGPT or Claude.</div>`;
+        document.getElementById('resultCta').innerHTML = (visible
           ? `Want to track this over time? <a href="/">Join the waitlist →</a>`
-          : `Want to fix this? <a href="/">Join the waitlist →</a>`;
+          : `Want to improve your AI visibility? <a href="/">Join the waitlist →</a>`) + note;
 
       } catch (e) {
         loading.style.display = 'none';

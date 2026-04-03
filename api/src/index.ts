@@ -1446,6 +1446,19 @@ app.get("/v1/gemini-key", async (c) => {
   const origin = c.req.header("origin") ?? "";
   const allowed = origin === "https://perceptdot.com" || origin === "https://www.perceptdot.com";
   if (!allowed) return c.json({ error: "Forbidden" }, 403);
+
+  // IP 기반 레이트 리미팅: 시간당 30회 (KV 사용)
+  const ip = c.req.header("cf-connecting-ip") ?? "unknown";
+  const rateLimitKey = `geo-key-rl:${ip}:${Math.floor(Date.now() / 3600000)}`;
+  const countStr = await c.env.API_KEYS.get(rateLimitKey);
+  const count = parseInt(countStr ?? "0", 10);
+  if (count >= 30) {
+    return c.json({ error: "Rate limit exceeded. Try again later." }, 429, {
+      "Access-Control-Allow-Origin": origin,
+    });
+  }
+  await c.env.API_KEYS.put(rateLimitKey, String(count + 1), { expirationTtl: 3600 });
+
   return c.json({ key: c.env.GEMINI_API_KEY }, 200, {
     "Access-Control-Allow-Origin": origin,
     "Cache-Control": "no-store",
