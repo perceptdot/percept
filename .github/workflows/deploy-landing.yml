@@ -22,7 +22,7 @@ jobs:
         run: npm install -g wrangler@latest
 
       - name: Deploy to Cloudflare Pages
-        run: cd landing && wrangler pages deploy .
+        run: cd landing && wrangler pages deploy . --project-name=perceptdot-landing
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
