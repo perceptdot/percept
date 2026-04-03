@@ -317,7 +317,28 @@ CEO 지시사항:
 - `IDEA.md` — 최초 아이디어 기록
 - `docs/agents/` — 7개 에이전트 문서 (2026-03-24 eye 피벗 반영 전체 업데이트)
 
-## 전략 피벗 확정 (2026-03-24 · 데스크탑 Claude)
+## 전략 피벗 2차 확정 (2026-04-03 · 데스크탑 Claude)
+
+**기존: AI 비주얼 QA Remote MCP → 신규: 디지털 크리에이터용 AI 발견 최적화 (GEO/AEO)**
+
+### 핵심 근거
+- GEO/AEO 시장: 24개 플랫폼 $200M+ 투자, 전부 기업용($337/월 평균)
+- 크리에이터용(Notion 템플릿, 강의, 프롬프트, 전자책) 전용 도구 0개
+- 오늘 직접 검증: 6개 AI 플랫폼에서 kfortunewave 미노출 → 페인포인트 실증
+
+### MVP 방향
+- perceptdot.com/check — 제품 AI 노출 여부 무료 확인
+- Gemini 2.0 Flash + Google Search Grounding (무료 티어)
+- CF Workers + Hono 기존 코드 재사용
+
+### K사주 처리
+- 사이드 유지, 추가 개발 보류
+- Q2 말 MAU 2,000 미달 시 sunset 검토
+
+### 모두의 창업
+- 지원 확정, GEO/AEO 방향, 기술 트랙, 마감 5/15
+
+## 전략 피벗 1차 확정 (2026-03-24 · 데스크탑 Claude)
 
 **기존 제품 (B2A2H 메트릭 추적) → 폐기**
 **신제품: @perceptdot/eye — AI 에이전트 비주얼 QA Remote MCP**
