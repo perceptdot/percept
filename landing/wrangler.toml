@@ -1,0 +1,6 @@
+name = "perceptdot-landing"
+
+[env.production]
+routes = [
+  { pattern = "perceptdot.com", zone_name = "perceptdot.com" }
+]
