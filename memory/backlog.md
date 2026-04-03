@@ -327,3 +327,10 @@
 - ✅ **BIZ-03** 수익 모델 확정: B2A2H / Free·$19·$49 (2026-03-19)
 - ✅ **BIZ-04** 타겟 에이전트 확정: MCP 클라이언트 전체 (2026-03-19)
 - ✅ **BIZ-05** 핵심 차별점 확정: ROI 측정 + 자동 보고 (2026-03-19)
+
+## ✅ INFRA-GIT-01: GitHub Actions 자동 배포 설정 (2026-04-04)
+- CF Pages는 수동 배포만 지원했음 (Git 연결 없음)
+- GitHub Actions 워크플로우 생성: `.github/workflows/deploy-landing.yml`
+- GitHub Secrets 추가: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
+- 커밋 & 푸시 완료
+- 이후 perceptdot/landing 변경 시 자동 배포됨
