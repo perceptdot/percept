@@ -1,6 +1,2 @@
 name = "perceptdot-landing"
-
-[env.production]
-routes = [
-  { pattern = "perceptdot.com", zone_name = "perceptdot.com" }
-]
+pages_build_output_dir = "."
