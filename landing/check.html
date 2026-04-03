@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Visibility Check — perceptdot</title>
+  <meta name="description" content="Check if your digital product appears in AI recommendations. Free tool by perceptdot." />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0a0a0a;
+      color: #e5e5e5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 560px; width: 100%; }
+    .logo { text-align: center; margin-bottom: 2rem; }
+    .logo a { color: #a3a3a3; text-decoration: none; font-size: 0.9rem; }
+    .logo a:hover { color: #fff; }
+    h1 { font-size: 1.75rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem; }
+    .subtitle { color: #a3a3a3; text-align: center; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5; }
+    .card {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .field { margin-bottom: 1.25rem; }
+    label { display: block; font-size: 0.85rem; color: #a3a3a3; margin-bottom: 0.4rem; }
+    input, select {
+      width: 100%;
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      color: #e5e5e5;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus { border-color: #4f46e5; }
+    input::placeholder { color: #555; }
+    select option { background: #141414; }
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 0.5rem;
+    }
+    .btn:hover { background: #4338ca; }
+    .btn:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; }
+    .result {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border-radius: 8px;
+      display: none;
+    }
+    .result.visible { background: #0d2b1a; border: 1px solid #166534; }
+    .result.invisible { background: #2b0d0d; border: 1px solid #991b1b; }
+    .result-msg { font-weight: 600; font-size: 1rem; margin-bottom: 1rem; }
+    .query-list { list-style: none; }
+    .query-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-top: 1px solid #2a2a2a;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .query-list li:first-child { border-top: none; }
+    .icon { flex-shrink: 0; margin-top: 1px; }
+    .query-text { color: #a3a3a3; }
+    .excerpt { color: #e5e5e5; margin-top: 0.25rem; font-size: 0.8rem; font-style: italic; }
+    .cta { margin-top: 1.25rem; text-align: center; font-size: 0.85rem; color: #a3a3a3; }
+    .cta a { color: #818cf8; text-decoration: none; }
+    .cta a:hover { text-decoration: underline; }
+    .loading { text-align: center; color: #a3a3a3; padding: 1rem 0; display: none; font-size: 0.9rem; }
+    .error-msg { color: #f87171; font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><a href="/">← perceptdot</a></div>
+
+    <h1>Is your product visible to AI?</h1>
+    <p class="subtitle">
+      Check if ChatGPT, Claude, or Gemini recommends your digital product<br/>
+      when users ask for it. Free, takes 10 seconds.
+    </p>
+
+    <div class="card">
+      <div class="field">
+        <label for="product_name">Product name</label>
+        <input id="product_name" type="text" placeholder="e.g. Notion Project Management Template" maxlength="100" />
+      </div>
+      <div class="field">
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="">Select a category...</option>
+          <option value="notion template">Notion Template</option>
+          <option value="ai prompt pack">AI Prompt Pack</option>
+          <option value="online course">Online Course</option>
+          <option value="ebook">Ebook</option>
+          <option value="digital planner">Digital Planner</option>
+          <option value="canva template">Canva Template</option>
+          <option value="spreadsheet template">Spreadsheet Template</option>
+          <option value="astrology reading">Astrology Reading</option>
+          <option value="other digital product">Other Digital Product</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="keywords">Keywords (optional)</label>
+        <input id="keywords" type="text" placeholder="e.g. productivity, project management" maxlength="100" />
+      </div>
+
+      <button class="btn" id="checkBtn" onclick="runCheck()">Check AI Visibility</button>
+      <p class="error-msg" id="errorMsg"></p>
+    </div>
+
+    <div class="loading" id="loading">Querying AI... this takes ~5 seconds</div>
+
+    <div class="result" id="result">
+      <div class="result-msg" id="resultMsg"></div>
+      <ul class="query-list" id="queryList"></ul>
+      <div class="cta" id="resultCta"></div>
+    </div>
+  </div>
+
+  <script>
+    const GEMINI_MODEL = 'gemini-2.5-flash';
+    const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
+    let _geminiKey = null;
+
+    async function getGeminiKey() {
+      if (_geminiKey) return _geminiKey;
+      const res = await fetch('https://api.perceptdot.com/v1/gemini-key');
+      const data = await res.json();
+      if (!data.key) throw new Error('Could not load AI config');
+      _geminiKey = data.key;
+      return _geminiKey;
+    }
+
+    async function queryGemini(key, prompt) {
+      const res = await fetch(`${GEMINI_BASE}${GEMINI_MODEL}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 1024 },
+        }),
+      });
+      if (!res.ok) throw new Error(`Gemini ${res.status}`);
+      const data = await res.json();
+      return (data.candidates?.[0]?.content?.parts ?? []).map(p => p.text ?? '').join('\n');
+    }
+
+    async function runCheck() {
+      const product_name = document.getElementById('product_name').value.trim();
+      const category = document.getElementById('category').value;
+      const keywords_raw = document.getElementById('keywords').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      const loading = document.getElementById('loading');
+      const result = document.getElementById('result');
+      const btn = document.getElementById('checkBtn');
+
+      errorMsg.style.display = 'none';
+      result.style.display = 'none';
+
+      if (!product_name) { errorMsg.textContent = 'Enter your product name.'; errorMsg.style.display = 'block'; return; }
+      if (!category) { errorMsg.textContent = 'Select a category.'; errorMsg.style.display = 'block'; return; }
+
+      btn.disabled = true;
+      loading.style.display = 'block';
+      loading.textContent = 'Querying AI... this takes ~5 seconds';
+
+      const kw = keywords_raw ? keywords_raw.split(',').map(s => s.trim()).filter(Boolean)[0] || '' : '';
+      const queries = [
+        `best ${category} tools`,
+        `recommend ${category}${kw ? ` for ${kw}` : ''}`,
+        kw ? `top ${kw} ${category}` : `top ${category} resources`,
+      ];
+
+      try {
+        const key = await getGeminiKey();
+        const lowerName = product_name.toLowerCase();
+
+        const queryResults = await Promise.all(queries.map(async (query) => {
+          const prompt = `List 10 specific ${category} products or tools for: "${query}". Product names only, one per line.`;
+          const text = await queryGemini(key, prompt);
+          const lo = text.toLowerCase();
+          const idx = lo.indexOf(lowerName);
+          const found = idx !== -1;
+          const excerpt = found ? text.slice(Math.max(0, idx - 30), idx + product_name.length + 60).trim() : undefined;
+          return { query, found, excerpt: excerpt?.slice(0, 200) };
+        }));
+
+        loading.style.display = 'none';
+        const found_count = queryResults.filter(r => r.found).length;
+        const visible = found_count > 0;
+
+        result.style.display = 'block';
+        result.className = 'result ' + (visible ? 'visible' : 'invisible');
+
+        document.getElementById('resultMsg').textContent = visible
+          ? `✅ "${product_name}" appeared in ${found_count}/${queries.length} AI queries.`
+          : `❌ "${product_name}" was not found in AI recommendations. Here's how to fix it.`;
+
+        const list = document.getElementById('queryList');
+        list.innerHTML = '';
+        for (const r of queryResults) {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span class="icon">${r.found ? '✅' : '❌'}</span>
+            <div>
+              <span class="query-text">"${r.query}"</span>
+              ${r.excerpt ? `<div class="excerpt">...${r.excerpt}...</div>` : ''}
+            </div>`;
+          list.appendChild(li);
+        }
+
+        document.getElementById('resultCta').innerHTML = visible
+          ? `Want to track this over time? <a href="/">Join the waitlist →</a>`
+          : `Want to fix this? <a href="/">Join the waitlist →</a>`;
+
+      } catch (e) {
+        loading.style.display = 'none';
+        errorMsg.textContent = 'Something went wrong. Please try again.';
+        errorMsg.style.display = 'block';
+      }
+
+      btn.disabled = false;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') runCheck();
+    });
+  </script>
+</body>
+</html>

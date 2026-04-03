@@ -1423,6 +1423,124 @@ or
   return c.json(result, 200, { "Cache-Control": "no-store, no-cache, must-revalidate" });
 });
 
+// ─── GEO Key: 브라우저용 Gemini API 키 프록시 ────────────────────────────────
+/**
+ * GET /v1/gemini-key
+ * check.html에서 클라이언트 사이드 Gemini 호출을 위한 키 반환
+ * Origin 제한: perceptdot.com 도메인에서만 접근 가능
+ */
+app.options("/v1/gemini-key", (c) => {
+  const origin = c.req.header("origin") ?? "";
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": origin,
+      "Access-Control-Allow-Methods": "GET",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Max-Age": "86400",
+    },
+  });
+});
+
+app.get("/v1/gemini-key", async (c) => {
+  const origin = c.req.header("origin") ?? "";
+  const allowed = origin === "https://perceptdot.com" || origin === "https://www.perceptdot.com";
+  if (!allowed) return c.json({ error: "Forbidden" }, 403);
+  return c.json({ key: c.env.GEMINI_API_KEY }, 200, {
+    "Access-Control-Allow-Origin": origin,
+    "Cache-Control": "no-store",
+  });
+});
+
+// ─── GEO Check: AI 발견 가능성 확인 ──────────────────────────────────────────
+/**
+ * POST /v1/geo-check
+ * 디지털 제품이 AI 검색에서 추천되는지 확인
+ * Gemini 2.0 Flash + Google Search Grounding (무료 티어, 1,500 req/day)
+ *
+ * Body: { product_name: string, category: string, keywords?: string[] }
+ */
+app.post("/v1/geo-check", async (c) => {
+  let body: { product_name?: string; category?: string; keywords?: string[] };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Invalid JSON." }, 400);
+  }
+
+  const { product_name, category, keywords = [] } = body;
+  if (!product_name || !category) {
+    return c.json({ error: "product_name and category are required." }, 400);
+  }
+
+  // 3개 쿼리 자동 생성
+  const kw = keywords[0] || "";
+  const queries = [
+    `best ${category} tools`,
+    `recommend ${category}${kw ? ` for ${kw}` : ""}`,
+    kw ? `top ${kw} ${category}` : `top ${category} resources`,
+  ];
+
+  // Gemini 2.5 Flash (병렬, 위치 에러 시 null)
+  const runGemini = async (query: string): Promise<string | null> => {
+    try {
+      const prompt = `List 5-10 specific ${category} products/tools for: "${query}". Only product names, one per line.`;
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 1024 },
+          }),
+        }
+      );
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "");
+        console.error(`Gemini error ${res.status}: ${errText.slice(0, 200)}`);
+        return null;
+      }
+      const data = (await res.json()) as { candidates?: Array<{ content: { parts: Array<{ text: string }> } }> };
+      return (data.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("\n");
+    } catch (err) { console.error("Gemini fetch error:", String(err)); return null; }
+  };
+
+  const geminiTexts = await Promise.all(queries.map(q => runGemini(q)));
+  const allFailed = geminiTexts.every(t => t === null);
+
+  let results: Array<{ query: string; found: boolean; excerpt?: string; error?: string }>;
+
+  if (allFailed) {
+    // Gemini 전체 실패 → 클라이언트에게 재시도 요청 (다른 CF 에지 = 다른 지역)
+    return c.json({ ok: false, error: "location_error", retry: true, message: "AI service temporarily unavailable from this region. Retrying..." }, 503);
+  } else {
+    results = queries.map((query, i) => {
+      const text = geminiTexts[i] ?? "";
+      const lo = text.toLowerCase(), ln = product_name.toLowerCase();
+      const idx = lo.indexOf(ln);
+      const found = idx !== -1;
+      const exc = found ? text.slice(Math.max(0, idx-30), idx+product_name.length+60).trim().slice(0,200) : undefined;
+      return { query, found, excerpt: exc };
+    });
+  }
+
+  const found_count = results.filter((r) => r.found).length;
+
+  return c.json({
+    ok: true,
+    product_name,
+    category,
+    visible: found_count > 0,
+    found_in: `${found_count}/${queries.length}`,
+    message: found_count > 0
+      ? `✅ "${product_name}" appeared in ${found_count}/${queries.length} AI queries.`
+      : `❌ "${product_name}" was not found in AI recommendations. Here's how to fix it.`,
+    results,
+    checked_at: new Date().toISOString(),
+  });
+});
+
 // ─── MCP Streamable HTTP (1홉 — api.perceptdot.com/mcp) ──────────────────────
 // mcp.perceptdot.com MCP Worker → api.perceptdot.com 2홉 구조에서
 // CF Worker-to-Worker custom domain fetch 시 인증 header 손실 문제 발생.
