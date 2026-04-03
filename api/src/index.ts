@@ -41,12 +41,12 @@ app.post("/v1/free-key", async (c) => {
   try {
     body = await c.req.json();
   } catch {
-    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+    return c.json({ error: "Invalid JSON." }, 400);
   }
 
   const { email } = body;
   if (!email || !email.includes("@")) {
-    return c.json({ error: "유효한 이메일이 필요합니다." }, 400);
+    return c.json({ error: "Valid email required." }, 400);
   }
 
   // 이미 발급된 키 있으면 기존 키 재발송 (재입력 시 이메일 재발송)
@@ -69,7 +69,7 @@ app.post("/v1/free-key", async (c) => {
       });
     }
     // 유료 플랜 사용자 → 이미 더 좋은 키 있음
-    return c.json({ error: "이미 유료 플랜 키가 있습니다.", plan: existing.plan }, 409);
+    return c.json({ error: "You already have a paid plan key.", plan: existing.plan }, 409);
   }
 
   const apiKey = generateFreeKey();
@@ -132,11 +132,11 @@ app.post("/v1/use", async (c) => {
   try {
     body = await c.req.json();
   } catch {
-    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+    return c.json({ error: "Invalid JSON." }, 400);
   }
 
   const { key } = body;
-  if (!key) return c.json({ error: "key 필드가 필요합니다." }, 400);
+  if (!key) return c.json({ error: "key field is required." }, 400);
 
   const raw = await c.env.API_KEYS.get(`key:${key}`);
   if (!raw) return c.json({ allowed: false, needs_feedback: false, message: "Invalid key. Get a free key at perceptdot.com" }, 404);
@@ -197,14 +197,14 @@ app.post("/v1/feedback", async (c) => {
   try {
     body = await c.req.json();
   } catch {
-    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+    return c.json({ error: "Invalid JSON." }, 400);
   }
 
   const { key, rating, comment } = body;
-  if (!key) return c.json({ error: "key 필드가 필요합니다." }, 400);
-  if (!rating || !Number.isInteger(rating) || rating < 1 || rating > 5) return c.json({ error: "rating은 1~5 정수여야 합니다." }, 400);
-  if (!comment || comment.trim().length === 0) return c.json({ error: "comment가 필요합니다." }, 400);
-  if (comment.length > 150) return c.json({ error: "comment는 150자 이내여야 합니다." }, 400);
+  if (!key) return c.json({ error: "key field is required." }, 400);
+  if (!rating || !Number.isInteger(rating) || rating < 1 || rating > 5) return c.json({ error: "rating must be an integer between 1 and 5." }, 400);
+  if (!comment || comment.trim().length === 0) return c.json({ error: "comment is required." }, 400);
+  if (comment.length > 150) return c.json({ error: "comment must be 150 characters or less." }, 400);
 
   const raw = await c.env.API_KEYS.get(`key:${key}`);
   if (!raw) return c.json({ error: "Invalid key." }, 404);
@@ -268,7 +268,7 @@ app.post("/v1/metrics", async (c) => {
   try {
     payload = await c.req.json<MetricsPayload>();
   } catch {
-    return c.json({ error: "요청 바디가 유효한 JSON이 아닙니다." }, 400);
+    return c.json({ error: "요청 바디가 Invalid JSON." }, 400);
   }
 
   const required: (keyof MetricsPayload)[] = [
@@ -293,7 +293,7 @@ app.post("/v1/metrics", async (c) => {
 app.get("/v1/roi/:session_id", (c) => {
   const session_id = c.req.param("session_id");
   const agg = sessionStore.get(session_id);
-  if (!agg) return c.json({ error: "세션을 찾을 수 없습니다.", session_id }, 404);
+  if (!agg) return c.json({ error: "Session not found.", session_id }, 404);
   return c.json(buildRoiResponse(agg));
 });
 
@@ -305,7 +305,7 @@ app.post("/v1/report", async (c) => {
 
   if (body.session_id) {
     const agg = sessionStore.get(body.session_id);
-    if (!agg) return c.json({ error: "세션을 찾을 수 없습니다.", session_id: body.session_id }, 404);
+    if (!agg) return c.json({ error: "Session not found.", session_id: body.session_id }, 404);
     return c.json({
       report_type: "session",
       generated_at: new Date().toISOString(),
@@ -326,14 +326,14 @@ app.post("/v1/report", async (c) => {
     report_type: "global",
     generated_at: new Date().toISOString(),
     sessions_count: allSessions.length,
-    totals: { ...totals, total_cost_saved_usd, total_time_saved_min: Math.round((totals.total_time_saved_ms / 1000 / 60) * 10) / 10, roi_positive, ...(roi_positive && { upsell_message: "perceptdot Pro 구독이 이미 본전을 넘었습니다. perceptdot.com" }) },
+    totals: { ...totals, total_cost_saved_usd, total_time_saved_min: Math.round((totals.total_time_saved_ms / 1000 / 60) * 10) / 10, roi_positive, ...(roi_positive && { upsell_message: "Your perceptdot Pro subscription has already paid for itself. perceptdot.com" }) },
     ...(format === "detail" && { sessions: allSessions.map(buildRoiResponse) }),
   });
 });
 
 app.post("/v1/checkout", async (c) => {
   let body: { seats: number; amount_usd: number };
-  try { body = await c.req.json(); } catch { return c.json({ error: "유효한 JSON이 아닙니다." }, 400); }
+  try { body = await c.req.json(); } catch { return c.json({ error: "Invalid JSON." }, 400); }
   const { seats, amount_usd } = body;
   if (!seats || seats < 2 || seats > 50) return c.json({ error: "seats는 2~50 사이여야 합니다." }, 400);
   const expected = seats * 15;
@@ -347,7 +347,7 @@ app.post("/v1/webhook/gumroad", async (c) => {
     const formData = await c.req.formData();
     body = Object.fromEntries(formData.entries()) as GumroadWebhookPayload;
   } catch {
-    return c.json({ error: "페이로드 파싱 실패" }, 400);
+    return c.json({ error: "Payload parsing failed." }, 400);
   }
 
   const { email, product_name, order_number, test } = body;
@@ -375,7 +375,7 @@ app.post("/v1/webhook/gumroad", async (c) => {
     await c.env.API_KEYS.put(`key:${apiKey}`, JSON.stringify(record));
   } catch (e) {
     console.error("KV write failed:", e);
-    return c.json({ error: "KV 저장 실패" }, 500);
+    return c.json({ error: "KV storage failed." }, 500);
   }
 
   // 카운터 증가
@@ -399,7 +399,7 @@ app.post("/v1/webhook/gumroad", async (c) => {
 app.get("/v1/apikey/:email", async (c) => {
   const email = decodeURIComponent(c.req.param("email"));
   const raw = await c.env.API_KEYS.get(`apikey:${email}`);
-  if (!raw) return c.json({ error: "API 키 없음", email }, 404);
+  if (!raw) return c.json({ error: "API key not found", email }, 404);
   return c.json(JSON.parse(raw) as ApiKeyRecord);
 });
 
@@ -429,6 +429,42 @@ app.get("/v1/validate", async (c) => {
   return c.json({ valid: true, plan: record.plan, email: record.email });
 });
 
+/**
+ * GET /v1/quota?key={api_key}
+ * Returns remaining credits for the given API key
+ */
+app.get("/v1/quota", async (c) => {
+  const key = c.req.query("key") ?? c.req.header("X-Percept-Key");
+  if (!key) return c.json({ error: "API key required. Pass ?key= or X-Percept-Key header." }, 400);
+  const raw = await c.env.API_KEYS.get(`key:${key}`);
+  if (!raw) return c.json({ error: "Invalid API key." }, 404);
+  const record = JSON.parse(raw) as ApiKeyRecord;
+
+  const now = new Date();
+  const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString().split("T")[0];
+
+  if (record.plan === "free") {
+    return c.json({
+      ok: true,
+      plan: "free",
+      quota_total: record.quota,
+      calls_used: record.calls_used,
+      quota_remaining: Math.max(0, record.quota - record.calls_used),
+      reset_date: resetDate,
+    });
+  }
+
+  return c.json({
+    ok: true,
+    plan: record.plan,
+    quota_total: -1,
+    calls_used: record.calls_used ?? 0,
+    quota_remaining: -1,
+    reset_date: resetDate,
+    note: "Unlimited plan — no quota limit",
+  });
+});
+
 // ─── 마케팅 모니터링 통계 ──────────────────────────────────────────────────────
 
 /**
@@ -438,7 +474,7 @@ app.get("/v1/validate", async (c) => {
  */
 app.get("/v1/stats", async (c) => {
   const key = c.req.query("key");
-  if (!key) return c.json({ error: "key 파라미터가 필요합니다." }, 401);
+  if (!key) return c.json({ error: "key parameter is required." }, 401);
   const keyRaw = await c.env.API_KEYS.get(`key:${key}`);
   if (!keyRaw) return c.json({ error: "Invalid key." }, 401);
   const keyRecord = JSON.parse(keyRaw) as ApiKeyRecord;
@@ -638,7 +674,7 @@ app.post("/v1/recommend/log", async (c) => {
       const { project_signals, recommended_servers, installed_servers } = body;
 
       if (!apiKey) {
-        return c.json({ error: "Authorization header 또는 api_key 필드가 필요합니다." }, 401);
+        return c.json({ error: "Authorization header 또는 api_key field is required." }, 401);
       }
 
       const keyRaw = await c.env.API_KEYS.get(`key:${apiKey}`);
@@ -660,7 +696,7 @@ app.post("/v1/recommend/log", async (c) => {
 
       return c.json({ logged: true });
     } catch {
-      return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+      return c.json({ error: "Invalid JSON." }, 400);
     }
   }
 
@@ -672,7 +708,7 @@ app.post("/v1/recommend/log", async (c) => {
   try {
     body = await c.req.json<RecommendLogPayload>();
   } catch {
-    return c.json({ error: "유효한 JSON이 아닙니다." }, 400);
+    return c.json({ error: "Invalid JSON." }, 400);
   }
 
   const logKey = `recommend:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
@@ -1201,11 +1237,44 @@ or
         issues = parsed.issues;
       }
     } catch (e) {
-      // Gemini 실패 시 → 이슈 없음으로 처리 (Llama fallback 제거: 할루시네이션 과다)
-      raw = `Gemini unavailable: ${String(e)}`;
-      tileSummary = "Analysis skipped (Gemini unavailable)";
-      hasIssues = false;
-      issues = [];
+      // Gemini 실패 시 → CF Workers AI fallback (region 제한 우회)
+      try {
+        const cfAiRes = await c.env.AI.run("@cf/meta/llama-4-scout-17b-16e-instruct", {
+          messages: [
+            { role: "user", content: [
+              { type: "image", image: `data:image/jpeg;base64,${b64}` },
+              { type: "text", text: analysisPrompt },
+            ]},
+          ],
+          max_tokens: 512,
+          temperature: 0,
+        });
+        raw = cfAiRes?.response ?? "";
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          const j = (parsed.has_issues !== undefined ? parsed : (parsed.response ?? parsed)) as {
+            has_issues: boolean; summary: string; issues: Array<{ severity: string; description: string }>
+          };
+          if (typeof j.has_issues === "boolean" && j.summary) {
+            tileSummary = j.summary.slice(0, 200);
+            issues = (j.issues ?? []).slice(0, 5).map((i) => ({
+              severity: (["high","medium","low"].includes(i.severity) ? i.severity : "medium") as "high"|"medium"|"low",
+              description: (i.description ?? "").slice(0, 120),
+            }));
+            hasIssues = j.has_issues && issues.length > 0;
+          } else {
+            tileSummary = "Analysis completed (CF AI fallback)";
+          }
+        } else {
+          tileSummary = "Analysis completed (CF AI fallback)";
+        }
+      } catch (fallbackErr) {
+        raw = `Gemini unavailable: ${String(e)}. CF AI fallback also failed: ${String(fallbackErr)}`;
+        tileSummary = "Analysis skipped (AI unavailable)";
+        hasIssues = false;
+        issues = [];
+      }
     }
 
     return { hasIssues, summary: tileSummary, issues, raw };
@@ -1477,12 +1546,21 @@ app.post("/mcp", async (c) => {
   return c.json(Array.isArray(body) ? responses : responses[0]);
 });
 
-app.get("/mcp", (c) => c.json({ error: "Use POST for MCP requests" }, 405));
+app.get("/mcp", (c) => c.json({
+  name: "perceptdot",
+  description: "AI Visual QA — MCP server is running. Connect via POST or add to your MCP client.",
+  docs: "https://perceptdot.gitbook.io/perceptdot",
+  setup: {
+    claude_code: 'claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"',
+    cursor: '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"}}}',
+  },
+  get_free_key: "https://perceptdot.com",
+}, 200));
 
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────
 
 app.notFound((c) => {
-  return c.json({ error: "엔드포인트를 찾을 수 없습니다.", path: c.req.path }, 404);
+  return c.json({ error: "Endpoint not found.", path: c.req.path }, 404);
 });
 
 export default app;

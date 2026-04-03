@@ -32,7 +32,16 @@ app.post('/mcp', async (c) => {
 
 // SSE upgrade (for clients that request streaming)
 app.get('/mcp', (c) => {
-  return c.json({ error: 'Use POST for MCP requests' }, 405)
+  return c.json({
+    name: 'perceptdot',
+    description: 'AI Visual QA — MCP server is running. Connect via POST or add to your MCP client.',
+    docs: 'https://perceptdot.gitbook.io/perceptdot',
+    setup: {
+      claude_code: 'claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"',
+      cursor: '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"}}}',
+    },
+    get_free_key: 'https://perceptdot.com',
+  }, 200)
 })
 
 async function handleRpc(req: any, apiKey: string | null = null): Promise<any | null> {

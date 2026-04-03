@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>perceptdot — AI catches visual bugs your code can't see</title>
-  <meta name="description" content="Your AI writes code fast — but does it look right? perceptdot takes a screenshot and finds visual bugs in 7 seconds. Works in Claude Code, Cursor, GitHub Actions. Free 100 checks/month." />
+  <meta name="description" content="Your AI writes code fast — but does it look right? perceptdot takes a screenshot and finds visual bugs in 7 seconds. Works in Claude Code, Cursor, GitHub Actions. Free 100 credits/month." />
   <meta property="og:title" content="perceptdot — AI Visual QA for CI/CD | Layout Bug Detection" />
   <meta property="og:description" content="visual_check() catches layout bugs before users do — headless screenshot + AI analysis on every deploy. Works in GitHub Actions and MCP servers." />
   <meta property="og:url" content="https://perceptdot.com/" />
@@ -61,7 +61,7 @@
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD",
-        "description": "Free — 100 checks/month"
+        "description": "Free — 100 credits/month (1 credit per viewport tile)"
       },
       {
         "@type": "Offer",
@@ -125,7 +125,7 @@
         "name": "What does it cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Free plan includes 100 checks per month — no credit card required. Pro is $19/month for 10,000 checks. Unlimited is $49/month for unlimited checks plus priority support."
+          "text": "Free plan includes 100 credits per month — no credit card required. Each page uses 1 credit per viewport tile (a short page = 1 credit, a long landing page = 3-5 credits). Pro is $19/month for 10,000 credits. Unlimited is $49/month for unlimited credits plus priority support."
         }
       },
       {
@@ -134,14 +134,6 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "A visual_check() call completes in approximately 7.4 seconds and costs $0.000012 per check. That is screenshot capture via headless browser plus AI analysis combined."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can it compare before and after a deploy?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "visual_diff() is coming soon. It will compare screenshots pixel-by-pixel between two URLs (e.g., production vs preview) and report visual regressions. Sign up for the free plan to get notified."
         }
       },
       {
@@ -1630,7 +1622,7 @@
   <section class="hero">
     <div class="badge">
       <span class="badge-dot"></span>
-      Free &mdash; 100 checks/month, no card needed
+      Free &mdash; 100 credits/month, no card needed
     </div>
 
     <h1>Your AI writes code.<br>Does it <em>look</em> right?</h1>
@@ -1642,7 +1634,7 @@
     </p>
 
     <div class="hero-btns">
-      <button class="btn btn-primary" onclick="openFreeModal()">Get Free API Key &mdash; 100 checks/month</button>
+      <button class="btn btn-primary" onclick="openFreeModal()">Get Free API Key &mdash; 100 credits/month</button>
       <a href="#demo" class="btn btn-outline">See what you get back &darr;</a>
     </div>
 
@@ -1871,7 +1863,7 @@
         <p class="pricing-desc">Everything you need to get started. No credit card required.</p>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li><span class="feat-icon">&#10003;</span> 100 checks / month</li>
+          <li><span class="feat-icon">&#10003;</span> 100 credits / month</li>
           <li><span class="feat-icon">&#10003;</span> MCP server + GitHub Action</li>
           <li><span class="feat-icon">&#10003;</span> AI visual analysis</li>
           <li><span class="feat-icon">&#10003;</span> HIGH/MEDIUM/LOW severity</li>
@@ -2010,7 +2002,7 @@
         </button>
         <div class="faq-a">
           <div class="faq-a-inner">
-            Free plan includes 100 checks per month &mdash; no credit card required. Pro is $19/month for 10,000 checks. Unlimited is $49/month for unlimited checks plus priority support.
+            Free plan includes 100 credits per month &mdash; no credit card required. Each page uses 1 credit per viewport tile (a short page = 1 credit, a long landing page = 3&ndash;5 credits). Pro is $19/month for 10,000 credits. Unlimited is $49/month for unlimited credits plus priority support.
           </div>
         </div>
       </div>
@@ -2023,18 +2015,6 @@
         <div class="faq-a">
           <div class="faq-a-inner">
             A <code style="font-family:var(--mono);color:var(--accent);font-size:13px;">visual_check()</code> call completes in approximately 7.4 seconds and costs $0.000012 per check. That includes headless browser screenshot capture plus Gemini 2.5 Flash AI analysis, combined.
-          </div>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Can it compare before and after a deploy?
-          <span class="faq-chevron">&#8964;</span>
-        </button>
-        <div class="faq-a">
-          <div class="faq-a-inner">
-            <code style="font-family:var(--mono);color:var(--accent);font-size:13px;">visual_diff()</code> is coming soon. It will compare screenshots pixel-by-pixel between two URLs (e.g., production vs preview branch) and report visual regressions. Sign up for the free plan to get notified when it ships.
           </div>
         </div>
       </div>
@@ -2094,7 +2074,7 @@
     <div class="modal">
       <button class="modal-close" onclick="closeFreeModal()" aria-label="Close">&times;</button>
       <h3>Get Free API Key</h3>
-      <p class="modal-sub">100 checks/month, no credit card. Your key arrives instantly.</p>
+      <p class="modal-sub">100 credits/month, no credit card. Your key arrives instantly.</p>
 
       <div id="free-form">
         <div class="form-group">
@@ -2104,7 +2084,7 @@
         <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" onclick="submitFreeKey()">Send my key &rarr;</button>
         <div class="modal-spinner" id="free-spinner"><div class="spinner"></div></div>
         <div class="modal-error" id="free-error"></div>
-        <p class="modal-note">100 checks free. No credit card.</p>
+        <p class="modal-note">100 credits free. No credit card.</p>
       </div>
 
       <div class="key-result" id="free-result">
@@ -2175,7 +2155,7 @@
       </div>
       <div class="key-result" id="waitlist-success">
         <p style="color:var(--green);font-weight:600;">&#10003; You're on the list!</p>
-        <p style="margin-top:8px;">We'll email you when the plan launches. In the meantime, try the Free plan &mdash; 100 checks/month, no card required.</p>
+        <p style="margin-top:8px;">We'll email you when the plan launches. In the meantime, try the Free plan &mdash; 100 credits/month, no card required.</p>
       </div>
     </div>
   </div>
@@ -2450,7 +2430,7 @@
         <p style="margin-top:.8rem;">Please read these Terms of Service ("Terms") carefully before using perceptdot ("Service"), operated by THUNOVA ("Company," "we," "us"). By accessing or using the Service in any manner — including via API, MCP server, GitHub Action, or web interface — you ("User," "you") agree to be bound by these Terms in their entirety. If you do not agree, do not use the Service.</p>
 
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">1. Description of Service</strong><br>
-        perceptdot provides AI-powered visual quality assurance ("Visual QA") tools that capture screenshots of web pages and analyze them using artificial intelligence. The Service is provided via REST API, Model Context Protocol (MCP) server, GitHub Action, and related integrations. We offer Free (100 checks/month), Pro ($19/month, 10,000 checks), and Team ($99/month, unlimited checks) plans. Plan features, limits, and pricing are subject to change at our sole discretion.</p>
+        perceptdot provides AI-powered visual quality assurance ("Visual QA") tools that capture screenshots of web pages and analyze them using artificial intelligence. The Service is provided via REST API, Model Context Protocol (MCP) server, GitHub Action, and related integrations. We offer Free (100 credits/month), Pro ($19/month, 10,000 credits), and Unlimited ($49/month, unlimited credits) plans. Plan features, limits, and pricing are subject to change at our sole discretion.</p>
 
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">2. Account Registration and Eligibility</strong><br>
         You must provide a valid email address to obtain an API key. You represent that (a) you are at least 18 years old or the age of majority in your jurisdiction; (b) you have the legal authority to enter into these Terms; and (c) all information you provide is accurate and current. You are solely responsible for maintaining the confidentiality of your API key and for all activity that occurs under your account. Immediately notify us at service@perceptdot.com of any unauthorized use.</p>
