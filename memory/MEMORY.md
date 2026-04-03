@@ -379,3 +379,24 @@ CEO 지시사항:
 - MCP SDK 다운: 97M+/월, 80배/5개월 성장
 - Claude Code ARR: $2.5B+, 분기별 2배
 - 직접 경쟁사: TestSprite MCP ($8.1M) — 범용. Applitools — MCP 없음
+
+---
+
+## 🔴 2차 피벗: GEO/AEO (2026-04-03)
+
+**방향**: "AI 검색 시대의 구글 서치콘솔 — 디지털 크리에이터용"
+
+### perceptdot.com/check — AI Visibility Checker (MVP LIVE)
+- 제품명 + 카테고리 → Gemini 2.5 Flash 3쿼리 → AI 추천 여부 리포트
+- 아키텍처: CF Worker `/v1/gemini-key` (Origin+IP rate limit) → 브라우저 Gemini 직접 호출
+- HKG CF 에지 Gemini 지역 제한 우회: 브라우저(한국 IP)에서 직접 호출
+- 한계: Gemini 모델 지식 기반, 니치 제품 false negative 가능성 있음 (UX에 명시)
+
+### 핵심 결정
+- Gemini free tier (redgom1009@gmail.com, 1,500 req/day)
+- 검증 목표: 20명 중 10명 "돈 낼 의향"
+- 모두의 창업 마감: 2026-05-15
+
+### CHECK-03 (다음 액션)
+- 디지털 크리에이터 20명 DM → "AI 노출 여부 무료 체크" 오퍼
+- 10명 WTP 확인 → 모두의 창업 지원서 작성
