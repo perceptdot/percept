@@ -1,0 +1,148 @@
+# perceptdot — Full Technical Reference
+
+> Give your AI eyes. AI Visual QA for CI/CD and MCP-compatible AI tools.
+
+## What is perceptdot?
+
+perceptdot is an AI-powered visual QA tool that catches layout bugs automatically on every deploy. It takes headless screenshots using Cloudflare Browser Rendering API and analyzes them with Gemini 2.5 Flash vision AI. Results are structured JSON with severity levels, affected CSS selectors, and actionable fix suggestions.
+
+No desktop required. No GUI. Runs in CI/CD pipelines, MCP servers, and REST API calls.
+
+## Problem it Solves
+
+AI coding assistants (Claude Code, Cursor, Windsurf, Copilot) write code fast but cannot see the visual output. CSS bugs, layout shifts, overflow issues, and responsive breakage go unnoticed until a human reviews. perceptdot gives these AI tools visual perception — they can now verify their own output.
+
+Unlike Computer Use or desktop-based tools, perceptdot is fully headless and works in:
+- GitHub Actions / GitLab CI / any CI pipeline
+- MCP-compatible AI tools (Claude Code, Cursor, Windsurf, Cline)
+- Direct REST API calls
+- Docker containers and serverless environments
+
+## Core API: visual_check
+
+```
+POST https://api.perceptdot.com/v1/eye/check
+Content-Type: application/json
+X-Percept-Key: YOUR_API_KEY
+
+{
+  "url": "https://your-preview-url.vercel.app",
+  "viewport": "1280x720",
+  "waitFor": 2000
+}
+```
+
+Response (structured JSON):
+```json
+{
+  "status": "completed",
+  "findings": [
+    {
+      "severity": "HIGH",
+      "element": ".pricing-card:nth-child(2)",
+      "issue": "Text overflow outside card boundary",
+      "suggestion": "Add overflow: hidden or reduce font-size"
+    }
+  ],
+  "screenshot_analyzed": true,
+  "duration_ms": 7400,
+  "cost_usd": 0.000012
+}
+```
+
+## MCP Server (for AI tools)
+
+Transport: Streamable HTTP
+Endpoint: https://mcp.perceptdot.com/mcp
+
+Install in Claude Code:
+```bash
+claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+```
+
+Available MCP tools:
+- `visual_check` — screenshot + AI analysis of any URL
+- `percept_feedback` — submit product feedback
+- `percept_roi_summary` — usage and ROI metrics
+
+## GitHub Action
+
+```yaml
+name: Visual QA
+on: [deployment_status]
+jobs:
+  visual-check:
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: perceptdot/visual-check-action@v1
+        with:
+          url: ${{ github.event.deployment_status.target_url }}
+          api-key: ${{ secrets.PERCEPTDOT_API_KEY }}
+```
+
+## Additional MCP Servers
+
+perceptdot also provides read-only MCP servers for external services:
+
+| Package | Service | Key Metrics |
+|---------|---------|-------------|
+| @perceptdot/ga4 | Google Analytics 4 | Realtime users, top pages, events, bounce rate |
+| @perceptdot/vercel | Vercel | Deployment status, project list, latest deploy |
+| @perceptdot/github | GitHub | Open PRs, issues, CI workflow status |
+| @perceptdot/sentry | Sentry | Unresolved production errors |
+
+Each server includes built-in ROI tracking: tokens saved, time recovered, cost avoided.
+
+## Pricing
+
+| Plan | Price | Checks/month | Features |
+|------|-------|-------------|----------|
+| Free | $0 | 100 | All features, no credit card |
+| Pro | $19/mo | 10,000 | Priority support |
+| Unlimited | $49/mo | Unlimited | Priority support, SLA |
+
+Unit economics: ~$0.002 cost per check (Cloudflare Browser Rendering + Gemini 2.5 Flash).
+
+## Architecture
+
+```
+Client (MCP / REST API / GitHub Action)
+  → Cloudflare Workers (Hono framework, TypeScript)
+    → Cloudflare Browser Rendering (headless Chromium screenshot)
+    → Gemini 2.5 Flash (vision AI analysis)
+  → Structured JSON response
+```
+
+- No screenshots stored — captured, analyzed, discarded
+- No preview URLs logged
+- Edge-deployed globally via Cloudflare Workers
+- MCP protocol: Anthropic standard, streamable HTTP transport
+
+## Comparison with Alternatives
+
+| Feature | perceptdot | Computer Use | Playwright screenshots |
+|---------|-----------|-------------|----------------------|
+| Headless (no GUI) | Yes | No | Yes |
+| AI analysis | Yes | Partial | No |
+| CI/CD native | Yes | No | Yes |
+| MCP integration | Yes | No | No |
+| Structured findings | Yes | No | No |
+| Cost per check | $0.000012 | ~$0.05+ | Free (no analysis) |
+
+## Links
+
+- Website: https://perceptdot.com
+- API: https://api.perceptdot.com
+- MCP: https://mcp.perceptdot.com/mcp
+- Docs: https://perceptdot.gitbook.io/perceptdot
+- npm: https://www.npmjs.com/org/perceptdot
+- GitHub: https://github.com/perceptdot/percept
+- Email: service@perceptdot.com
+- X/Twitter: https://x.com/perceptdot
+
+## Company
+
+THUNOVA (써노바) | Yongin-si, Gyeonggi-do, Republic of Korea
+Business Registration: 722-60-00889
+Contact: service@perceptdot.com

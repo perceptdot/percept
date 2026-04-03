@@ -22,6 +22,12 @@ User-agent: ClaudeBot
 Allow: /
 User-agent: Claude-SearchBot
 Allow: /
+User-agent: Claude-Web
+Allow: /
+
+# Google Gemini
+User-agent: Google-Extended
+Allow: /
 
 # Apple
 User-agent: Applebot
@@ -30,5 +36,23 @@ Allow: /
 # Meta
 User-agent: Meta-ExternalAgent
 Allow: /
+User-agent: FacebookBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# Common Crawl
+User-agent: CCBot
+Allow: /
 
 Sitemap: https://perceptdot.com/sitemap.xml
+
+# AI/LLM context files
+# llms.txt: https://perceptdot.com/llms.txt
+# llms-full.txt: https://perceptdot.com/llms-full.txt

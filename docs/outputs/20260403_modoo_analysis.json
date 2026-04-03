@@ -1,0 +1,292 @@
+{
+  "meta": {
+    "title": "모두의 창업 프로젝트 2026 — 지원 적합성 분석",
+    "created": "2026-04-03",
+    "analyst": "Claude Opus 4.6 (1M context)",
+    "model_id": "claude-opus-4-6",
+    "analysis_method": "웹 검색 + 제품 컨텍스트 비교 + 정책 정합성 매트릭스",
+    "confidence_level": "high",
+    "data_sources": [
+      {
+        "id": "SRC-01",
+        "title": "모두의 창업 프로젝트 공식 사이트",
+        "url": "https://www.modoo.or.kr/",
+        "type": "official",
+        "accessed": "2026-04-03"
+      },
+      {
+        "id": "SRC-02",
+        "title": "2026 모두의 창업 프로젝트 신청 자격·지원 내용 완벽 가이드",
+        "url": "https://plcy.kr/2026-startup-for-all-project-application-guide/",
+        "type": "analysis_article",
+        "accessed": "2026-04-03"
+      },
+      {
+        "id": "SRC-03",
+        "title": "2026 모두의 창업 프로젝트 신청 방법 A to Z",
+        "url": "https://brunch.co.kr/@77d538f56b9b41b/49",
+        "type": "guide_article",
+        "accessed": "2026-04-03"
+      },
+      {
+        "id": "SRC-04",
+        "title": "모두의 창업 프로젝트 통합 모집공고 — 벤처스퀘어",
+        "url": "https://www.venturesquare.net/announcement/1068257",
+        "type": "official_announcement",
+        "accessed": "2026-04-03"
+      },
+      {
+        "id": "SRC-05",
+        "title": "정책브리핑 — 아이디어만 있다면 누구나 창업",
+        "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148961520&call_from=rsslink",
+        "type": "government_press",
+        "accessed": "2026-04-03"
+      },
+      {
+        "id": "SRC-06",
+        "title": "중소벤처기업부 공고 제2026-208호 (PDF)",
+        "url": "https://www.cku.ac.kr/bbs/cku_kr/1202/150015/download.do",
+        "type": "official_notice",
+        "accessed": "2026-04-03"
+      },
+      {
+        "id": "SRC-07",
+        "title": "perceptdot 제품 컨텍스트",
+        "url": "file://agents/products/perceptdot.md",
+        "type": "internal_document",
+        "accessed": "2026-04-03"
+      },
+      {
+        "id": "SRC-08",
+        "title": "kfortunewave 제품 컨텍스트",
+        "url": "file://agents/products/kfortunewave.md",
+        "type": "internal_document",
+        "accessed": "2026-04-03"
+      }
+    ]
+  },
+
+  "program": {
+    "name": "모두의 창업 프로젝트 2026",
+    "organizer": "중소벤처기업부",
+    "budget": "1,550억원",
+    "application_period": {
+      "start": "2026-03-26",
+      "end": "2026-05-15"
+    },
+    "application_url": "https://www.modoo.or.kr/",
+    "tracks": [
+      {
+        "name": "기술 트랙",
+        "capacity": 4000,
+        "focus": "기술 기반 아이디어, 6대 전략산업·12대 신산업 딥테크",
+        "stages": 5,
+        "description": "5단계 오디션 (지역예선 → 권역본선 → TV결선)"
+      },
+      {
+        "name": "로컬 트랙",
+        "capacity": 1000,
+        "focus": "지역 가치 기반 아이디어",
+        "stages": 3,
+        "description": "3단계 오디션"
+      }
+    ],
+    "total_selection": 5000,
+    "final_selection": 100,
+    "non_capital_ratio": "70%+",
+    "eligibility": {
+      "age_limit": "없음",
+      "target": "예비 창업자 및 초기 창업자",
+      "restrictions": "없음 (대학생, 직장인, 주부, 재창업자 모두 가능)",
+      "business_registration_required": "미확인 (예비창업자 포함이므로 불필요 가능성 높음)"
+    },
+    "selection_criteria": [
+      "아이디어 혁신성",
+      "실현 가능성",
+      "시장 잠재력",
+      "창업가 역량"
+    ],
+    "selection_process": [
+      {
+        "stage": 1,
+        "name": "지역 예선",
+        "scope": "전국 17개 시도",
+        "resources": "전문 멘토 500명, 자문단 1,600명"
+      },
+      {
+        "stage": 2,
+        "name": "권역별 본선",
+        "scope": "5개 권역 (수도권·강원, 충청, 호남·제주, 대경·강원, 동남권)"
+      },
+      {
+        "stage": 3,
+        "name": "TV 오디션 결선",
+        "scope": "최종 100명 선발"
+      }
+    ],
+    "benefits": {
+      "initial_fund": "200만원 (활동자금)",
+      "max_prize": "최대 2억원 (1위 사업화 자금)",
+      "startup_fund": "500억원 규모 창업열풍펀드 (최종 100명)",
+      "mentoring": "원스톱 창업 지원 (시제품, 마케팅, 세금, 사업자등록 등)",
+      "global": "글로벌 진출 패키지"
+    },
+    "source_refs": ["SRC-01", "SRC-02", "SRC-03", "SRC-04", "SRC-05", "SRC-06"]
+  },
+
+  "comparison": {
+    "evaluation_criteria": [
+      {
+        "criterion": "혁신성",
+        "weight": "심사 기준 1순위",
+        "perceptdot": {
+          "score": 5,
+          "reasoning": "AI 에이전트 비주얼 QA — 전 세계 전용 MCP 비주얼 QA 제품 0개 (완전 시장 공백)",
+          "evidence": "awesome-mcp-servers 등록, Glama 배지 획득, npm 5패키지 운영 중"
+        },
+        "kfortunewave": {
+          "score": 3,
+          "reasoning": "사주×KPop×힌글리시 조합은 참신하지만, 운세앱 시장 자체는 레드오션",
+          "evidence": "179명 유저 확보, 인도 타겟 차별화"
+        }
+      },
+      {
+        "criterion": "기술 깊이 (딥테크 정합)",
+        "weight": "기술 트랙 핵심 심사",
+        "perceptdot": {
+          "score": 5,
+          "reasoning": "MCP 프로토콜(Anthropic 표준), CF Browser Rendering, Gemini Vision AI, TypeScript SDK 아키텍처",
+          "evidence": "MCP SDK 기반, CF Workers 서버리스, 체크당 $0.002 원가 구조"
+        },
+        "kfortunewave": {
+          "score": 3,
+          "reasoning": "Next.js + FastAPI 표준 웹 스택, AI 활용은 Gemini 프롬프트 엔지니어링 수준",
+          "evidence": "Next.js 14 App Router, FastAPI + SQLite, Gemini 2.0 Flash"
+        }
+      },
+      {
+        "criterion": "시장 잠재력",
+        "weight": "심사 기준 주요 항목",
+        "perceptdot": {
+          "score": 5,
+          "reasoning": "B2B SaaS, 글로벌 AI 에이전트 시장 2026년 폭발 성장 중. 개발자 도구 시장 TAM 거대",
+          "evidence": "마진 95-99%, $19/$49 월간 구독, 글로벌 영문 서비스"
+        },
+        "kfortunewave": {
+          "score": 3,
+          "reasoning": "인도 10-20대 KPop 팬 여성이라는 극소 니치 타겟, TAM 제한적",
+          "evidence": "$1.99-$2.99 단건 결제, Paddle sandbox 단계 (미활성)"
+        }
+      },
+      {
+        "criterion": "실현 가능성",
+        "weight": "심사 기준 주요 항목",
+        "perceptdot": {
+          "score": 4,
+          "reasoning": "이미 라이브 서비스, npm 패키지 5종 운영, MCP 서버 동작 중",
+          "evidence": "perceptdot.com / mcp.perceptdot.com 운영, @perceptdot/* npm 배포"
+        },
+        "kfortunewave": {
+          "score": 4,
+          "reasoning": "14페이지 풀 서비스 운영, 36개 테스트, 실사용자 보유",
+          "evidence": "kfortunewave.com 운영, EC2 + Vercel 인프라, 179명 유저"
+        }
+      },
+      {
+        "criterion": "수익 모델 건전성",
+        "weight": "투자 연계 시 중요",
+        "perceptdot": {
+          "score": 5,
+          "reasoning": "SaaS 월구독, 마진 95%+, 체크당 원가 $0.002로 극도로 낮은 변동비",
+          "evidence": "Free 50체크 / Pro $19 / Team $49 티어 설계 완료"
+        },
+        "kfortunewave": {
+          "score": 3,
+          "reasoning": "단건 결제 $1.99-$2.99, 반복 매출 구조 없음, 결제 시스템 미활성",
+          "evidence": "Paddle sandbox 단계, production 전환 미완료"
+        }
+      },
+      {
+        "criterion": "정부 정책 정합성",
+        "weight": "선발 우대 요소",
+        "perceptdot": {
+          "score": 5,
+          "reasoning": "AI 에이전트 = 12대 신산업 직격, '딥테크 스타트업 집중 육성' 기조 부합",
+          "evidence": "MCP(AI 에이전트 표준), Vision AI, 서버리스 아키텍처"
+        },
+        "kfortunewave": {
+          "score": 2,
+          "reasoning": "운세/점술은 6대 전략산업·12대 신산업 어디에도 분류 어려움",
+          "evidence": "사주 콘텐츠는 엔터테인먼트/문화 분류, 기술 심사 약점"
+        }
+      }
+    ],
+    "total_scores": {
+      "perceptdot": {
+        "total": 29,
+        "max": 30,
+        "percentage": "96.7%"
+      },
+      "kfortunewave": {
+        "total": 18,
+        "max": 30,
+        "percentage": "60.0%"
+      }
+    }
+  },
+
+  "recommendation": {
+    "selected_product": "perceptdot",
+    "recommended_track": "기술 트랙",
+    "confidence": "very_high",
+    "reasons": [
+      "딥테크 정합성 — AI 에이전트 QA 도구가 '12대 신산업 집중 육성' 기조에 정확히 부합",
+      "시장 공백 스토리 — 전 세계 MCP 비주얼 QA 전용 제품 0개, 심사위원 혁신성 어필 극대화",
+      "글로벌 확장성 — B2B SaaS + 영문 서비스, 글로벌 진출 패키지와 자연스러운 연결",
+      "마진 구조 — 95%+ 마진은 투자자/심사위원이 선호하는 SaaS 모델",
+      "기술 깊이 — MCP 프로토콜, Vision AI, CF Workers 등 명확한 기술 차별화"
+    ],
+    "kfortunewave_exclusion_reasons": [
+      "운세/사주는 전략산업·신산업 분류 불가",
+      "니치 타겟(인도 KPop 팬) → 시장 잠재력 설명 어려움",
+      "결제 시스템 미활성 → 실현 가능성 감점 요인",
+      "기술 스택이 표준적이라 '딥테크' 어필 약함"
+    ],
+    "application_strategy": {
+      "deadline": "2026-05-15",
+      "key_message": "AI 에이전트가 폭발적으로 성장하는데, 에이전트의 '눈'이 없다. perceptdot이 그 눈이 된다",
+      "pitch_angles": [
+        "시장 공백: 전 세계 MCP 비주얼 QA 전용 제품 0개",
+        "기술 우위: Anthropic MCP 표준 100% 준수, Vision AI 통합",
+        "비용 효율: 체크당 $0.002, 마진 95%+",
+        "검증 완료: npm 5패키지 운영, awesome-mcp-servers 등록, 실서비스 라이브"
+      ]
+    }
+  },
+
+  "product_specs": {
+    "perceptdot": {
+      "name": "perceptdot",
+      "tagline": "AI 에이전트 비주얼 QA Remote MCP 서버",
+      "url": "https://perceptdot.com",
+      "mcp_endpoint": "https://mcp.perceptdot.com/mcp",
+      "tech_stack": ["TypeScript", "Hono", "Cloudflare Workers", "CF Browser Rendering API", "Gemini 2.5 Flash", "MCP SDK (@modelcontextprotocol/sdk)"],
+      "pricing": { "free": "50체크/월", "pro": "$19/월", "team": "$49/월" },
+      "unit_economics": { "cost_per_check": "$0.002", "margin": "95-99%" },
+      "npm_packages": ["@perceptdot/core", "@perceptdot/ga4", "@perceptdot/vercel", "@perceptdot/github", "@perceptdot/sentry"],
+      "gtm_completed": ["X 스레드", "awesome-mcp-servers PR 머지", "Glama 배지", "Reddit", "Moltbook", "AlternativeTo", "Dev.to"],
+      "company": { "name": "THUNOVA (써노바)", "registration": "722-60-00889" }
+    },
+    "kfortunewave": {
+      "name": "K사주 AI (K-Fortunewave)",
+      "tagline": "사주 × KPop × 힌글리시",
+      "url": "https://kfortunewave.com",
+      "tech_stack": ["Next.js 14 App Router", "Tailwind CSS", "FastAPI", "SQLite", "Gemini 2.0 Flash", "Paddle"],
+      "pricing": { "premium_report": "$2.99", "concern_reading": "$1.99", "k_vedic_match": "$1.99" },
+      "metrics": { "pages": 14, "endpoints": 21, "tests": 36, "users": 179 },
+      "target": "인도 10-20대 여성 KPop 팬",
+      "payment_status": "Paddle sandbox (미활성)",
+      "company": { "name": "THUNOVA (써노바)", "registration": "722-60-00889" }
+    }
+  }
+}

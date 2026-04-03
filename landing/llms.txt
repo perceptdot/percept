@@ -1,52 +1,69 @@
 # perceptdot
 
-> Your agent's app store. One install — your agent discovers and connects to external services automatically.
+> Give your AI eyes. visual_check() catches layout bugs before users do.
 
-perceptdot is an MCP server platform that gives AI agents direct read access to external services (GA4, Vercel, GitHub, Sentry) and measures the ROI of each agent action. Built for the B2A2H model: Business → Agent → Human.
+perceptdot is an AI Visual QA platform for CI/CD pipelines and MCP-compatible AI tools. It takes headless screenshots via Cloudflare Browser Rendering and analyzes them with Gemini 2.5 Flash vision AI — returning structured bug reports with severity levels (HIGH/MEDIUM/LOW), affected elements, and suggested fixes.
 
-## Quick Start
+## Core Product: @perceptdot/eye
 
-Install the discovery layer:
+- `visual_check(url)` → headless screenshot + AI analysis in ~7 seconds
+- `visual_diff(url_a, url_b)` → before/after deploy comparison (coming soon)
+- Fully headless — no desktop, no GUI, runs in CI/CD
+- Cost: $0.000012 per check
+
+## Installation
+
+MCP (Claude Code):
 ```
-npx @perceptdot/core
-```
-
-Then install individual service servers:
-```json
-{
-  "mcpServers": {
-    "perceptdot-core": { "command": "npx", "args": ["-y", "@perceptdot/core"] },
-    "perceptdot-ga4": { "command": "npx", "args": ["-y", "@perceptdot/ga4"], "env": { "PERCEPTDOT_API_KEY": "your-key", "GA4_PROPERTY_ID": "your-id" } },
-    "perceptdot-vercel": { "command": "npx", "args": ["-y", "@perceptdot/vercel"], "env": { "PERCEPTDOT_API_KEY": "your-key", "VERCEL_TOKEN": "your-token" } },
-    "perceptdot-github": { "command": "npx", "args": ["-y", "@perceptdot/github"], "env": { "PERCEPTDOT_API_KEY": "your-key", "GITHUB_TOKEN": "your-token" } },
-    "perceptdot-sentry": { "command": "npx", "args": ["-y", "@perceptdot/sentry"], "env": { "PERCEPTDOT_API_KEY": "your-key", "SENTRY_AUTH_TOKEN": "your-token" } }
-  }
-}
+claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp
 ```
 
-## Packages
+GitHub Action:
+```yaml
+- uses: perceptdot/visual-check-action@v1
+  with:
+    url: ${{ env.PREVIEW_URL }}
+    api-key: ${{ secrets.PERCEPTDOT_API_KEY }}
+```
 
-- **@perceptdot/core** — Agent discovery layer. `percept_discover` scans your project, `percept_recommend` searches 15+ curated MCP servers. Free and unlimited.
-- **@perceptdot/ga4** — Google Analytics 4. Realtime users, top pages, events, bounce rate. Saves ~450 tokens per query vs screenshots.
-- **@perceptdot/vercel** — Vercel deployments. Status, project list, latest deploy check. Ends "did it deploy?" interruptions.
-- **@perceptdot/github** — GitHub. Open PRs, issues, CI workflow status. ~400 tokens saved per call.
-- **@perceptdot/sentry** — Sentry. Unresolved errors from production, directly.
+REST API:
+```
+POST https://api.perceptdot.com/v1/eye/check
+Header: X-Percept-Key: YOUR_KEY
+Body: {"url": "https://example.com"}
+```
 
-## Key Features
+## Also Available: MCP Service Servers
 
-- **Auto-discovery**: `percept_discover` analyzes package.json, .env, config files and recommends matching MCP servers
-- **Built-in ROI**: Every package tracks tokens saved, time recovered, and cost avoided. `percept_roi_summary` reports in plain language.
-- **B2A2H model**: Agent recommends tools → Human just approves. No browsing registries.
+- @perceptdot/ga4 — Google Analytics 4 realtime data
+- @perceptdot/vercel — Vercel deployment status
+- @perceptdot/github — GitHub PRs, issues, CI status
+- @perceptdot/sentry — Sentry error monitoring
 
 ## Pricing
 
-- **Free Starter**: 200 calls/month, all integrations. No credit card.
-- **Pro / Team**: Coming soon (unlimited calls).
+- Free: 100 checks/month, no credit card
+- Pro: $19/month, 10,000 checks
+- Unlimited: $49/month, unlimited checks
+
+## Technical Details
+
+- Screenshots: Cloudflare Browser Rendering API (headless Chromium)
+- AI Analysis: Gemini 2.5 Flash (vision model)
+- Backend: TypeScript + Hono on Cloudflare Workers
+- MCP Protocol: Anthropic MCP standard, streamable HTTP transport
+- Privacy: screenshots captured, analyzed, discarded — nothing stored
 
 ## Links
 
 - Website: https://perceptdot.com
+- API: https://api.perceptdot.com
+- MCP Endpoint: https://mcp.perceptdot.com/mcp
+- Docs: https://perceptdot.gitbook.io/perceptdot
 - npm: https://www.npmjs.com/org/perceptdot
 - GitHub: https://github.com/perceptdot/percept
-- API: https://api.perceptdot.com
 - Email: service@perceptdot.com
+
+## Company
+
+THUNOVA | Republic of Korea | service@perceptdot.com

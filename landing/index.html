@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Visual QA for CI/CD | Layout Bug Detection — perceptdot</title>
-  <meta name="description" content="visual_check() catches layout bugs before users do — headless screenshot + AI analysis on every deploy. Works in GitHub Actions, MCP servers (Claude Code, Cursor), no desktop needed." />
+  <title>perceptdot — AI catches visual bugs your code can't see</title>
+  <meta name="description" content="Your AI writes code fast — but does it look right? perceptdot takes a screenshot and finds visual bugs in 7 seconds. Works in Claude Code, Cursor, GitHub Actions. Free 100 checks/month." />
   <meta property="og:title" content="perceptdot — AI Visual QA for CI/CD | Layout Bug Detection" />
   <meta property="og:description" content="visual_check() catches layout bugs before users do — headless screenshot + AI analysis on every deploy. Works in GitHub Actions and MCP servers." />
   <meta property="og:url" content="https://perceptdot.com/" />
@@ -26,6 +26,8 @@
   <link rel="shortcut icon" href="/favicon.svg" />
   <link rel="alternate" type="application/rss+xml" title="perceptdot — Changelog" href="https://perceptdot-api.perceptdot.workers.dev/rss/changelog" />
   <link rel="alternate" type="application/rss+xml" title="perceptdot — Agent Feedback" href="https://perceptdot-api.perceptdot.workers.dev/rss/feedback" />
+  <link rel="alternate" type="text/plain" title="LLM context" href="https://perceptdot.com/llms.txt" />
+  <link rel="alternate" type="text/plain" title="LLM full context" href="https://perceptdot.com/llms-full.txt" />
 
   <script type="application/ld+json">
   {
@@ -1618,135 +1620,37 @@
     <a href="#" onclick="openFreeModal(); closeMobileMenu();" style="color: var(--accent); font-weight: 600;">Get Free API Key</a>
   </div>
 
+  <main>
   <!-- ===================== 1. HERO ===================== -->
+  <article itemscope itemtype="https://schema.org/SoftwareApplication">
+    <meta itemprop="name" content="perceptdot — AI Visual QA" />
+    <meta itemprop="applicationCategory" content="DeveloperApplication" />
+    <meta itemprop="operatingSystem" content="Cross-platform" />
+  </article>
   <section class="hero">
     <div class="badge">
       <span class="badge-dot"></span>
-      Open Beta &middot; Free to Try
+      Free &mdash; 100 checks/month, no card needed
     </div>
 
-    <h1>Give Your AI<br><em>Eyes.</em></h1>
+    <h1>Your AI writes code.<br>Does it <em>look</em> right?</h1>
 
     <p class="hero-sub">
-      Visual QA for every deploy &mdash; automatic, headless, CI/CD ready.<br>
-      <strong>Your AI writes code fast. Does it look right?</strong>
+      AI agents ship code fast &mdash; but UI bugs slip through silently.<br>
+      <strong>perceptdot catches visual bugs in 7 seconds.</strong><br>
+      Screenshot + AI analysis on every deploy. No desktop needed.
     </p>
 
-    <div class="install-tabs">
-      <div class="install-tab-btns">
-        <button class="itab active" onclick="switchTab('claude',true)">Claude Code</button>
-        <button class="itab" onclick="switchTab('cursor',true)">Cursor</button>
-        <button class="itab" onclick="switchTab('windsurf',true)">Windsurf</button>
-        <button class="itab" onclick="switchTab('cline',true)">Cline</button>
-      </div>
-      <div class="hero-code" id="tab-claude">
-        <span class="code-comment"># Replace YOUR_KEY with your API key</span><br>
-        <span class="code-cmd">claude mcp add</span> <span class="code-cmd">--transport http</span> perceptdot <span class="code-str">"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"</span>
-      </div>
-      <div class="hero-code" id="tab-cursor" style="display:none">
-        <span class="code-comment"># Add to ~/.cursor/mcp.json</span><br>
-        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"}}}</span>
-      </div>
-      <div class="hero-code" id="tab-windsurf" style="display:none">
-        <span class="code-comment"># Add to ~/.codeium/windsurf/mcp_config.json</span><br>
-        <span class="code-str">{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"}}}</span>
-      </div>
-      <div class="hero-code" id="tab-cline" style="display:none">
-        <span class="code-comment"># Cline MCP settings (VS Code extension)</span><br>
-        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>","transport":"http"}}}</span>
-      </div>
-    </div>
-
     <div class="hero-btns">
-      <button class="btn btn-primary" onclick="openFreeModal()">Try visual_check free</button>
-      <a href="#github-action" class="btn btn-outline">GitHub Action &nbsp;&#8599;</a>
+      <button class="btn btn-primary" onclick="openFreeModal()">Get Free API Key &mdash; 100 checks/month</button>
+      <a href="#demo" class="btn btn-outline">See what you get back &darr;</a>
     </div>
 
   </section>
 
   <div class="section-sep"></div>
 
-  <!-- ===================== 2. PROBLEM ===================== -->
-  <section class="section" id="problem">
-    <div class="section-header">
-      <span class="section-label">The Problem</span>
-      <h2>Your AI writes code fast.</h2>
-      <p>Does it <em style="font-style:italic; color: var(--text);">look</em> right? Existing tools can&rsquo;t run in CI/CD.</p>
-    </div>
-
-    <div class="problem-grid">
-      <div class="problem-card bad fade-up">
-        <div class="problem-card-head">
-          <div class="problem-icon">&#10060;</div>
-          <h3>Computer Use / Desktop tools</h3>
-        </div>
-        <ul class="problem-list">
-          <li><span class="li-icon">&#10005;</span> Needs a physical desktop or macOS</li>
-          <li><span class="li-icon">&#10005;</span> Can&rsquo;t run in CI/CD pipelines</li>
-          <li><span class="li-icon">&#10005;</span> Requires a GUI environment</li>
-          <li><span class="li-icon">&#10005;</span> Slow and expensive for automation</li>
-        </ul>
-      </div>
-
-      <div class="problem-card good fade-up fade-up-d1">
-        <div class="problem-card-head">
-          <div class="problem-icon">&#9989;</div>
-          <h3>perceptdot visual_check</h3>
-        </div>
-        <ul class="problem-list">
-          <li><span class="li-icon">&#10003;</span> Headless &mdash; no desktop needed</li>
-          <li><span class="li-icon">&#10003;</span> Runs in any CI/CD pipeline</li>
-          <li><span class="li-icon">&#10003;</span> Works in GitHub Actions, GitLab CI</li>
-          <li><span class="li-icon">&#10003;</span> 7.4 seconds &middot; $0.000012 per check</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-sep"></div>
-
-  <!-- ===================== 3. HOW IT WORKS ===================== -->
-  <section class="section" id="how-it-works">
-    <div class="section-header">
-      <span class="section-label">How It Works</span>
-      <h2>Three steps to visual QA.</h2>
-      <p>AI pushes code, AI checks the visuals. No human in the loop.</p>
-    </div>
-
-    <div class="steps-grid">
-      <div class="step-card fade-up">
-        <div class="step-num">STEP 01</div>
-        <h3>Deploy</h3>
-        <p>Your AI agent pushes code. Vercel (or any platform) creates a preview URL automatically.</p>
-        <div class="step-code">
-          <span class="c-url">https://my-app-git-feat-auth.vercel.app</span>
-        </div>
-      </div>
-
-      <div class="step-card fade-up fade-up-d1">
-        <div class="step-num">STEP 02</div>
-        <h3>visual_check</h3>
-        <p>Your AI agent calls <code style="color:var(--accent);font-family:var(--mono);font-size:12px;">visual_check()</code> automatically. A headless browser captures the screenshot.</p>
-        <div class="step-code">
-          <span class="c-fn">visual_check</span>(<span class="c-str">"https://my-app-git-feat.vercel.app"</span>)
-        </div>
-      </div>
-
-      <div class="step-card fade-up fade-up-d2">
-        <div class="step-num">STEP 03</div>
-        <h3>AI Analyzes</h3>
-        <p>Headless screenshot taken. AI inspects every pixel and returns structured findings with severity levels.</p>
-        <div class="step-code">
-          <span style="color:var(--accent);">&#128308;</span> <span style="color:var(--text);">3 visual issues found</span><br>
-          <span style="color:var(--muted);">nav overflow · btn radius · padding</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-sep"></div>
-
-  <!-- ===================== 4. DEMO OUTPUT ===================== -->
+  <!-- ===================== 2. DEMO OUTPUT ===================== -->
   <section class="section demo-section" id="demo">
     <div class="section-header">
       <span class="section-label">Demo Output</span>
@@ -1785,6 +1689,111 @@
         <span class="t-blank"></span>
         <div><span class="t-tip">&#128161; Tip:</span> <span class="t-dim">Add overflow-x:hidden to nav for mobile fix.</span></div>
         <div class="t-indent t-dim">Suggested: border-radius: 8px to #login-submit</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-sep"></div>
+
+  <!-- ===================== 3. HOW IT WORKS ===================== -->
+  <section class="section" id="how-it-works">
+    <div class="section-header">
+      <span class="section-label">How It Works</span>
+      <h2>Three steps to visual QA.</h2>
+      <p>Your AI agent deploys code, calls visual_check(), and fixes what it finds &mdash; automatically.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card fade-up">
+        <div class="step-num">STEP 01</div>
+        <h3>Deploy</h3>
+        <p>Your AI agent pushes code. Vercel (or any platform) creates a preview URL automatically.</p>
+        <div class="step-code">
+          <span class="c-url">https://my-app-git-feat-auth.vercel.app</span>
+        </div>
+      </div>
+
+      <div class="step-card fade-up fade-up-d1">
+        <div class="step-num">STEP 02</div>
+        <h3>visual_check</h3>
+        <p>Your AI agent calls <code style="color:var(--accent);font-family:var(--mono);font-size:12px;">visual_check()</code> automatically. A headless browser captures the screenshot.</p>
+        <div class="step-code">
+          <span class="c-fn">visual_check</span>(<span class="c-str">"https://my-app-git-feat.vercel.app"</span>)
+        </div>
+      </div>
+
+      <div class="step-card fade-up fade-up-d2">
+        <div class="step-num">STEP 03</div>
+        <h3>AI Analyzes</h3>
+        <p>Headless screenshot taken. AI inspects every pixel and returns structured findings with severity levels.</p>
+        <div class="step-code">
+          <span style="color:var(--accent);">&#128308;</span> <span style="color:var(--text);">3 visual issues found</span><br>
+          <span style="color:var(--muted);">nav overflow · btn radius · padding</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-tabs" style="margin-top:48px;">
+      <div class="install-tab-btns">
+        <button class="itab active" onclick="switchTab('claude',true)">Claude Code</button>
+        <button class="itab" onclick="switchTab('cursor',true)">Cursor</button>
+        <button class="itab" onclick="switchTab('windsurf',true)">Windsurf</button>
+        <button class="itab" onclick="switchTab('cline',true)">Cline</button>
+      </div>
+      <div class="hero-code" id="tab-claude">
+        <span class="code-comment"># Replace YOUR_KEY with your API key</span><br>
+        <span class="code-cmd">claude mcp add</span> <span class="code-cmd">--transport http</span> perceptdot <span class="code-str">"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"</span>
+      </div>
+      <div class="hero-code" id="tab-cursor" style="display:none">
+        <span class="code-comment"># Add to ~/.cursor/mcp.json</span><br>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"}}}</span>
+      </div>
+      <div class="hero-code" id="tab-windsurf" style="display:none">
+        <span class="code-comment"># Add to ~/.codeium/windsurf/mcp_config.json</span><br>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"}}}</span>
+      </div>
+      <div class="hero-code" id="tab-cline" style="display:none">
+        <span class="code-comment"># Cline MCP settings (VS Code extension)</span><br>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>","transport":"http"}}}</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-sep"></div>
+
+  <!-- ===================== 4. PROBLEM ===================== -->
+  <section class="section" id="problem">
+    <div class="section-header">
+      <span class="section-label">The Problem</span>
+      <h2>Your AI writes code fast.</h2>
+      <p>Does it <em style="font-style:italic; color: var(--text);">look</em> right? Existing tools can&rsquo;t run in CI/CD.</p>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card bad fade-up">
+        <div class="problem-card-head">
+          <div class="problem-icon">&#10060;</div>
+          <h3>Manual visual checking</h3>
+        </div>
+        <ul class="problem-list">
+          <li><span class="li-icon">&#10005;</span> You deploy &rarr; open browser &rarr; resize &rarr; squint &rarr; &ldquo;looks fine&rdquo;</li>
+          <li><span class="li-icon">&#10005;</span> Bugs slip to production because no one checked mobile view</li>
+          <li><span class="li-icon">&#10005;</span> AI agents can&rsquo;t see what they built &mdash; they only read code</li>
+          <li><span class="li-icon">&#10005;</span> No automated visual feedback loop in your CI/CD</li>
+        </ul>
+      </div>
+
+      <div class="problem-card good fade-up fade-up-d1">
+        <div class="problem-card-head">
+          <div class="problem-icon">&#9989;</div>
+          <h3>perceptdot visual_check</h3>
+        </div>
+        <ul class="problem-list">
+          <li><span class="li-icon">&#10003;</span> AI agent calls visual_check() &mdash; sees its own work</li>
+          <li><span class="li-icon">&#10003;</span> Catches layout bugs before users do, on every deploy</li>
+          <li><span class="li-icon">&#10003;</span> Works in GitHub Actions, Claude Code, Cursor, any MCP client</li>
+          <li><span class="li-icon">&#10003;</span> 7 seconds &middot; $0.000012 per check &middot; fully headless</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -1889,7 +1898,7 @@
           <li><span class="feat-icon">&#10003;</span> Custom AI prompts</li>
           <li><span class="feat-icon">&#10003;</span> Priority support</li>
         </ul>
-        <button class="btn btn-primary pricing-cta" disabled style="opacity:0.4;cursor:not-allowed;">Coming Soon</button>
+        <button class="btn btn-primary pricing-cta" onclick="openWaitlistModal('pro')">Join Pro Waitlist &rarr;</button>
       </div>
 
       <!-- Unlimited -->
@@ -1909,57 +1918,36 @@
           <li><span class="feat-icon">&#10003;</span> Custom AI prompts</li>
           <li><span class="feat-icon">&#10003;</span> Priority support</li>
         </ul>
-        <button class="btn btn-outline pricing-cta" disabled style="opacity:0.4;cursor:not-allowed;">Coming Soon</button>
+        <button class="btn btn-outline pricing-cta" onclick="openWaitlistModal('unlimited')">Join Unlimited Waitlist &rarr;</button>
       </div>
     </div>
   </section>
 
   <div class="section-sep"></div>
 
-  <!-- ===================== 7. MCP SERVERS ===================== -->
-  <section class="mcp-section" id="mcp-servers">
-    <div style="max-width: 640px;">
-      <span class="section-label">Also Available</span>
-      <h2 style="font-size: clamp(24px, 3.5vw, 34px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px;">Also available as MCP servers.</h2>
-      <p style="color: var(--muted); font-size: 15px; line-height: 1.7;">Our legacy integrations &mdash; GA4, Vercel, GitHub, Sentry &mdash; still shipping and actively maintained.</p>
+  <!-- ===================== 7. SOCIAL PROOF ===================== -->
+  <section class="section" id="social-proof">
+    <div class="section-header">
+      <span class="section-label">Trusted By</span>
+      <h2>Built for the MCP ecosystem.</h2>
     </div>
-
-    <div class="mcp-grid">
-      <div class="mcp-card fade-up">
-        <div class="mcp-card-icon">&#128202;</div>
-        <h4>@perceptdot/ga4</h4>
-        <p>GA4 Analytics — sessions, events, top pages, realtime users.</p>
-      </div>
-      <div class="mcp-card fade-up fade-up-d1">
-        <div class="mcp-card-icon">&#9651;</div>
-        <h4>@perceptdot/vercel</h4>
-        <p>Vercel Deployments — status, logs, project overview.</p>
-      </div>
-      <div class="mcp-card fade-up fade-up-d2">
-        <div class="mcp-card-icon">&#128029;</div>
-        <h4>@perceptdot/github</h4>
-        <p>GitHub PRs &amp; Issues — open PRs, workflows, issue triage.</p>
-      </div>
-      <div class="mcp-card fade-up fade-up-d3">
-        <div class="mcp-card-icon">&#128308;</div>
-        <h4>@perceptdot/sentry</h4>
-        <p>Sentry Errors — recent errors, trends, resolution status.</p>
-      </div>
-    </div>
-
-    <div class="mcp-install">
-      <span class="mi-label">Install:</span>
-      <code>npx @perceptdot/ga4</code>
-      <span class="mi-label" style="margin-left:8px;">or</span>
-      <code>npx @perceptdot/vercel</code>
-      <span class="mi-label" style="margin-left:8px;">or</span>
-      <code>npx @perceptdot/github</code>
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;align-items:center;">
+      <a href="https://github.com/punkpeye/awesome-mcp-servers" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:14px;">Listed on awesome-mcp-servers</a>
+      <a href="https://www.npmjs.com/org/perceptdot" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:14px;">5 npm packages published</a>
+      <a href="https://glama.ai/mcp/servers" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:14px;">Glama MCP Directory</a>
     </div>
   </section>
 
   <div class="section-sep"></div>
 
-  <!-- ===================== 8. FAQ ===================== -->
+  <!-- ===================== 8. MCP SERVERS (compact) ===================== -->
+  <section style="max-width:1060px;margin:0 auto;padding:32px 24px;text-align:center;">
+    <p style="color:var(--muted);font-size:14px;">Also available: <a href="https://www.npmjs.com/package/@perceptdot/ga4" target="_blank" rel="noopener">@perceptdot/ga4</a> &middot; <a href="https://www.npmjs.com/package/@perceptdot/vercel" target="_blank" rel="noopener">@perceptdot/vercel</a> &middot; <a href="https://www.npmjs.com/package/@perceptdot/github" target="_blank" rel="noopener">@perceptdot/github</a> &middot; <a href="https://www.npmjs.com/package/@perceptdot/sentry" target="_blank" rel="noopener">@perceptdot/sentry</a></p>
+  </section>
+
+  <div class="section-sep"></div>
+
+  <!-- ===================== 9. FAQ ===================== -->
   <section class="section" id="faq">
     <div class="section-header">
       <span class="section-label">FAQ</span>
@@ -2022,7 +2010,7 @@
         </button>
         <div class="faq-a">
           <div class="faq-a-inner">
-            Free plan includes 100 checks per month &mdash; no credit card required. Pro is $19/month for 10,000 checks. Team is $99/month for unlimited checks plus Slack notifications and SLA support.
+            Free plan includes 100 checks per month &mdash; no credit card required. Pro is $19/month for 10,000 checks. Unlimited is $49/month for unlimited checks plus priority support.
           </div>
         </div>
       </div>
@@ -2066,6 +2054,7 @@
   </section>
 
   <div class="section-sep"></div>
+  </main>
 
   <!-- ===================== 9. FOOTER ===================== -->
   <footer>
@@ -2166,6 +2155,28 @@
         <p style="font-size:13px;color:var(--muted);">Opening Paddle checkout&hellip;</p>
       </div>
       <p class="modal-note">Powered by Paddle. Cancel anytime. No contracts.</p>
+    </div>
+  </div>
+
+  <!-- Waitlist Modal -->
+  <div class="modal-overlay" id="modal-waitlist" onclick="handleOverlayClick(event, 'modal-waitlist')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-waitlist')" aria-label="Close">&times;</button>
+      <h3 id="waitlist-title">Join the Waitlist</h3>
+      <p class="modal-sub" id="waitlist-sub">We'll notify you as soon as this plan goes live.</p>
+      <div id="waitlist-form">
+        <div class="form-group">
+          <label for="waitlist-email">Email address</label>
+          <input type="email" id="waitlist-email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" onclick="submitWaitlist()">Notify me &rarr;</button>
+        <div class="modal-spinner" id="waitlist-spinner"><div class="spinner"></div></div>
+        <div class="modal-error" id="waitlist-error"></div>
+      </div>
+      <div class="key-result" id="waitlist-success">
+        <p style="color:var(--green);font-weight:600;">&#10003; You're on the list!</p>
+        <p style="margin-top:8px;">We'll email you when the plan launches. In the meantime, try the Free plan &mdash; 100 checks/month, no card required.</p>
+      </div>
     </div>
   </div>
 
@@ -2346,12 +2357,55 @@
       if (e.key === 'Enter') submitFreeKey();
     });
 
+    // ---- Waitlist ----
+    let _waitlistPlan = 'pro';
+    function openWaitlistModal(plan) {
+      _waitlistPlan = plan;
+      const title = plan === 'pro' ? 'Join the Pro Waitlist' : 'Join the Unlimited Waitlist';
+      const sub = plan === 'pro' ? 'Pro ($19/mo) — 10,000 checks. We\'ll notify you when it\'s live.' : 'Unlimited ($49/mo) — unlimited checks. We\'ll notify you when it\'s live.';
+      document.getElementById('waitlist-title').textContent = title;
+      document.getElementById('waitlist-sub').textContent = sub;
+      document.getElementById('waitlist-form').style.display = '';
+      document.getElementById('waitlist-success').classList.remove('show');
+      document.getElementById('waitlist-email').value = '';
+      document.getElementById('waitlist-error').classList.remove('show');
+      openModal('modal-waitlist');
+      setTimeout(() => document.getElementById('waitlist-email').focus(), 80);
+      gtag('event', 'open_waitlist_modal', { event_category: 'engagement', plan: plan });
+    }
+    async function submitWaitlist() {
+      const email = document.getElementById('waitlist-email').value.trim();
+      const errorEl = document.getElementById('waitlist-error');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errorEl.textContent = 'Please enter a valid email address.';
+        errorEl.classList.add('show');
+        return;
+      }
+      errorEl.classList.remove('show');
+      document.getElementById('waitlist-spinner').classList.add('show');
+      try {
+        await fetch('https://api.perceptdot.com/v1/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, plan: _waitlistPlan })
+        });
+      } catch (e) {}
+      document.getElementById('waitlist-spinner').classList.remove('show');
+      document.getElementById('waitlist-form').style.display = 'none';
+      document.getElementById('waitlist-success').classList.add('show');
+      gtag('event', 'waitlist_signup', { event_category: 'conversion', plan: _waitlistPlan });
+    }
+    document.getElementById('waitlist-email').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') submitWaitlist();
+    });
+
     // Close modals on Escape
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         closeModal('modal-free');
         closeModal('modal-pro');
         closeModal('modal-unlimited');
+        closeModal('modal-waitlist');
       }
     });
 
