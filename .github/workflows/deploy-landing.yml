@@ -18,8 +18,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install wrangler
-        run: npm install -g @cloudflare/wrangler
+      - name: Install and update wrangler
+        run: npm install -g wrangler@latest
 
       - name: Deploy to Cloudflare Pages
         run: cd landing && wrangler pages deploy .
