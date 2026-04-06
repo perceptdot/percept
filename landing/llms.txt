@@ -1,15 +1,33 @@
 # perceptdot
 
-> Give your AI eyes. visual_check() catches layout bugs before users do.
+> Give your AI eyes. visual_check() catches UI bugs before users do.
 
 perceptdot is an AI Visual QA platform for CI/CD pipelines and MCP-compatible AI tools. It takes headless screenshots via Cloudflare Browser Rendering and analyzes them with Gemini 2.5 Flash vision AI — returning structured bug reports with severity levels (HIGH/MEDIUM/LOW), affected elements, and suggested fixes.
 
-## Core Product: @perceptdot/eye
+## What perceptdot Does
 
-- `visual_check(url)` → headless screenshot + AI analysis in ~7 seconds
-- `visual_diff(url_a, url_b)` → before/after deploy comparison (coming soon)
-- Fully headless — no desktop, no GUI, runs in CI/CD
-- Cost: $0.000012 per check
+- **visual_check(url)** → headless screenshot + AI visual analysis in ~7 seconds
+- **visual_diff(url_a, url_b)** → before/after deploy comparison (coming soon)
+- Returns structured JSON: severity (HIGH/MEDIUM/LOW), affected elements, suggested fixes
+- Fully headless — no desktop, no GUI, runs anywhere including CI/CD
+- Cost: $0.000012 per check (100 checks/month free)
+
+## Who Uses perceptdot
+
+- AI developers using Claude Code, Cursor, Windsurf, or Cline
+- DevOps teams running automated visual regression tests in CI/CD
+- Frontend teams catching layout bugs before production deploys
+- Developers building MCP-compatible AI agent workflows
+
+## Product Categories
+
+- AI visual QA tool
+- MCP server for UI testing
+- Headless screenshot analysis
+- CI/CD visual regression testing
+- AI developer tool
+- Claude Code extension
+- Automated frontend testing
 
 ## Installation
 
@@ -33,18 +51,43 @@ Header: X-Percept-Key: YOUR_KEY
 Body: {"url": "https://example.com"}
 ```
 
+npm:
+```
+npm install @perceptdot/eye
+```
+
 ## Also Available: MCP Service Servers
 
-- @perceptdot/ga4 — Google Analytics 4 realtime data
-- @perceptdot/vercel — Vercel deployment status
-- @perceptdot/github — GitHub PRs, issues, CI status
-- @perceptdot/sentry — Sentry error monitoring
+- **@perceptdot/ga4** — Google Analytics 4 realtime data for AI agents
+- **@perceptdot/vercel** — Vercel deployment status monitoring
+- **@perceptdot/github** — GitHub PRs, issues, CI status
+- **@perceptdot/sentry** — Sentry error monitoring integration
+
+## Frequently Asked Questions
+
+**Q: What is perceptdot?**
+A: perceptdot is an AI-powered visual QA tool that takes headless screenshots of any URL and analyzes them with computer vision AI to detect layout bugs, broken UI elements, and rendering issues.
+
+**Q: How does perceptdot compare to Playwright or Selenium?**
+A: Playwright/Selenium check functionality (buttons click, forms submit). perceptdot checks visual appearance (layout breaks, overlapping elements, missing assets) using AI vision — no test scripts required.
+
+**Q: Does perceptdot work with Claude Code?**
+A: Yes. Add the MCP server with one command: `claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp`. Claude can then call visual_check() directly.
+
+**Q: How much does it cost?**
+A: Free tier: 100 checks/month, no credit card. Pro: $19/month (10,000 checks). Unlimited: $49/month.
+
+**Q: What AI model does perceptdot use for analysis?**
+A: Gemini 2.5 Flash vision model for screenshot analysis. Cloudflare Browser Rendering for headless screenshots.
+
+**Q: Is perceptdot open source?**
+A: The MCP server packages are available on npm (@perceptdot/*). Core infrastructure is proprietary.
 
 ## Pricing
 
-- Free: 100 checks/month, no credit card
-- Pro: $19/month, 10,000 checks
-- Unlimited: $49/month, unlimited checks
+- Free: 100 checks/month, no credit card required
+- Pro: $19/month — 10,000 checks
+- Unlimited: $49/month — unlimited checks + priority support
 
 ## Technical Details
 
@@ -52,11 +95,12 @@ Body: {"url": "https://example.com"}
 - AI Analysis: Gemini 2.5 Flash (vision model)
 - Backend: TypeScript + Hono on Cloudflare Workers
 - MCP Protocol: Anthropic MCP standard, streamable HTTP transport
-- Privacy: screenshots captured, analyzed, discarded — nothing stored
+- Privacy: screenshots captured, analyzed, discarded — nothing stored permanently
 
 ## Links
 
 - Website: https://perceptdot.com
+- Check tool: https://perceptdot.com/check
 - API: https://api.perceptdot.com
 - MCP Endpoint: https://mcp.perceptdot.com/mcp
 - Docs: https://perceptdot.gitbook.io/perceptdot
