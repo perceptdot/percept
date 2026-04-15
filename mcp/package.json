@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy --env production"
+    "deploy": "wrangler deploy --env production",
+    "build": "tsc",
+    "start": "node dist/serve.js"
   },
   "dependencies": {
-    "hono": "^4.0.0"
+    "hono": "^4.0.0",
+    "@hono/node-server": "^1.13.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241205.0",
