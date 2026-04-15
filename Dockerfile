@@ -1,10 +1,10 @@
 FROM node:20-slim
 WORKDIR /app
 
-COPY mcp/package.json mcp/package-lock.json* ./
-RUN npm install
+COPY mcp/package.json ./
+RUN npm install --production=false
 
-COPY mcp/tsconfig.json ./
+COPY mcp/tsconfig.docker.json ./tsconfig.json
 COPY mcp/src ./src
 
 RUN npx tsc
