@@ -1,0 +1,12 @@
+{
+  "name": "perceptdot",
+  "version": "1.0.0",
+  "description": "One install. Your agent discovers the rest.",
+  "license": "MIT",
+  "bin": {
+    "perceptdot": "./mcp/dist/stdio.js"
+  },
+  "files": [
+    "mcp/dist"
+  ]
+}

@@ -2,6 +2,8 @@ node_modules/
 dist/
 # GitHub Action dist/ must be committed
 !eye-action/dist/
+# MCP stdio entry point must be committed (Glama installability)
+!mcp/dist/stdio.js
 .env
 .env.local
 *.env
