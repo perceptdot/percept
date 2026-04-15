@@ -1,10 +1,15 @@
 FROM node:20-slim
 WORKDIR /app
-COPY mcp/package.json mcp/package-lock.json ./
-RUN npm ci --production
-COPY mcp/src ./src
+
+COPY mcp/package.json mcp/package-lock.json* ./
+RUN npm install
+
 COPY mcp/tsconfig.json ./
+COPY mcp/src ./src
+
 RUN npx tsc
+
 EXPOSE 3000
 ENV PORT=3000
-CMD ["node", "dist/index.js"]
+
+CMD ["node", "dist/serve.js"]
