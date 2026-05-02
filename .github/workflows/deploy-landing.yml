@@ -1,12 +1,22 @@
 name: Deploy Landing to Cloudflare Pages
 
+# 2026-05-03 자동 트리거 일시 비활성화 (CLOUDFLARE_API_TOKEN secret 문제로 11초 즉시 fail)
+# 로컬 배포는 정상 작동 (npx wrangler pages deploy . --project-name=perceptdot-landing).
+# CEO가 GitHub repo settings에서 secret 갱신 후 push 트리거 재활성화 필요:
+#   1) CF dashboard > My Profile > API Tokens > Create Token
+#      Template: "Edit Cloudflare Pages" / Account Resource: Thunova0318 account
+#   2) 새 토큰 복사
+#   3) GitHub repo > Settings > Secrets and variables > Actions
+#      CLOUDFLARE_API_TOKEN 값 갱신
+#   4) 본 workflow의 `push:` 블록 주석 해제
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'landing/**'
-      - '.github/workflows/deploy-landing.yml'
+  workflow_dispatch:  # 수동 trigger만 (CEO secret 갱신 후 push: 재활성화)
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'landing/**'
+  #     - '.github/workflows/deploy-landing.yml'
 
 jobs:
   deploy:
