@@ -1,10 +1,15 @@
 # perceptdot 메모리 (CLAUDE.md 제외)
 
-## ⚡ NEXT ACTION
+## ⚡ NEXT ACTION (2026-05-11 갱신)
 
-- **즉시**: perceptdot.com 브라우저 hard refresh (Cmd+Shift+R) → UI 센터링 확인
-- **다음**: 파일 수정 후 push → GitHub Actions 자동 배포 검증
-- **나중**: Paddle 결제 통합 (수익화)
+- **즉시 (CEO)**: CLOUDFLARE_API_TOKEN GitHub Secrets 갱신 → `.github/workflows/deploy-landing.yml`의 `push:` 블록 주석 해제 (INFRA-DEPLOY-01)
+- **다음 (CPO/PM)**: `agents/*.md` 복원 또는 CLAUDE.md 경로 정정 (INFRA-AGENTS-01) — 현재 PRE_TASK Hook이 참조 문서 로드 불가
+- **다음 (Dev)**: 토큰 재활성화 후 landing/ 변경 → 자동 배포 검증 (INFRA-GITHUB-02)
+- **나중**: Paddle 결제 통합 (수익화, FEATURE-PAY-02)
+
+### 이전 NEXT ACTION (2026-04-04, 완료/만료)
+- ~~perceptdot.com hard refresh → UI 센터링 확인~~ (완료)
+- ~~파일 수정 후 push → 자동 배포 검증~~ (05-02 토큰 만료로 보류, INFRA-DEPLOY-01 선행 필요)
 
 ---
 
@@ -42,14 +47,16 @@ status: ✅ 활성화
 
 ---
 
-## 📊 진행 상황
+## 📊 진행 상황 (2026-05-11 기준)
 
 | 항목 | 상태 | 비고 |
 |------|------|------|
 | UI 센터링 | ✅ 완료 | 배포됨 |
-| CF Pages 배포 | ✅ 완료 | 수동 배포 |
-| GitHub Actions | ✅ 완료 | 자동 배포 활성화 |
-| 자동 배포 검증 | 🔄 대기 | 다음 push 시 테스트 |
+| CF Pages 배포 | ✅ 완료 | 직접 연동 방식 |
+| GitHub Actions workflow | ⚠️ 일시 비활성화 | 05-02 토큰 만료로 `push:` 트리거 주석 처리 (커밋 49ef7e9) |
+| CLOUDFLARE_API_TOKEN 갱신 | 🔄 CEO 대기 | INFRA-DEPLOY-01 |
+| `agents/*.md` 디렉터리 | ❌ 부재 | 40bd19f 삭제 후 미복원, INFRA-AGENTS-01 |
+| stale 브랜치 정리 | 🔄 CEO 승인 대기 | `claude/check-records-GzlvV` (INFRA-GIT-02) |
 | Paddle 결제 | ⏳ 대기 | 우선순위 중간 |
 
 ---
