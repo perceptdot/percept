@@ -49,6 +49,16 @@ app.post("/v1/free-key", async (c) => {
     return c.json({ error: "Valid email required." }, 400);
   }
 
+  // IP 레이트 리밋: 시간당 5회 (스팸 키 발급 방지)
+  const ip = c.req.header("cf-connecting-ip") ?? "unknown";
+  const rlKey = `free-key-rl:${ip}:${Math.floor(Date.now() / 3_600_000)}`;
+  const rlCountStr = await c.env.API_KEYS.get(rlKey);
+  const rlCount = parseInt(rlCountStr ?? "0", 10);
+  if (rlCount >= 5) {
+    return c.json({ error: "Too many requests. Try again in an hour." }, 429);
+  }
+  await c.env.API_KEYS.put(rlKey, String(rlCount + 1), { expirationTtl: 3_600 });
+
   // 이미 발급된 키 있으면 기존 키 재발송 (재입력 시 이메일 재발송)
   const existingRaw = await c.env.API_KEYS.get(`apikey:${email}`);
   if (existingRaw) {
@@ -400,7 +410,10 @@ app.get("/v1/apikey/:email", async (c) => {
   const email = decodeURIComponent(c.req.param("email"));
   const raw = await c.env.API_KEYS.get(`apikey:${email}`);
   if (!raw) return c.json({ error: "API key not found", email }, 404);
-  return c.json(JSON.parse(raw) as ApiKeyRecord);
+  const record = JSON.parse(raw) as ApiKeyRecord;
+  // 보안: key 값 노출 금지 — 키 재발급은 POST /v1/free-key (이메일 재발송)
+  const { key: _redacted, ...safeRecord } = record;
+  return c.json(safeRecord);
 });
 
 /**
@@ -665,64 +678,45 @@ app.post("/v1/recommend/log", async (c) => {
     apiKey = authHeader.slice(7).trim();
   }
 
+  let project_signals: unknown[] = [];
+  let recommended_servers: unknown[] = [];
+  let installed_servers: unknown[] = [];
+
   if (!apiKey) {
-    // body에서도 허용 (MCP 클라이언트 편의)
+    // body에서도 허용 (MCP 클라이언트 편의 — Authorization 헤더 없을 때)
     try {
       const body = await c.req.json<RecommendLogPayload & { api_key?: string }>();
       apiKey = body.api_key ?? null;
-      // body를 다시 읽을 수 없으므로 body 저장
-      const { project_signals, recommended_servers, installed_servers } = body;
-
-      if (!apiKey) {
-        return c.json({ error: "Authorization header 또는 api_key field is required." }, 401);
-      }
-
-      const keyRaw = await c.env.API_KEYS.get(`key:${apiKey}`);
-      if (!keyRaw) return c.json({ error: "Invalid API key." }, 401);
-
-      // 로그 저장
-      const logKey = `recommend:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
-      const logEntry = {
-        project_signals: project_signals ?? [],
-        recommended_servers: recommended_servers ?? [],
-        installed_servers: installed_servers ?? [],
-        api_key_prefix: apiKey.slice(0, 12),
-        timestamp: new Date().toISOString(),
-      };
-
-      await c.env.RECOMMEND_LOG.put(logKey, JSON.stringify(logEntry), {
-        expirationTtl: 60 * 60 * 24 * 90, // 90일 보관
-      });
-
-      return c.json({ logged: true });
+      if (!apiKey) return c.json({ error: "Authorization header 또는 api_key field is required." }, 401);
+      project_signals = body.project_signals ?? [];
+      recommended_servers = body.recommended_servers ?? [];
+      installed_servers = body.installed_servers ?? [];
+    } catch {
+      return c.json({ error: "Invalid JSON." }, 400);
+    }
+  } else {
+    // Authorization 헤더로 키가 전달된 경우
+    try {
+      const body = await c.req.json<RecommendLogPayload>();
+      project_signals = body.project_signals ?? [];
+      recommended_servers = body.recommended_servers ?? [];
+      installed_servers = body.installed_servers ?? [];
     } catch {
       return c.json({ error: "Invalid JSON." }, 400);
     }
   }
 
-  // Authorization 헤더로 키가 전달된 경우
   const keyRaw = await c.env.API_KEYS.get(`key:${apiKey}`);
   if (!keyRaw) return c.json({ error: "Invalid API key." }, 401);
 
-  let body: RecommendLogPayload;
-  try {
-    body = await c.req.json<RecommendLogPayload>();
-  } catch {
-    return c.json({ error: "Invalid JSON." }, 400);
-  }
-
   const logKey = `recommend:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
-  const logEntry = {
-    project_signals: body.project_signals ?? [],
-    recommended_servers: body.recommended_servers ?? [],
-    installed_servers: body.installed_servers ?? [],
+  await c.env.RECOMMEND_LOG.put(logKey, JSON.stringify({
+    project_signals,
+    recommended_servers,
+    installed_servers,
     api_key_prefix: apiKey.slice(0, 12),
     timestamp: new Date().toISOString(),
-  };
-
-  await c.env.RECOMMEND_LOG.put(logKey, JSON.stringify(logEntry), {
-    expirationTtl: 60 * 60 * 24 * 90, // 90일 보관
-  });
+  }), { expirationTtl: 60 * 60 * 24 * 90 });
 
   return c.json({ logged: true });
 });
@@ -1068,7 +1062,7 @@ app.post("/v1/eye/check", async (c) => {
         encoding: "base64",
         type: "jpeg",
         quality: 80,
-        clip: { x: 0, y: full_page ? y : 0, width: 1280, height: clipH },
+        clip: { x: 0, y: full_page ? y : 0, width: VIEWPORT_WIDTH, height: clipH },
       }) as string;
       tiles.push({ b64: shot, y: full_page ? y : 0, height: clipH });
       screenshotBytes += Math.round((shot.length * 3) / 4);
@@ -1123,9 +1117,6 @@ or
   /** Parse VERDICT-format response into structured fields */
   function parseVerdictText(text: string) {
     const lower = text.toLowerCase();
-    const hi = lower.includes("verdict: issues found");
-    // 애매할 때 기본값 false (false positive 방지)
-    const _foundIssues = hi ? true : false;
 
     const rawLines = text.split("\n").map((l) => l.trim()).filter(Boolean);
     let parsedSummary = "";

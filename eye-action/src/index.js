@@ -62,7 +62,7 @@ async function run() {
         '',
         `*Powered by [perceptdot](https://perceptdot.com)*`,
       ]
-        .filter((l) => l !== null)
+        .filter(Boolean)
         .join('\n');
 
       await octokit.rest.issues.createComment({

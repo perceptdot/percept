@@ -1,7 +1,7 @@
 import type { CuratedServer } from "../types";
 
 export const REGISTRY_VERSION = "0.3.0";
-export const REGISTRY_UPDATED_AT = "2026-03-22T00:00:00.000Z";
+export const REGISTRY_UPDATED_AT = "2026-05-18T00:00:00.000Z";
 
 export const CURATED_DB: CuratedServer[] = [
   {
