@@ -42,14 +42,19 @@ rl.on('line', (line) => {
           headers: { 'Content-Type': 'application/json', ...(apiKey ? { 'X-Percept-Key': apiKey } : {}) },
           body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache, viewport: args?.viewport }),
         })
-          .then(r => r.json())
-          .then((result: any) => {
-            const issueLines = (result.issues ?? [])
+          .then(async r => {
+            const body: any = await r.json().catch(() => ({}))
+            if (!r.ok) {
+              const msg = body?.error ?? `API error ${r.status}`
+              respond({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: `Error: ${msg}` }], isError: true } })
+              return
+            }
+            const issueLines = (body.issues ?? [])
               .map((i: any) => `  [${(i.severity ?? 'info').toUpperCase()}] ${i.description}`)
               .join('\n')
-            const text = result.has_issues
-              ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}`
-              : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}`
+            const text = body.has_issues
+              ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${body.summary}\n\nIssues:\n${issueLines}`
+              : `✅ No visual issues detected on ${args?.url}\n\n${body.summary}`
             respond({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text }], isError: false } })
           })
           .catch((e: Error) => {
