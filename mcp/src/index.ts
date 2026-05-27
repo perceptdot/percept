@@ -57,7 +57,7 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
         result: {
           protocolVersion: '2024-11-05',
           capabilities: { tools: {} },
-          serverInfo: { name: 'perceptdot', version: '1.0.0' }
+          serverInfo: { name: 'perceptdot', version: '1.1.0' }
         }
       }
 

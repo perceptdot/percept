@@ -815,7 +815,7 @@ app.post("/v1/eye/check", async (c) => {
     try {
       const cached = await c.env.VISUAL_CACHE.get(cacheKey, "json");
       if (cached) {
-        return c.json({ ...(cached as object), cached: true, cache_age_note: "Result from KV cache (TTL 5min)" });
+        return c.json({ ...(cached as object), cached: true, cache_age_note: "Result from KV cache (TTL 10min)" });
       }
     } catch {
       // 캐시 실패 시 무시하고 계속
@@ -864,7 +864,14 @@ app.post("/v1/eye/check", async (c) => {
         u.includes("paddle.js") ||
         u.includes("googletagmanager") ||
         u.includes("google-analytics") ||
-        u.includes("gtag")
+        u.includes("gtag") ||
+        u.includes("intercom.io") ||
+        u.includes("intercomcdn.com") ||
+        u.includes("hs-scripts.com") ||
+        u.includes("hubspot.com/hs-analytics") ||
+        u.includes("hotjar.com") ||
+        u.includes("drift.com") ||
+        u.includes("crisp.chat")
       ) {
         req.abort();
       } else {
@@ -875,7 +882,7 @@ app.post("/v1/eye/check", async (c) => {
     try {
       await page.goto(parsedUrl.toString(), {
         waitUntil: "domcontentloaded",
-        timeout: 5000,
+        timeout: 7000,
       });
     } catch {
       // timeout OK — 부분 로드 상태로 계속
@@ -1024,7 +1031,7 @@ app.post("/v1/eye/check", async (c) => {
                   if (!seen[lk]) {
                     seen[lk] = true;
                     issues.push({ type: 'low_contrast', selector: sel(tn),
-                      detail: ratio.toFixed(1) + ':1 (min 4.5:1)' });
+                      detail: ratio.toFixed(1) + ':1 (min 3.0:1)' });
                   }
                 }
               }
@@ -1088,7 +1095,7 @@ app.post("/v1/eye/check", async (c) => {
 
   const browserMs = Date.now() - browserStart;
 
-  // ── Gemini 2.0 Flash: 타일별 비주얼 QA 분석 ──
+  // ── Gemini 2.5 Flash: 타일별 비주얼 QA 분석 ──
   const aiStart = Date.now();
   // DOM Audit 결과를 AI 컨텍스트로 변환
   const domContext = domFindings.length > 0
@@ -1408,7 +1415,7 @@ or
 
   // ── KV 캐시 저장 (TTL 5분 = 300s, prompt 없는 성공 요청만) ──
   if (!prompt && c.env.VISUAL_CACHE && result.ok === true) {
-    await c.env.VISUAL_CACHE.put(cacheKey, JSON.stringify(result), { expirationTtl: 300 }).catch(() => {});
+    await c.env.VISUAL_CACHE.put(cacheKey, JSON.stringify(result), { expirationTtl: 600 }).catch(() => {});
   }
 
   return c.json(result, 200, { "Cache-Control": "no-store, no-cache, must-revalidate" });

@@ -16,7 +16,7 @@ export interface Env {
   AI: any;
   /** Gemini API 키 (wrangler secret put GEMINI_API_KEY) */
   GEMINI_API_KEY: string;
-  /** KV: 비주얼 체크 결과 캐시 (TTL 5분) */
+  /** KV: 비주얼 체크 결과 캐시 (TTL 10분) */
   VISUAL_CACHE: KVNamespace;
   /** DO: BrowserQueue — 동시 브라우저 세션 2개 제한 */
   BROWSER_QUEUE: DurableObjectNamespace;
