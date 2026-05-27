@@ -4,11 +4,12 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "deploy": "wrangler deploy --env production",
+    "deploy:preview": "wrangler deploy",
     "build": "tsc"
   },
   "dependencies": {
-    "@cloudflare/puppeteer": "^0.0.5",
+    "@cloudflare/puppeteer": "^1.1.0",
     "hono": "^4.0.0"
   },
   "devDependencies": {

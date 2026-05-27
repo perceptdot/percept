@@ -174,3 +174,77 @@ export async function sendApiKeyEmail(
     return { ok: false, error: String(e) };
   }
 }
+
+/** 비활성 사용자 온보딩 이메일 */
+export async function sendOnboardingEmail(
+  resendApiKey: string,
+  to: string,
+  apiKey: string
+): Promise<{ ok: boolean; error?: string }> {
+  const mcpUrl = `https://mcp.perceptdot.com/mcp?api_key=${apiKey}`;
+  const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#07000d;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#07000d;padding:40px 0;">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+<tr><td style="padding:0 0 32px 0;">
+  <span style="font-size:20px;font-weight:700;color:#f2f0f5;">percept<span style="color:#ff1a3c;">dot</span></span>
+</td></tr>
+<tr><td style="background:#12001a;border-radius:12px;padding:32px;">
+  <h2 style="margin:0 0 16px;color:#f2f0f5;font-size:22px;font-weight:700;">Give your AI agent eyes 👁</h2>
+  <p style="margin:0 0 16px;color:#b8a8c8;font-size:15px;line-height:1.6;">
+    You created a perceptdot API key — here's how to actually use it in 30 seconds.
+  </p>
+  <p style="margin:0 0 8px;color:#f2f0f5;font-size:14px;font-weight:600;">1. Add to Claude Code:</p>
+  <div style="background:#07000d;border-radius:8px;padding:14px;margin:0 0 20px;font-family:monospace;font-size:12px;color:#e8d8f8;word-break:break-all;">
+    claude mcp add --transport http perceptdot "${mcpUrl}"
+  </div>
+  <p style="margin:0 0 8px;color:#f2f0f5;font-size:14px;font-weight:600;">2. Add to Cursor / Windsurf:</p>
+  <div style="background:#07000d;border-radius:8px;padding:14px;margin:0 0 20px;font-family:monospace;font-size:12px;color:#e8d8f8;word-break:break-all;">
+    {"mcpServers":{"perceptdot":{"url":"${mcpUrl}"}}}
+  </div>
+  <p style="margin:0 0 8px;color:#f2f0f5;font-size:14px;font-weight:600;">3. Run visual QA:</p>
+  <div style="background:#07000d;border-radius:8px;padding:14px;margin:0 0 20px;font-family:monospace;font-size:12px;color:#e8d8f8;">
+    visual_check("https://yoursite.com")
+  </div>
+  <p style="margin:0 0 20px;color:#b8a8c8;font-size:13px;line-height:1.6;">
+    Your agent will screenshot the URL, run AI analysis, and return a bug report — in under 10 seconds.<br>
+    Free plan: <strong style="color:#f2f0f5;">100 checks/month</strong>.
+  </p>
+  <table cellpadding="0" cellspacing="0">
+    <tr><td style="background:#ff1a3c;border-radius:8px;padding:12px 24px;">
+      <a href="https://perceptdot.gitbook.io/perceptdot" style="color:#fff;font-size:14px;font-weight:600;text-decoration:none;">View Docs →</a>
+    </td></tr>
+  </table>
+</td></tr>
+<tr><td style="padding:24px 0 0;color:#5a4a6a;font-size:12px;">
+  You received this because you signed up at perceptdot.com · <a href="mailto:service@perceptdot.com" style="color:#5a4a6a;">service@perceptdot.com</a>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "perceptdot <service@perceptdot.com>",
+        to: [to],
+        subject: "Give your AI agent eyes — perceptdot setup (30 sec)",
+        html,
+      }),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      return { ok: false, error: `Resend error ${res.status}: ${text}` };
+    }
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: String(e) };
+  }
+}

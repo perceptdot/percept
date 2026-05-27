@@ -6,7 +6,7 @@ import puppeteer from "@cloudflare/puppeteer";
 import type { Env, MetricsPayload, ReportRequest, GumroadWebhookPayload, ApiKeyRecord, FeedbackRecord, CuratedServer, RecommendLogPayload } from "./types";
 import { CURATED_DB, REGISTRY_VERSION, REGISTRY_UPDATED_AT } from "./data/registry";
 import { sessionStore, getOrCreateSession, buildRoiResponse, generateApiKey, generateFreeKey, COST_PER_TOKEN_USD, PRO_MONTHLY_USD } from "./lib/utils";
-import { sendInternalAlert, sendApiKeyEmail } from "./lib/email";
+import { sendInternalAlert, sendApiKeyEmail, sendOnboardingEmail } from "./lib/email";
 
 export { BrowserQueue } from "./durable-objects/browser-queue";
 
@@ -739,6 +739,35 @@ app.post("/v1/recommend/log", async (c) => {
 app.post("/v1/eye/check", async (c) => {
   const startTime = Date.now();
 
+  // ── DIAGNOSE-01: 단계별 실패 분류 추적 ──
+  const _diag: {
+    stage: "browser" | "screenshot" | "gemini" | "parse" | "ok";
+    browser_ok: boolean;
+    screenshot_ok: boolean;
+    tiles_total: number;
+    tiles_gemini_ok: number;
+    tiles_cf_ai_fallback: number;
+    tiles_failed: number;
+    gemini_errors: Array<{ status?: number; msg: string }>;
+    cf_colo: string;
+    req_country: string;
+    browser_ms: number;
+    gemini_ms_total: number;
+  } = {
+    stage: "browser",
+    browser_ok: false,
+    screenshot_ok: false,
+    tiles_total: 0,
+    tiles_gemini_ok: 0,
+    tiles_cf_ai_fallback: 0,
+    tiles_failed: 0,
+    gemini_errors: [],
+    cf_colo: c.req.raw.cf ? (c.req.raw.cf as any).colo ?? "unknown" : "unknown",
+    req_country: c.req.header("cf-ipcountry") ?? "unknown",
+    browser_ms: 0,
+    gemini_ms_total: 0,
+  };
+
   // ── 요청 파싱 ──
   let body: { url?: string; prompt?: string; include_screenshot?: boolean; no_cache?: boolean; full_page?: boolean; api_key?: string; viewport?: string };
   try {
@@ -1094,6 +1123,9 @@ app.post("/v1/eye/check", async (c) => {
   if (doStub) await doStub.fetch("https://do-internal/release").catch(() => {});
 
   const browserMs = Date.now() - browserStart;
+  _diag.browser_ms = browserMs;
+  _diag.screenshot_ok = tiles.length > 0;
+  _diag.stage = tiles.length > 0 ? "gemini" : "screenshot";
 
   // ── Gemini 2.5 Flash: 타일별 비주얼 QA 분석 ──
   const aiStart = Date.now();
@@ -1172,13 +1204,18 @@ or
     summary: string;
     issues: Array<{ severity: "high" | "medium" | "low"; description: string }>;
     raw: string;
+    _tileDiag: { provider: "gemini" | "cf_ai" | "none"; gemini_status?: number; gemini_error?: string; gemini_ms: number; cf_ai_ms: number; parse_method: "json" | "text" | "failed" };
   }> {
     let hasIssues = false;
     let tileSummary = "";
     let issues: Array<{ severity: "high" | "medium" | "low"; description: string }> = [];
     let raw = "";
+    const tileDiag: { provider: "gemini" | "cf_ai" | "none"; gemini_status?: number; gemini_error?: string; gemini_ms: number; cf_ai_ms: number; parse_method: "json" | "text" | "failed" } = {
+      provider: "none", gemini_ms: 0, cf_ai_ms: 0, parse_method: "failed",
+    };
 
     try {
+      const _gStart = Date.now();
       const geminiRes = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
         {
@@ -1197,10 +1234,14 @@ or
           }),
         }
       );
+      tileDiag.gemini_ms = Date.now() - _gStart;
+      tileDiag.gemini_status = geminiRes.status;
       if (!geminiRes.ok) {
         const errBody = await geminiRes.text();
+        tileDiag.gemini_error = `HTTP ${geminiRes.status}: ${errBody.slice(0, 150)}`;
         throw new Error(`Gemini ${geminiRes.status}: ${errBody.slice(0, 300)}`);
       }
+      tileDiag.provider = "gemini";
       const gd = (await geminiRes.json()) as {
         candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
       };
@@ -1222,9 +1263,9 @@ or
               severity: (["high","medium","low"].includes(i.severity) ? i.severity : "medium") as "high"|"medium"|"low",
               description: (i.description ?? "").slice(0, 120),
             }));
-            // 이슈 목록이 비어있으면 has_issues 무조건 false (근거 필수)
             hasIssues = j.has_issues && issues.length > 0;
             jsonParsed = true;
+            tileDiag.parse_method = "json";
           }
         }
       } catch { /* fallthrough */ }
@@ -1233,21 +1274,28 @@ or
         hasIssues = parsed.hasIssues;
         tileSummary = parsed.summary;
         issues = parsed.issues;
+        tileDiag.parse_method = "text";
       }
     } catch (e) {
       // Gemini 실패 시 → CF Workers AI fallback (region 제한 우회)
       try {
+        const _cfStart = Date.now();
         const cfAiRes = await c.env.AI.run("@cf/meta/llama-4-scout-17b-16e-instruct", {
           messages: [
             { role: "user", content: [
-              { type: "image", image: `data:image/jpeg;base64,${b64}` },
+              { type: "image_url" as any, image_url: { url: `data:image/jpeg;base64,${b64}` } },
               { type: "text", text: analysisPrompt },
             ]},
           ],
           max_tokens: 512,
           temperature: 0,
-        });
-        raw = cfAiRes?.response ?? "";
+        } as any);
+        tileDiag.cf_ai_ms = Date.now() - _cfStart;
+        tileDiag.provider = "cf_ai";
+        // messages 포맷 → choices[0].message.content, 구형 포맷 → response
+        const cfAiAny = cfAiRes as any;
+        raw = (cfAiAny?.choices?.[0]?.message?.content ?? cfAiAny?.response ?? "");
+        if (typeof raw !== "string") raw = JSON.stringify(raw);
         const jsonMatch = raw.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           const parsed = JSON.parse(jsonMatch[0]);
@@ -1261,13 +1309,17 @@ or
               description: (i.description ?? "").slice(0, 120),
             }));
             hasIssues = j.has_issues && issues.length > 0;
+            tileDiag.parse_method = "json";
           } else {
             tileSummary = "Analysis completed (CF AI fallback)";
+            tileDiag.parse_method = "text";
           }
         } else {
           tileSummary = "Analysis completed (CF AI fallback)";
+          tileDiag.parse_method = "text";
         }
       } catch (fallbackErr) {
+        tileDiag.provider = "none";
         raw = `Gemini unavailable: ${String(e)}. CF AI fallback also failed: ${String(fallbackErr)}`;
         tileSummary = "Analysis skipped (AI unavailable)";
         hasIssues = false;
@@ -1275,7 +1327,7 @@ or
       }
     }
 
-    return { hasIssues, summary: tileSummary, issues, raw };
+    return { hasIssues, summary: tileSummary, issues, raw, _tileDiag: tileDiag };
   }
 
   // 타일 병렬 분석 (최대 3개 동시 — Gemini rate limit 안전 범위)
@@ -1285,6 +1337,7 @@ or
     summary: string;
     issues: Array<{ severity: "high" | "medium" | "low"; description: string; tile_index: number }>;
     raw: string;
+    _tileDiag: { provider: "gemini" | "cf_ai" | "none"; gemini_status?: number; gemini_error?: string; gemini_ms: number; cf_ai_ms: number; parse_method: "json" | "text" | "failed" };
   };
 
   const PARALLEL_LIMIT = 3;
@@ -1301,6 +1354,7 @@ or
         summary: res.summary,
         issues: res.issues.map(issue => ({ ...issue, tile_index: idx })),
         raw: res.raw,
+        _tileDiag: res._tileDiag,
       };
     });
     const results = await Promise.allSettled(promises);
@@ -1314,10 +1368,41 @@ or
         tileResults[failIdx] = {
           tile_index: failIdx, has_issues: false,
           summary: "Analysis failed", issues: [], raw: String(r.reason),
+          _tileDiag: { provider: "none" as const, gemini_ms: 0, cf_ai_ms: 0, parse_method: "failed" as const },
         };
       }
     }
   }
+
+  // DIAGNOSE-01: 타일 결과에서 진단 집계
+  _diag.tiles_total = tileResults.length;
+  for (const tr of tileResults) {
+    const td = tr._tileDiag;
+    if (!td) continue;
+    if (td.provider === "gemini") _diag.tiles_gemini_ok++;
+    else if (td.provider === "cf_ai") _diag.tiles_cf_ai_fallback++;
+    else _diag.tiles_failed++;
+    if (td.gemini_error) _diag.gemini_errors.push({ status: td.gemini_status, msg: td.gemini_error.slice(0, 100) });
+    _diag.gemini_ms_total += td.gemini_ms;
+  }
+  _diag.stage = _diag.tiles_failed === _diag.tiles_total ? "parse" : "ok";
+
+  // wrangler tail로 실시간 관측 가능 — 절대 민감 데이터 포함하지 말 것
+  console.log(JSON.stringify({
+    ev: "eye_check",
+    url: url.slice(0, 80),
+    colo: _diag.cf_colo,
+    country: _diag.req_country,
+    browser_ms: _diag.browser_ms,
+    gemini_ms: _diag.gemini_ms_total,
+    tiles: _diag.tiles_total,
+    gemini_ok: _diag.tiles_gemini_ok,
+    cf_ai: _diag.tiles_cf_ai_fallback,
+    failed: _diag.tiles_failed,
+    gemini_errors: _diag.gemini_errors,
+    stage: _diag.stage,
+    ts: new Date().toISOString(),
+  }));
 
   // 타일 결과 머지 — has_issues=true && issues 항목 있는 타일만 유효로 인정
   const validIssueTiles = tileResults.filter(t => t.has_issues && t.issues.length > 0);
@@ -1419,6 +1504,87 @@ or
   }
 
   return c.json(result, 200, { "Cache-Control": "no-store, no-cache, must-revalidate" });
+});
+
+// ─── DIAGNOSE-01: Canary 헬스체크 ────────────────────────────────────────────
+/**
+ * GET /v1/eye/canary
+ * 두 단계로 파이프라인 진단:
+ *   Stage 1: Gemini text-only ping (브라우저 없이 API 가용성만 확인, 빠름)
+ *   Stage 2: example.com full visual_check (browser+DO+Gemini 전 파이프라인, 느림)
+ * 인증: X-Canary-Token 헤더 필요 (wrangler secret CANARY_TOKEN)
+ */
+app.get("/v1/eye/canary", async (c) => {
+  const token = c.req.header("x-canary-token");
+  if (!token || token !== (c.env as any).CANARY_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const canaryStart = Date.now();
+  const stages: Record<string, unknown> = {};
+
+  // ── Stage 1: Gemini text ping (브라우저 불필요, ~2s) ──
+  const s1 = Date.now();
+  let geminiPingOk = false;
+  try {
+    const gRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: "Reply with: ok" }] }],
+          generationConfig: { maxOutputTokens: 8, temperature: 0 },
+        }),
+      }
+    );
+    geminiPingOk = gRes.ok;
+    const body = gRes.ok ? (await gRes.json() as any) : null;
+    stages.gemini_ping = {
+      ok: gRes.ok,
+      status: gRes.status,
+      ms: Date.now() - s1,
+      reply: gRes.ok ? (body?.candidates?.[0]?.content?.parts?.[0]?.text ?? "").slice(0, 30) : undefined,
+      error: !gRes.ok ? (await (gRes.clone()).text()).slice(0, 150) : undefined,
+    };
+  } catch (e) {
+    stages.gemini_ping = { ok: false, ms: Date.now() - s1, error: String(e).slice(0, 200) };
+  }
+
+  // ── Stage 2: full visual_check (app.fetch 내부 호출 — DO + browser + Gemini 전체) ──
+  const s2 = Date.now();
+  try {
+    const internalReq = new Request("https://internal/v1/eye/check", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Percept-Key": "pd_test_free_staging01",
+      },
+      body: JSON.stringify({ url: "https://example.com", no_cache: true, viewport: "desktop" }),
+    });
+    const res = await app.fetch(internalReq, c.env, c.executionCtx);
+    const data = await res.json() as any;
+    stages.visual_check = {
+      ok: res.ok,
+      status: res.status,
+      ms: Date.now() - s2,
+      poc_passed: data.poc_passed,
+      tiles: data.tiles_analyzed,
+      diag: data._diag ?? null,  // DIAGNOSE-01 진단 필드
+      error: data.error ?? undefined,
+    };
+  } catch (e) {
+    stages.visual_check = { ok: false, ms: Date.now() - s2, error: String(e).slice(0, 200) };
+  }
+
+  return c.json({
+    ts: new Date().toISOString(),
+    colo: c.req.raw.cf ? (c.req.raw.cf as any).colo ?? "unknown" : "unknown",
+    country: c.req.header("cf-ipcountry") ?? "unknown",
+    total_ms: Date.now() - canaryStart,
+    gemini_ping_ok: geminiPingOk,
+    stages,
+  }, 200);
 });
 
 // ─── GEO Key: 브라우저용 Gemini API 키 프록시 ────────────────────────────────
@@ -1685,6 +1851,53 @@ app.get("/mcp", (c) => c.json({
   },
   get_free_key: "https://perceptdot.com",
 }, 200));
+
+// ─── 관리자: 온보딩 이메일 발송 ────────────────────────────────────────────────
+app.post("/v1/admin/send-onboard", async (c) => {
+  const token = c.req.header("x-canary-token");
+  if (!token || token !== (c.env as any).CANARY_TOKEN) return c.json({ error: "Unauthorized" }, 401);
+  const { emails } = await c.req.json<{ emails: string[] }>();
+  const results: Array<{ email: string; ok: boolean; error?: string }> = [];
+  for (const email of emails) {
+    const record = await c.env.API_KEYS.get(`apikey:${email}`, "json") as any;
+    if (!record?.key) { results.push({ email, ok: false, error: "key not found" }); continue; }
+    const r = await sendOnboardingEmail((c.env as any).RESEND_API_KEY, email, record.key);
+    results.push({ email, ok: r.ok, error: r.error });
+  }
+  return c.json({ sent: results.filter(r => r.ok).length, total: emails.length, results });
+});
+
+// ─── Browser Rendering 바인딩 진단 ─────────────────────────────────────────────
+app.get("/v1/eye/browser-diag", async (c) => {
+  const token = c.req.header("x-canary-token");
+  if (!token || token !== (c.env as any).CANARY_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  const result: Record<string, unknown> = {
+    ts: new Date().toISOString(),
+    browser_binding_type: typeof c.env.BROWSER,
+    browser_binding_defined: c.env.BROWSER != null,
+  };
+  // sessions() 호출 테스트 — launch()보다 가벼운 API
+  try {
+    const sessions = await puppeteer.sessions(c.env.BROWSER);
+    result.sessions_ok = true;
+    result.sessions = sessions;
+  } catch (e) {
+    result.sessions_ok = false;
+    result.sessions_error = String(e);
+  }
+  // limits() 호출 테스트
+  try {
+    const limits = await puppeteer.limits(c.env.BROWSER);
+    result.limits_ok = true;
+    result.limits = limits;
+  } catch (e) {
+    result.limits_ok = false;
+    result.limits_error = String(e);
+  }
+  return c.json(result, 200);
+});
 
 // ─── 404 핸들러 ───────────────────────────────────────────────────────────────
 
