@@ -1587,47 +1587,10 @@ app.get("/v1/eye/canary", async (c) => {
   }, 200);
 });
 
-// ─── GEO Key: 브라우저용 Gemini API 키 프록시 ────────────────────────────────
-/**
- * GET /v1/gemini-key
- * check.html에서 클라이언트 사이드 Gemini 호출을 위한 키 반환
- * Origin 제한: perceptdot.com 도메인에서만 접근 가능
- */
-app.options("/v1/gemini-key", (c) => {
-  const origin = c.req.header("origin") ?? "";
-  return new Response(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": origin,
-      "Access-Control-Allow-Methods": "GET",
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Max-Age": "86400",
-    },
-  });
-});
-
-app.get("/v1/gemini-key", async (c) => {
-  const origin = c.req.header("origin") ?? "";
-  const allowed = origin === "https://perceptdot.com" || origin === "https://www.perceptdot.com";
-  if (!allowed) return c.json({ error: "Forbidden" }, 403);
-
-  // IP 기반 레이트 리미팅: 시간당 30회 (KV 사용)
-  const ip = c.req.header("cf-connecting-ip") ?? "unknown";
-  const rateLimitKey = `geo-key-rl:${ip}:${Math.floor(Date.now() / 3600000)}`;
-  const countStr = await c.env.API_KEYS.get(rateLimitKey);
-  const count = parseInt(countStr ?? "0", 10);
-  if (count >= 30) {
-    return c.json({ error: "Rate limit exceeded. Try again later." }, 429, {
-      "Access-Control-Allow-Origin": origin,
-    });
-  }
-  await c.env.API_KEYS.put(rateLimitKey, String(count + 1), { expirationTtl: 3600 });
-
-  return c.json({ key: c.env.GEMINI_API_KEY }, 200, {
-    "Access-Control-Allow-Origin": origin,
-    "Cache-Control": "no-store",
-  });
-});
+// ─── GEO Key 엔드포인트 제거 (2026-06-07 보안 P0) ────────────────────────────
+// 구 GET /v1/gemini-key 는 GEMINI_API_KEY를 브라우저로 반환했음(Origin 헤더만 검증
+// → 위조 가능). check.html이 서버사이드 /v1/geo-check 를 직접 호출하도록 전환되어
+// 키가 클라이언트에 더 이상 노출되지 않음. 엔드포인트 완전 삭제.
 
 // ─── GEO Check: AI 발견 가능성 확인 ──────────────────────────────────────────
 /**

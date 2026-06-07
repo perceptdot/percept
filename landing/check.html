@@ -140,31 +140,25 @@
   </div>
 
   <script>
-    const GEMINI_MODEL = 'gemini-2.5-flash';
-    const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
-    let _geminiKey = null;
-
-    async function getGeminiKey() {
-      if (_geminiKey) return _geminiKey;
-      const res = await fetch('https://api.perceptdot.com/v1/gemini-key');
-      const data = await res.json();
-      if (!data.key) throw new Error('Could not load AI config');
-      _geminiKey = data.key;
-      return _geminiKey;
-    }
-
-    async function queryGemini(key, prompt) {
-      const res = await fetch(`${GEMINI_BASE}${GEMINI_MODEL}:generateContent?key=${key}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 1024 },
-        }),
-      });
-      if (!res.ok) throw new Error(`Gemini ${res.status}`);
-      const data = await res.json();
-      return (data.candidates?.[0]?.content?.parts ?? []).map(p => p.text ?? '').join('\n');
+    // GEO check는 서버사이드(/v1/geo-check)에서 실행한다.
+    // API 키는 서버에만 존재하며 클라이언트로 절대 반환되지 않는다 (2026-06-07 보안 P0).
+    async function runGeoCheck(product_name, category, keywords) {
+      const MAX_RETRY = 3;
+      for (let attempt = 0; attempt < MAX_RETRY; attempt++) {
+        const res = await fetch('https://api.perceptdot.com/v1/geo-check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_name, category, keywords }),
+        });
+        if (res.status === 503) {
+          const d = await res.json().catch(() => ({}));
+          if (d.retry && attempt < MAX_RETRY - 1) continue; // 다른 CF 에지로 재시도
+          throw new Error('AI service temporarily unavailable. Please try again.');
+        }
+        if (!res.ok) throw new Error(`geo-check ${res.status}`);
+        return res.json();
+      }
+      throw new Error('AI service temporarily unavailable. Please try again.');
     }
 
     async function runCheck() {
@@ -186,36 +180,21 @@
       loading.style.display = 'block';
       loading.textContent = 'Querying AI... this takes ~5 seconds';
 
-      const kw = keywords_raw ? keywords_raw.split(',').map(s => s.trim()).filter(Boolean)[0] || '' : '';
-      const queries = [
-        `best ${category} tools`,
-        `recommend ${category}${kw ? ` for ${kw}` : ''}`,
-        kw ? `top ${kw} ${category}` : `top ${category} resources`,
-      ];
+      const keywords = keywords_raw ? keywords_raw.split(',').map(s => s.trim()).filter(Boolean) : [];
 
       try {
-        const key = await getGeminiKey();
-        const lowerName = product_name.toLowerCase();
-
-        const queryResults = await Promise.all(queries.map(async (query) => {
-          const prompt = `List 10 specific ${category} products or tools for: "${query}". Product names only, one per line.`;
-          const text = await queryGemini(key, prompt);
-          const lo = text.toLowerCase();
-          const idx = lo.indexOf(lowerName);
-          const found = idx !== -1;
-          const excerpt = found ? text.slice(Math.max(0, idx - 30), idx + product_name.length + 60).trim() : undefined;
-          return { query, found, excerpt: excerpt?.slice(0, 200) };
-        }));
+        const data = await runGeoCheck(product_name, category, keywords);
+        const queryResults = data.results || [];
 
         loading.style.display = 'none';
         const found_count = queryResults.filter(r => r.found).length;
-        const visible = found_count > 0;
+        const visible = !!data.visible;
 
         result.style.display = 'block';
         result.className = 'result ' + (visible ? 'visible' : 'invisible');
 
         document.getElementById('resultMsg').textContent = visible
-          ? `✅ "${product_name}" appeared in ${found_count}/${queries.length} Gemini queries.`
+          ? `✅ "${product_name}" appeared in ${found_count}/${queryResults.length} Gemini queries.`
           : `❌ "${product_name}" was not found in Gemini's recommendations.`;
 
         const list = document.getElementById('queryList');
