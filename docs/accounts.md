@@ -67,7 +67,7 @@
 | **Moltbook** | thunova0318@gmail.com | ✅ 에이전트 등록 완료 | API Key 확보, 클레임 인증 코드 필요 |
 | **Glama.ai** | thunova0318@gmail.com | ✅ 등록 완료 (Official 배지) | Score: A B B (License A / Quality B / Maintenance B) |
 | **Smithery** | 미확인 | ⏸️ 미제출 | 예정 |
-| **awesome-mcp-servers** | soondoobu1111-star | ⏳ PR #4877 punkpeye 머지 대기 | Merge conflict 해소 ✅ / checks 통과 ✅ / punkpeye 댓글 알림 완료 (2026-05-27) |
+| **awesome-mcp-servers** | soondoobu1111-star | ✅ PR #4877 머지 완료 (2026-06-07) | Monitoring 섹션 등재. glama 자동 동기화 |
 | **mcpservers.org** | - | ⏸️ 미제출 | awesome-mcp-servers 머지 후 진행 예정 |
 
 ---
