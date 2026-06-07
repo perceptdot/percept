@@ -1621,10 +1621,25 @@ app.post("/v1/geo-check", async (c) => {
     kw ? `top ${kw} ${category}` : `top ${category} resources`,
   ];
 
-  // Gemini 2.5 Flash (병렬, 위치 에러 시 null)
-  const runGemini = async (query: string): Promise<string | null> => {
+  // CF Workers AI 텍스트 폴백 — Gemini colo 지역제한 우회 (visual_check와 동일 패턴).
+  // 구 client-side 호출(브라우저 직접)이 하던 'HKG 에지 우회'를 서버사이드 폴백으로 대체한다.
+  const runCfAiText = async (prompt: string): Promise<string | null> => {
     try {
-      const prompt = `List 5-10 specific ${category} products/tools for: "${query}". Only product names, one per line.`;
+      const r = await c.env.AI.run("@cf/meta/llama-4-scout-17b-16e-instruct", {
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 1024,
+        temperature: 0,
+      } as any);
+      const a = r as any;
+      const text = a?.choices?.[0]?.message?.content ?? a?.response ?? "";
+      return typeof text === "string" ? (text || null) : JSON.stringify(text);
+    } catch (err) { console.error("CF AI text fallback error:", String(err)); return null; }
+  };
+
+  // Gemini 2.5 Flash → 실패 시 CF Workers AI 폴백 (둘 다 실패해야 null)
+  const runGemini = async (query: string): Promise<string | null> => {
+    const prompt = `List 5-10 specific ${category} products/tools for: "${query}". Only product names, one per line.`;
+    try {
       const res = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
         {
@@ -1639,11 +1654,15 @@ app.post("/v1/geo-check", async (c) => {
       if (!res.ok) {
         const errText = await res.text().catch(() => "");
         console.error(`Gemini error ${res.status}: ${errText.slice(0, 200)}`);
-        return null;
+        return await runCfAiText(prompt); // colo 지역제한 등 → CF AI 폴백
       }
       const data = (await res.json()) as { candidates?: Array<{ content: { parts: Array<{ text: string }> } }> };
-      return (data.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("\n");
-    } catch (err) { console.error("Gemini fetch error:", String(err)); return null; }
+      const out = (data.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("\n");
+      return out || await runCfAiText(prompt);
+    } catch (err) {
+      console.error("Gemini fetch error:", String(err));
+      return await runCfAiText(prompt); // 네트워크/지역 차단 → CF AI 폴백
+    }
   };
 
   const geminiTexts = await Promise.all(queries.map(q => runGemini(q)));
