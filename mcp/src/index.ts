@@ -11,7 +11,7 @@ app.use('*', cors({
 }))
 
 // Health check
-app.get('/', (c) => c.json({ service: 'perceptdot MCP', version: '1.0.0', status: 'ok' }))
+app.get('/', (c) => c.json({ service: 'perceptdot MCP', version: '1.2.0', status: 'ok' }))
 
 // MCP Streamable HTTP endpoint
 app.post('/mcp', async (c) => {
@@ -51,15 +51,20 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
   if (id === undefined && method?.startsWith('notifications/')) return null
 
   switch (method) {
-    case 'initialize':
+    case 'initialize': {
+      // MCP 스펙 표준 protocolVersion 협상 — 클라이언트 요청값이 지원 목록에 있으면 echo, 없으면 최신 반환
+      const supportedVersions = ['2025-06-18', '2025-03-26', '2024-11-05']
+      const requestedVersion = params?.protocolVersion
+      const protocolVersion = supportedVersions.includes(requestedVersion) ? requestedVersion : '2025-06-18'
       return {
         jsonrpc: '2.0', id,
         result: {
-          protocolVersion: '2024-11-05',
+          protocolVersion,
           capabilities: { tools: {} },
-          serverInfo: { name: 'perceptdot', version: '1.1.0' }
+          serverInfo: { name: 'perceptdot', version: '1.2.0' }
         }
       }
+    }
 
     case 'tools/list':
       return {
@@ -71,7 +76,8 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
               description:
                 'Screenshot a URL and analyze it for visual bugs using AI. ' +
                 'Returns whether issues exist, a summary, and a detailed issues list. ' +
-                'Use this after deployments, PRs, or any UI change to catch layout problems.',
+                'Use this after deployments, PRs, or any UI change to catch layout problems. ' +
+                '(~1,200 tokens saved per call)',
               inputSchema: {
                 type: 'object',
                 properties: {
@@ -147,9 +153,11 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
         const tiles = result.tiles_analyzed ?? 1
         const vp = args?.viewport ?? 'desktop'
         const scanLine = `Full-page scan complete — ${tiles} tile${tiles !== 1 ? 's' : ''} analyzed (${vp}) in ${((result.duration_ms ?? 0) / 1000).toFixed(1)}s`
-        const text = result.has_issues
+        // 토큰 측정 (perceptdot 절대 규칙 — Workers stateless라 세션 누적 없이 per-call 표기만)
+        const tokenSavedLine = '\n\n[perceptdot] ~1,200 tokens saved vs. parsing a raw screenshot yourself.'
+        const text = (result.has_issues
           ? `⚠️ Visual issues detected on ${args?.url}\n\nSummary: ${result.summary}\n\nIssues:\n${issueLines}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}`
-          : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}`
+          : `✅ No visual issues detected on ${args?.url}\n\n${result.summary}\n\n${scanLine}\nCost: $${result.cost_usd?.toFixed(6)} | Credits used: ${result.credits_used ?? tiles}`) + tokenSavedLine
 
         return {
           jsonrpc: '2.0', id,

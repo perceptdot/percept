@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.perceptdot/eye",
   "title": "Perceptdot Eye",
-  "description": "AI Visual QA — screenshot any URL and catch visual bugs with AI. visual_check(url) → bug report. perceptdot.com",
+  "description": "AI Visual QA — screenshot any URL, catch visual bugs with AI. visual_check(url) → bug report.",
   "version": "1.1.0",
   "repository": {
     "url": "https://github.com/perceptdot/percept",

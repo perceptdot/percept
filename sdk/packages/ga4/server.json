@@ -1,0 +1,51 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.perceptdot/ga4",
+  "title": "Perceptdot GA4",
+  "description": "AI agent vision for Google Analytics 4 with automatic ROI measurement and reporting. perceptdot.com",
+  "version": "0.2.6",
+  "repository": {
+    "url": "https://github.com/perceptdot/percept",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@perceptdot/ga4",
+      "version": "0.2.6",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "GA4_PROFILES",
+          "description": "Named GA4 profiles as JSON, e.g. {\"project-a\":\"123456\"}. Either this or GA4_PROPERTY_ID is required.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "GA4_DEFAULT_PROFILE",
+          "description": "Default profile name from GA4_PROFILES to use when no project is specified in a tool call.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "GA4_PROPERTY_ID",
+          "description": "Legacy single GA4 property ID. Used as fallback when GA4_PROFILES is not set.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "GOOGLE_SERVICE_ACCOUNT_KEY",
+          "description": "Google service account JSON credentials for GA4 Data API access. Falls back to Application Default Credentials if unset.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "PERCEPT_API_KEY",
+          "description": "perceptdot API key (free 200 checks at perceptdot.com)",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

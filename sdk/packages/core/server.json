@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.perceptdot/core",
+  "title": "Perceptdot Core",
+  "description": "AI agent's app store — auto-discover, recommend, and install MCP servers for any project. perceptdot.com",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/perceptdot/percept",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@perceptdot/core",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}
