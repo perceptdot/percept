@@ -1,0 +1,52 @@
+{
+  "name": "@perceptdot/eye",
+  "mcpName": "io.github.perceptdot/eye",
+  "version": "1.1.0",
+  "description": "AI Visual QA MCP server — screenshot any URL and catch visual bugs with AI. visual_check(url) → screenshot + Gemini analysis + bug report. perceptdot.com",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "eye": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "ai-agent",
+    "claude",
+    "cursor",
+    "windsurf",
+    "perceptdot",
+    "visual-qa",
+    "visual-testing",
+    "screenshot",
+    "ui-testing",
+    "qa",
+    "roi",
+    "b2a2h",
+    "token-savings"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perceptdot/percept.git"
+  },
+  "homepage": "https://perceptdot.com",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
+  }
+}
