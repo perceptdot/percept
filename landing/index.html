@@ -381,6 +381,7 @@
       max-width: 860px;
       margin: 0 auto;
       position: relative;
+      overflow: hidden;
     }
 
     .hero::before {
@@ -2425,10 +2426,10 @@
 
   <!-- Terms of Service -->
   <div class="modal-overlay" id="modal-terms" onclick="handleOverlayClick(event,'modal-terms')">
-    <div class="modal" style="max-width:700px;max-height:82vh;overflow-y:auto;">
+    <div class="modal" style="max-width:700px;max-height:82vh;overflow:hidden;display:flex;flex-direction:column;">
       <button class="modal-close" onclick="closeModal('modal-terms')" aria-label="Close">&times;</button>
       <h3>Terms of Service</h3>
-      <div style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:1.2rem;">
+      <div style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:1.2rem;overflow-y:auto;flex:1;min-height:0;">
         <p><strong style="color:var(--text);">Effective date: March 24, 2026 &nbsp;|&nbsp; Operator: THUNOVA (Business Registration No. 722-60-00889)</strong></p>
         <p style="margin-top:.8rem;">Please read these Terms of Service ("Terms") carefully before using perceptdot ("Service"), operated by THUNOVA ("Company," "we," "us"). By accessing or using the Service in any manner — including via API, MCP server, GitHub Action, or web interface — you ("User," "you") agree to be bound by these Terms in their entirety. If you do not agree, do not use the Service.</p>
 
@@ -2478,10 +2479,10 @@
 
   <!-- Privacy Policy -->
   <div class="modal-overlay" id="modal-privacy" onclick="handleOverlayClick(event,'modal-privacy')">
-    <div class="modal" style="max-width:700px;max-height:82vh;overflow-y:auto;">
+    <div class="modal" style="max-width:700px;max-height:82vh;overflow:hidden;display:flex;flex-direction:column;">
       <button class="modal-close" onclick="closeModal('modal-privacy')" aria-label="Close">&times;</button>
       <h3>Privacy Policy</h3>
-      <div style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:1.2rem;">
+      <div style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:1.2rem;overflow-y:auto;flex:1;min-height:0;">
         <p><strong style="color:var(--text);">Effective date: March 24, 2026 &nbsp;|&nbsp; Operator: THUNOVA</strong></p>
         <p style="margin-top:.8rem;">THUNOVA ("we," "us," "our") operates perceptdot.com and related services ("Service"). This Privacy Policy explains what information we collect, how we use it, and your rights regarding that information. By using the Service, you agree to the practices described in this policy.</p>
 
@@ -2551,10 +2552,10 @@
 
   <!-- Refund Policy -->
   <div class="modal-overlay" id="modal-refund" onclick="handleOverlayClick(event,'modal-refund')">
-    <div class="modal" style="max-width:700px;max-height:82vh;overflow-y:auto;">
+    <div class="modal" style="max-width:700px;max-height:82vh;overflow:hidden;display:flex;flex-direction:column;">
       <button class="modal-close" onclick="closeModal('modal-refund')" aria-label="Close">&times;</button>
       <h3>Refund Policy</h3>
-      <div style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:1.2rem;">
+      <div style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:1.2rem;overflow-y:auto;flex:1;min-height:0;">
         <p><strong style="color:var(--text);">Effective date: March 24, 2026 &nbsp;|&nbsp; Operator: THUNOVA</strong></p>
         <p style="margin-top:.8rem;">This Refund Policy governs all purchases made through perceptdot.com. By subscribing to a paid plan, you agree to the terms of this policy. All payments are processed by Paddle, our authorized reseller and merchant of record.</p>
 
