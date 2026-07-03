@@ -1,0 +1,39 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.perceptdot/vercel",
+  "title": "Perceptdot Vercel",
+  "description": "AI agent vision for Vercel deployments with automatic ROI measurement and reporting. perceptdot.com",
+  "version": "0.1.6",
+  "repository": {
+    "url": "https://github.com/perceptdot/percept",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@perceptdot/vercel",
+      "version": "0.1.6",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "VERCEL_TOKEN",
+          "description": "Vercel API token. Generate at vercel.com/account/tokens.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "VERCEL_TEAM_ID",
+          "description": "Vercel team ID, needed when the token is scoped to a team.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "PERCEPT_API_KEY",
+          "description": "perceptdot API key (free 200 checks at perceptdot.com)",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

@@ -42,7 +42,12 @@ const tools = [{
         description: 'Screenshot a URL and analyze it for visual bugs using AI. Returns whether issues exist, a summary, and a detailed issues list.',
         inputSchema: {
             type: 'object',
-            properties: { url: { type: 'string', description: 'URL to visually check' } },
+            properties: {
+                url: { type: 'string', description: 'URL to visually check (must be publicly accessible)' },
+                prompt: { type: 'string', description: 'Optional: specific aspect to focus on (e.g. "check the header layout")' },
+                no_cache: { type: 'boolean', description: 'Optional: set true to bypass cache and always run a fresh analysis' },
+                viewport: { type: 'string', enum: ['desktop', 'tablet', 'mobile'], description: 'Optional: viewport size — desktop (1280px, default), tablet (768px), mobile (375px)' }
+            },
             required: ['url']
         }
     }];

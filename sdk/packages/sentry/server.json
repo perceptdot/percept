@@ -1,0 +1,47 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.perceptdot/sentry",
+  "title": "Perceptdot Sentry",
+  "description": "AI agent vision for Sentry error tracking with automatic ROI measurement and reporting.",
+  "version": "0.1.5",
+  "repository": {
+    "url": "https://github.com/perceptdot/percept",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@perceptdot/sentry",
+      "version": "0.1.5",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "SENTRY_AUTH_TOKEN",
+          "description": "Sentry auth token. Generate at Sentry > Settings > Auth Tokens.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "SENTRY_ORG",
+          "description": "Sentry organization slug.",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "SENTRY_PROJECT",
+          "description": "Sentry project slug.",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "PERCEPT_API_KEY",
+          "description": "perceptdot API key (free 200 checks at perceptdot.com)",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

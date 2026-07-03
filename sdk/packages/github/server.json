@@ -1,0 +1,47 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.perceptdot/github",
+  "title": "Perceptdot GitHub",
+  "description": "AI agent vision for GitHub repository monitoring with automatic ROI measurement and reporting.",
+  "version": "0.1.5",
+  "repository": {
+    "url": "https://github.com/perceptdot/percept",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@perceptdot/github",
+      "version": "0.1.5",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "GITHUB_TOKEN",
+          "description": "GitHub personal access token with repo read scope.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "GITHUB_OWNER",
+          "description": "GitHub repository owner (user or organization).",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "GITHUB_REPO",
+          "description": "GitHub repository name.",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "PERCEPT_API_KEY",
+          "description": "perceptdot API key (free 200 checks at perceptdot.com)",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
