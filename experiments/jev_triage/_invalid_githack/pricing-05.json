@@ -1,0 +1,5 @@
+{
+ "ok": false,
+ "status": 500,
+ "error": "{\"ok\":false,\"error\":\"Screenshot failed: Error: Unable to create new browser: code: 429: message: Rate limit exceeded\",\"hint\":\"Ensure CF Browser Rendering is enabled (Workers paid plan required)\",\"timing_ms\":499}"
+}

@@ -1,0 +1,452 @@
+[
+ {
+  "id": "pricing-00",
+  "template": "pricing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "text_overflow",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "pricing-01",
+  "template": "pricing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "button_overlap",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "pricing-02",
+  "template": "pricing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "broken_image",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "pricing-03",
+  "template": "pricing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "low_contrast",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "pricing-04",
+  "template": "pricing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "viewport_leak",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "pricing-05",
+  "template": "pricing",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "pricing-06",
+  "template": "pricing",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "pricing-07",
+  "template": "pricing",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "pricing-08",
+  "template": "pricing",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "ellipsis",
+  "trick_note": "intentional single-line ellipsis with full text in title attribute"
+ },
+ {
+  "id": "pricing-09",
+  "template": "pricing",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "decor_overlap",
+  "trick_note": "decorative blurred circle intentionally behind the hero heading"
+ },
+ {
+  "id": "landing-00",
+  "template": "landing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "clipped_text",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "landing-01",
+  "template": "landing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "overlap_cards",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "landing-02",
+  "template": "landing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "invisible_text",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "landing-03",
+  "template": "landing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "fixed_cover",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "landing-04",
+  "template": "landing",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "misaligned",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "landing-05",
+  "template": "landing",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "landing-06",
+  "template": "landing",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "landing-07",
+  "template": "landing",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "landing-08",
+  "template": "landing",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "rotated_badge",
+  "trick_note": "small 'NEW' badge intentionally rotated and overlapping card corner"
+ },
+ {
+  "id": "landing-09",
+  "template": "landing",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "gray_placeholder",
+  "trick_note": "intentional gray image placeholder box labelled 'Preview'"
+ },
+ {
+  "id": "article-00",
+  "template": "article",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "text_overflow",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "article-01",
+  "template": "article",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "button_overlap",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "article-02",
+  "template": "article",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "broken_image",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "article-03",
+  "template": "article",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "low_contrast",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "article-04",
+  "template": "article",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "viewport_leak",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "article-05",
+  "template": "article",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "article-06",
+  "template": "article",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "article-07",
+  "template": "article",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "article-08",
+  "template": "article",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "tight_dark",
+  "trick_note": "dark theme with muted but WCAG AA-compliant secondary text"
+ },
+ {
+  "id": "article-09",
+  "template": "article",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "ellipsis",
+  "trick_note": "intentional single-line ellipsis with full text in title attribute"
+ },
+ {
+  "id": "dashboard-00",
+  "template": "dashboard",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "clipped_text",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "dashboard-01",
+  "template": "dashboard",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "overlap_cards",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "dashboard-02",
+  "template": "dashboard",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "invisible_text",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "dashboard-03",
+  "template": "dashboard",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "fixed_cover",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "dashboard-04",
+  "template": "dashboard",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "misaligned",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "dashboard-05",
+  "template": "dashboard",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "dashboard-06",
+  "template": "dashboard",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "dashboard-07",
+  "template": "dashboard",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "dashboard-08",
+  "template": "dashboard",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "decor_overlap",
+  "trick_note": "decorative blurred circle intentionally behind the hero heading"
+ },
+ {
+  "id": "dashboard-09",
+  "template": "dashboard",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "rotated_badge",
+  "trick_note": "small 'NEW' badge intentionally rotated and overlapping card corner"
+ },
+ {
+  "id": "signup-00",
+  "template": "signup",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "text_overflow",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "signup-01",
+  "template": "signup",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "button_overlap",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "signup-02",
+  "template": "signup",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "broken_image",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "signup-03",
+  "template": "signup",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "low_contrast",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "signup-04",
+  "template": "signup",
+  "kind": "bug",
+  "has_bug": true,
+  "bug": "viewport_leak",
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "signup-05",
+  "template": "signup",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "signup-06",
+  "template": "signup",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "signup-07",
+  "template": "signup",
+  "kind": "clean",
+  "has_bug": false,
+  "bug": null,
+  "trick": null,
+  "trick_note": null
+ },
+ {
+  "id": "signup-08",
+  "template": "signup",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "gray_placeholder",
+  "trick_note": "intentional gray image placeholder box labelled 'Preview'"
+ },
+ {
+  "id": "signup-09",
+  "template": "signup",
+  "kind": "tricky",
+  "has_bug": false,
+  "bug": null,
+  "trick": "tight_dark",
+  "trick_note": "dark theme with muted but WCAG AA-compliant secondary text"
+ }
+]

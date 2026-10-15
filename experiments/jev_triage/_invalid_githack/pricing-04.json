@@ -1,0 +1,80 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://gist.githack.com/soondoobu1111-star/b58ee9a9a6bef84c0a71c84275ca76d8/raw/pricing-04.html",
+ "has_issues": true,
+ "summary": "The page has low contrast issues with text elements in the advertisement section.",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"The page has low contrast issues with text elements in the advertisement section.\",\"issues\":[{\"severity\":\"low\",\"description\":\"a.carbon-text has low contrast (1.1:1).\"},{\"severity\":\"low\",\"description\":\"span.carbon-tagline has low contrast (1.1:1).\"},{\"severity\":\"low\",\"description\":\"span.carbon-description has low contrast (1.1:1).\"}]}",
+ "dom_issues": [
+  {
+   "type": "low_contrast",
+   "selector": "a.carbon-text",
+   "detail": "1.1:1 (min 3.0:1)"
+  },
+  {
+   "type": "low_contrast",
+   "selector": "span.carbon-tagline",
+   "detail": "1.1:1 (min 3.0:1)"
+  },
+  {
+   "type": "low_contrast",
+   "selector": "span.carbon-description",
+   "detail": "1.1:1 (min 3.0:1)"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "medium",
+   "description": "[DOM] low_contrast: a.carbon-text \u2014 1.1:1 (min 3.0:1)",
+   "tile_index": 0
+  },
+  {
+   "severity": "medium",
+   "description": "[DOM] low_contrast: span.carbon-tagline \u2014 1.1:1 (min 3.0:1)",
+   "tile_index": 0
+  },
+  {
+   "severity": "medium",
+   "description": "[DOM] low_contrast: span.carbon-description \u2014 1.1:1 (min 3.0:1)",
+   "tile_index": 0
+  },
+  {
+   "severity": "low",
+   "description": "a.carbon-text has low contrast (1.1:1).",
+   "tile_index": 0
+  },
+  {
+   "severity": "low",
+   "description": "span.carbon-tagline has low contrast (1.1:1).",
+   "tile_index": 0
+  },
+  {
+   "severity": "low",
+   "description": "span.carbon-description has low contrast (1.1:1).",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 3917,
+  "browser_ms": 2299,
+  "ai_ms": 1433,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000443,
+  "per_tile_usd": 0.000443,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 3917,
+ "cost_usd": 0.000443,
+ "screenshot_size_bytes": 58809,
+ "quota_remaining": 99
+}

@@ -1,0 +1,33 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://gist.githack.com/soondoobu1111-star/b58ee9a9a6bef84c0a71c84275ca76d8/raw/landing-08.html",
+ "has_issues": false,
+ "summary": "No visual rendering issues detected.",
+ "analysis": "[Tile 0] {\"has_issues\":false,\"summary\":\"No visual issues were detected in the provided image.\",\"issues\":[]}",
+ "dom_issues": [],
+ "issues": [],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 9258,
+  "browser_ms": 6743,
+  "ai_ms": 2430,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000351,
+  "per_tile_usd": 0.000351,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 9258,
+ "cost_usd": 0.000351,
+ "screenshot_size_bytes": 51420,
+ "quota_remaining": 96
+}

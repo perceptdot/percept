@@ -1,0 +1,50 @@
+{
+ "ok": true,
+ "poc_passed": false,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/signup-02.html",
+ "has_issues": true,
+ "summary": "The company logo is a broken image.",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"The company logo is a broken image.\",\"issues\":[{\"severity\":\"high\",\"description\":\"img: The company logo is a broken image.\"}]}",
+ "dom_issues": [
+  {
+   "type": "broken_image",
+   "selector": "img",
+   "detail": "...ub.io/jev-bench-pages/brand/logo-404.svg"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "medium",
+   "description": "[DOM] broken_image: img \u2014 ...ub.io/jev-bench-pages/brand/logo-404.svg",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "img: The company logo is a broken image.",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 10507,
+  "browser_ms": 7773,
+  "ai_ms": 2614,
+  "under_10s": false
+ },
+ "cost": {
+  "estimated_usd": 0.000423,
+  "per_tile_usd": 0.000423,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 10507,
+ "cost_usd": 0.000423,
+ "screenshot_size_bytes": 44844,
+ "quota_remaining": 49
+}

@@ -1022,6 +1022,193 @@ app.post("/v1/eye/check", async (c) => {
               }
             }
           } catch(e4) { issues.push({ type: 'audit_error', selector: 'check4_contrast', detail: String(e4).slice(0, 80) }); }
+          // 5~8. 텍스트 줄 기하 검사 — 넘침·잘림·고정 배너 가림·요소 겹침 (유형별 최대 3건)
+          try {
+            var geo = [];
+            var perType = {};
+            function addGeo(type, s, detail) {
+              var gk = type + ':' + s;
+              if (seen[gk]) return;
+              perType[type] = (perType[type] || 0) + 1;
+              if (perType[type] > 3) return;
+              seen[gk] = true;
+              geo.push({ type: type, selector: s, detail: detail });
+            }
+            function blockOf(el) {
+              var b = el;
+              while (b && b !== document.body) {
+                var bd = window.getComputedStyle(b).display;
+                if (bd !== 'inline' && bd !== 'contents') break;
+                b = b.parentElement;
+              }
+              return b;
+            }
+            // 의도적으로 숨긴 텍스트(sr-only clip·clip-path·투명)는 검사 대상 아님
+            var hidCache = [];
+            function deliberatelyHidden(el) {
+              for (var e = el; e && e !== document.documentElement; e = e.parentElement) {
+                for (var hc = 0; hc < hidCache.length; hc++) if (hidCache[hc].el === e) return hidCache[hc].v;
+                var es = window.getComputedStyle(e);
+                var v = (es.clip && es.clip !== 'auto') || es.clipPath !== 'none' || parseFloat(es.opacity) < 0.05;
+                if (hidCache.length < 2000) hidCache.push({ el: e, v: v });
+                if (v) return true;
+              }
+              return false;
+            }
+            // 줄 중심이 overflow 비가시 상자(자기 자신 포함 — 접힌 아코디언·캐러셀 바깥 등) 밖이면 화면에 안 보이는 줄
+            function insideClippers(el, x, y) {
+              for (var e = el; e && e !== document.documentElement; e = e.parentElement) {
+                var es = window.getComputedStyle(e);
+                if (es.overflowX === 'visible' && es.overflowY === 'visible') continue;
+                var er = e.getBoundingClientRect();
+                var ex = x - window.scrollX, ey = y - window.scrollY;
+                if (ex < er.left || ex > er.right || ey < er.top || ey > er.bottom) return false;
+              }
+              return true;
+            }
+            // 텍스트 줄 수집 (문서 좌표)
+            var lines = [];
+            var tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+            var tnode;
+            while ((tnode = tw.nextNode()) && lines.length < 600) {
+              if (!tnode.nodeValue.trim()) continue;
+              var host = tnode.parentElement;
+              if (!host || ['SCRIPT','STYLE','NOSCRIPT','TEMPLATE','OPTION','TEXTAREA'].indexOf(host.tagName) !== -1) continue;
+              var hs = window.getComputedStyle(host);
+              if (hs.visibility === 'hidden' || deliberatelyHidden(host)) continue;
+              var rng = document.createRange();
+              rng.selectNodeContents(tnode);
+              var rects = rng.getClientRects();
+              for (var ri = 0; ri < rects.length; ri++) {
+                var rr = rects[ri];
+                if (rr.width < 4 || rr.height < 4) continue;
+                var ln0 = { host: host, left: rr.left + window.scrollX, right: rr.right + window.scrollX,
+                  top: rr.top + window.scrollY, bottom: rr.bottom + window.scrollY, w: rr.width, h: rr.height };
+                ln0.shown = insideClippers(host, (ln0.left + ln0.right) / 2, (ln0.top + ln0.bottom) / 2);
+                lines.push(ln0);
+              }
+            }
+            // 5·6. 텍스트 넘침(overflow visible 상자 밖으로 삐져나옴) / 텍스트 잘림(hidden·clip 상자 경계에 걸림)
+            for (var li = 0; li < lines.length; li++) {
+              var ln = lines[li];
+              var blk = blockOf(ln.host);
+              var kb = blk.getBoundingClientRect();
+              var a = blk;
+              while (a && a !== document.documentElement) {
+                var as = window.getComputedStyle(a);
+                var ab = a.getBoundingClientRect();
+                var bl = ab.left + window.scrollX, br = ab.right + window.scrollX;
+                var bt = ab.top + window.scrollY, bb = ab.bottom + window.scrollY;
+                var clipX = as.overflowX === 'hidden' || as.overflowX === 'clip';
+                var clipY = as.overflowY === 'hidden' || as.overflowY === 'clip';
+                if (a === blk && !clipX && !clipY && a !== document.body && ln.shown) {
+                  var outX = Math.max(ln.right - br, bl - ln.left);
+                  var tipX = ln.right - br > bl - ln.left ? ln.right - 1 : ln.left + 1;
+                  // 삐져나온 끝을 조상이 잘라내면 넘침이 아니라 잘림 — 아래 clipped_text 판정으로 넘김
+                  if (outX > 8 && ln.left < br && ln.right > bl && insideClippers(a.parentElement, tipX, (ln.top + ln.bottom) / 2)) {
+                    addGeo('text_overflow', sel(ln.host), 'text runs ' + Math.round(outX) + 'px outside ' + sel(a));
+                    break;
+                  }
+                }
+                // 조상이 블록째 잘라내는 건(캐러셀 끝·미리보기 페이드) 디자인 — 텍스트가 자기 블록을 넘쳐 잘릴 때만
+                if (a !== blk) {
+                  if (clipX && (kb.left < ab.left - 1 || kb.right > ab.right + 1)) clipX = false;
+                  if (clipY && (kb.top < ab.top - 1 || kb.bottom > ab.bottom + 1)) clipY = false;
+                }
+                if ((clipX || clipY) && ab.width > 2 && ab.height > 2 && as.textOverflow !== 'ellipsis' &&
+                    (!as.webkitLineClamp || as.webkitLineClamp === 'none')) {
+                  var visW = Math.min(ln.right, br) - Math.max(ln.left, bl);
+                  var visH = Math.min(ln.bottom, bb) - Math.max(ln.top, bt);
+                  var cutX = clipX && visW > 0 && ln.w - visW > 4;
+                  var cutY = clipY && visH > 0 && visH / ln.h < 0.85;
+                  if ((cutX || cutY) && visW > 0 && visH > 0) {
+                    addGeo('clipped_text', sel(ln.host), (cutY ? Math.round(100 - visH / ln.h * 100) + '% of line height' :
+                      Math.round(ln.w - visW) + 'px of line') + ' cut by ' + sel(a));
+                    break;
+                  }
+                }
+                a = a.parentElement;
+              }
+            }
+            // 7·8. 가림 — 텍스트 줄 위 5점을 elementFromPoint로 찍어, 남의 불투명 요소가 위에 있는지
+            // 폼 컨트롤·svg는 투명 오버레이로 자주 깔리므로 배경이 불투명할 때만 가림으로 인정
+            var PAINT_TAGS = ['IMG','VIDEO','CANVAS','IFRAME'];
+            function isFixedChain(el) {
+              while (el && el !== document.documentElement) {
+                var fp = window.getComputedStyle(el).position;
+                if (fp === 'fixed' || fp === 'sticky') return el;
+                el = el.parentElement;
+              }
+              return null;
+            }
+            function ownTextAt(el, x, y) {
+              for (var c = el.firstChild; c; c = c.nextSibling) {
+                if (c.nodeType !== 3 || !c.nodeValue.trim()) continue;
+                var cr2 = document.createRange();
+                cr2.selectNodeContents(c);
+                var cl = cr2.getClientRects();
+                for (var k = 0; k < cl.length; k++) {
+                  if (x >= cl[k].left && x <= cl[k].right && y >= cl[k].top && y <= cl[k].bottom) return true;
+                }
+              }
+              return false;
+            }
+            function painter(hit, host, x, y) {
+              var el = hit;
+              while (el && !el.contains(host)) {
+                var ps2 = window.getComputedStyle(el);
+                if (parseFloat(ps2.opacity) < 0.5) return null;
+                var pb = pCol(ps2.backgroundColor);
+                // 그라데이션 페이드 마스크는 가림이 아님 — 이미지 배경(url)만 인정
+                if ((pb && pb.a >= 0.5) || ps2.backgroundImage.indexOf('url(') !== -1 ||
+                    PAINT_TAGS.indexOf(el.tagName) !== -1 || ownTextAt(el, x, y)) return el;
+                el = el.parentElement;
+              }
+              return null;
+            }
+            var hits = {};
+            var docH = Math.min(document.documentElement.scrollHeight, 16000);
+            var vh = window.innerHeight, vw = window.innerWidth;
+            var startY = window.scrollY;
+            for (var sy = 0, step = 0; sy < docH && step < 20; sy += vh, step++) {
+              window.scrollTo({ top: sy, left: 0, behavior: 'instant' });
+              var curY = window.scrollY;
+              for (var lj = 0; lj < lines.length; lj++) {
+                var L = lines[lj];
+                var cy = (L.top + L.bottom) / 2 - curY;
+                if (!L.shown || cy < 0 || cy >= vh) continue;
+                if (step > 0 && (L.top + L.bottom) / 2 < sy) continue; // 이전 스크롤 구간에서 이미 검사
+                for (var f = 1; f <= 9; f += 2) {
+                  var px = L.left + L.w * f / 10 - window.scrollX;
+                  if (px < 0 || px >= vw) continue;
+                  var hit = document.elementFromPoint(px, cy);
+                  if (!hit || hit === L.host || L.host.contains(hit) || hit.contains(L.host)) continue;
+                  var fx = isFixedChain(hit);
+                  if (fx && (curY > 0 || fx.contains(L.host))) continue; // 스크롤 중 고정 헤더 밑으로 지나가는 건 정상
+                  var cov = painter(hit, L.host, px, cy);
+                  if (!cov) continue;
+                  if (cov.textContent.trim() === L.host.textContent.trim()) continue; // 같은 글자를 겹쳐 그린 효과 레이어
+                  if (cov.tagName === L.host.tagName && cov.className === L.host.className) continue; // 돌아가며 바뀌는 같은 꼴 헤드라인
+                  if (fx) {
+                    var fr = fx.getBoundingClientRect(), crr = cov.getBoundingClientRect();
+                    if (Math.max(fr.top, crr.top) > vh / 2) continue; // 하단 고정 바·플로팅(쿠키·채팅)은 닫으라고 있는 오버레이
+                    if (Math.max(fr.height, crr.height) > vh / 2) continue; // 화면 절반 넘는 고정 레이어는 배너가 아니라 모달·로딩 화면
+                  }
+                  var t = fx ? 'fixed_cover' : 'element_overlap';
+                  var hk = t + '|' + sel(L.host) + '|' + sel(fx || cov);
+                  if (!hits[hk]) hits[hk] = { t: t, host: L.host, cov: fx || cov, n: 0 };
+                  hits[hk].n++;
+                }
+              }
+            }
+            window.scrollTo({ top: startY, left: 0, behavior: 'instant' });
+            for (var hk2 in hits) {
+              var H = hits[hk2];
+              if (H.n < 2) continue; // 한 점만 닿은 건 모서리 스침으로 보고 제외
+              addGeo(H.t, sel(H.host), 'covered by ' + sel(H.cov) + ' at ' + H.n + ' sample points');
+            }
+            for (var gi = 0; gi < geo.length; gi++) issues.push(geo[gi]);
+          } catch(e5) { issues.push({ type: 'audit_error', selector: 'check5_geometry', detail: String(e5).slice(0, 80) }); }
           return issues.slice(0, 15);
         })()
       `;
@@ -1409,7 +1596,8 @@ or
   // DOM 이슈 → issues 형식으로 변환
   const domAsIssues = domFindings.map((d) => {
     const sev: "high" | "medium" | "low" =
-      d.type === "viewport_leak" || d.type === "parent_overflow" ? "high" :
+      d.type === "viewport_leak" || d.type === "parent_overflow" ||
+      d.type === "element_overlap" || d.type === "fixed_cover" ? "high" :
       d.type === "low_contrast" ? "medium" : "medium";
     return { severity: sev, description: `[DOM] ${d.type}: ${d.selector} — ${d.detail}`.slice(0, 120), tile_index: 0 };
   });

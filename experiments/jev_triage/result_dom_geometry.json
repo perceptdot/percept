@@ -1,0 +1,680 @@
+{
+ "report": {
+  "tp": 21,
+  "fp": 2,
+  "fn": 4,
+  "tn": 23,
+  "recall": 0.84,
+  "precision": 0.913
+ },
+ "rows": [
+  {
+   "id": "pricing-00",
+   "kind": "bug",
+   "bug": "text_overflow",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "text_overflow",
+     "selector": "li.long",
+     "detail": "text runs 175px outside li.long"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "pricing-01",
+   "kind": "bug",
+   "bug": "button_overlap",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "element_overlap",
+     "selector": "li.long",
+     "detail": "covered by a.btn at 5 sample points"
+    },
+    {
+     "type": "element_overlap",
+     "selector": "li",
+     "detail": "covered by a.btn at 5 sample points"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "pricing-02",
+   "kind": "bug",
+   "bug": "broken_image",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "broken_image",
+     "selector": "img",
+     "detail": "...v_triage/pages/missing/plan-hero-404.png"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "pricing-03",
+   "kind": "bug",
+   "bug": "low_contrast",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "low_contrast",
+     "selector": "p.lead",
+     "detail": "1.2:1 (min 3.0:1)"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "pricing-04",
+   "kind": "bug",
+   "bug": "viewport_leak",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "viewport_leak",
+     "selector": "div.strip",
+     "detail": "right=1764px, viewport=1280px (+484px)"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "pricing-05",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "pricing-06",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "pricing-07",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "pricing-08",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "ellipsis",
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "pricing-09",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "decor_overlap",
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "landing-00",
+   "kind": "bug",
+   "bug": "clipped_text",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "clipped_text",
+     "selector": "h1",
+     "detail": "52% of line height cut by h1"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "landing-01",
+   "kind": "bug",
+   "bug": "overlap_cards",
+   "trick": null,
+   "has_bug": true,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "landing-02",
+   "kind": "bug",
+   "bug": "invisible_text",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "low_contrast",
+     "selector": "a.btn",
+     "detail": "1.0:1 (min 3.0:1)"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "landing-03",
+   "kind": "bug",
+   "bug": "fixed_cover",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "fixed_cover",
+     "selector": "h1",
+     "detail": "covered by div.promo at 5 sample points"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "landing-04",
+   "kind": "bug",
+   "bug": "misaligned",
+   "trick": null,
+   "has_bug": true,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "landing-05",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "landing-06",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "landing-07",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "landing-08",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "rotated_badge",
+   "has_bug": false,
+   "flag": true,
+   "dom": [
+    {
+     "type": "parent_overflow",
+     "selector": "span.badge > div.card",
+     "detail": "top +13px"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "landing-09",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "gray_placeholder",
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "article-00",
+   "kind": "bug",
+   "bug": "text_overflow",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "text_overflow",
+     "selector": "p.pull",
+     "detail": "text runs 180px outside p.pull"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "article-01",
+   "kind": "bug",
+   "bug": "button_overlap",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "element_overlap",
+     "selector": "p.pull",
+     "detail": "covered by a.btn at 4 sample points"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "article-02",
+   "kind": "bug",
+   "bug": "broken_image",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "broken_image",
+     "selector": "img",
+     "detail": "...ents/jev_triage/pages/img/cover-404.webp"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "article-03",
+   "kind": "bug",
+   "bug": "low_contrast",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "low_contrast",
+     "selector": "p.meta",
+     "detail": "1.2:1 (min 3.0:1)"
+    },
+    {
+     "type": "low_contrast",
+     "selector": "p",
+     "detail": "1.2:1 (min 3.0:1)"
+    }
+   ],
+   "ai_issues": 2
+  },
+  {
+   "id": "article-04",
+   "kind": "bug",
+   "bug": "viewport_leak",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "viewport_leak",
+     "selector": "pre",
+     "detail": "right=1764px, viewport=1280px (+484px)"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "article-05",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "article-06",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "article-07",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "article-08",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "tight_dark",
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "article-09",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "ellipsis",
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-00",
+   "kind": "bug",
+   "bug": "clipped_text",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "clipped_text",
+     "selector": "h1",
+     "detail": "52% of line height cut by h1"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-01",
+   "kind": "bug",
+   "bug": "overlap_cards",
+   "trick": null,
+   "has_bug": true,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-02",
+   "kind": "bug",
+   "bug": "invisible_text",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "low_contrast",
+     "selector": "a.btn",
+     "detail": "1.0:1 (min 3.0:1)"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "dashboard-03",
+   "kind": "bug",
+   "bug": "fixed_cover",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "fixed_cover",
+     "selector": "h1",
+     "detail": "covered by div.promo at 5 sample points"
+    },
+    {
+     "type": "fixed_cover",
+     "selector": "p.lead",
+     "detail": "covered by div.promo at 5 sample points"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-04",
+   "kind": "bug",
+   "bug": "misaligned",
+   "trick": null,
+   "has_bug": true,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-05",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-06",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-07",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-08",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "decor_overlap",
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "dashboard-09",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "rotated_badge",
+   "has_bug": false,
+   "flag": true,
+   "dom": [
+    {
+     "type": "parent_overflow",
+     "selector": "span.badge > div.card",
+     "detail": "top +13px"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "signup-00",
+   "kind": "bug",
+   "bug": "text_overflow",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "text_overflow",
+     "selector": "p.terms",
+     "detail": "text runs 194px outside p.terms"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "signup-01",
+   "kind": "bug",
+   "bug": "button_overlap",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "element_overlap",
+     "selector": "label",
+     "detail": "covered by button.btn at 3 sample points"
+    }
+   ],
+   "ai_issues": 0
+  },
+  {
+   "id": "signup-02",
+   "kind": "bug",
+   "bug": "broken_image",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "broken_image",
+     "selector": "img",
+     "detail": "...ents/jev_triage/pages/brand/logo-404.svg"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "signup-03",
+   "kind": "bug",
+   "bug": "low_contrast",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "low_contrast",
+     "selector": "p.terms",
+     "detail": "1.2:1 (min 3.0:1)"
+    }
+   ],
+   "ai_issues": 1
+  },
+  {
+   "id": "signup-04",
+   "kind": "bug",
+   "bug": "viewport_leak",
+   "trick": null,
+   "has_bug": true,
+   "flag": true,
+   "dom": [
+    {
+     "type": "viewport_leak",
+     "selector": "div.side",
+     "detail": "right=2252px, viewport=1280px (+972px)"
+    },
+    {
+     "type": "viewport_leak",
+     "selector": "div.card",
+     "detail": "right=2252px, viewport=1280px (+972px)"
+    },
+    {
+     "type": "viewport_leak",
+     "selector": "h2",
+     "detail": "right=2227px, viewport=1280px (+947px)"
+    },
+    {
+     "type": "viewport_leak",
+     "selector": "p",
+     "detail": "right=2227px, viewport=1280px (+947px)"
+    }
+   ],
+   "ai_issues": 4
+  },
+  {
+   "id": "signup-05",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "signup-06",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "signup-07",
+   "kind": "clean",
+   "bug": null,
+   "trick": null,
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "signup-08",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "gray_placeholder",
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  },
+  {
+   "id": "signup-09",
+   "kind": "tricky",
+   "bug": null,
+   "trick": "tight_dark",
+   "has_bug": false,
+   "flag": false,
+   "dom": [],
+   "ai_issues": 0
+  }
+ ]
+}

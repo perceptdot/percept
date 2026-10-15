@@ -1,0 +1,24 @@
+{
+ "model": "jev-1.13.0",
+ "answers": {
+  "real_bug": {
+   "type": "noul",
+   "noul": 0.83
+  },
+  "severity": {
+   "type": "choice",
+   "choice": "p1",
+   "confidence": 0.91,
+   "probabilities": {
+    "p0": 0.05,
+    "p1": 0.93,
+    "p2": 0.01,
+    "none": 0.01
+   }
+  }
+ },
+ "usage": {
+  "input_tokens": 583,
+  "output_tokens": 66
+ }
+}

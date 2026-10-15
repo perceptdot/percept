@@ -1,0 +1,50 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/article-02.html",
+ "has_issues": true,
+ "summary": "The image element for the article cover is broken.",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"The image element for the article cover is broken.\",\"issues\":[{\"severity\":\"high\",\"description\":\"img: Article cover is broken.\"}]}",
+ "dom_issues": [
+  {
+   "type": "broken_image",
+   "selector": "img",
+   "detail": "...ub.io/jev-bench-pages/img/cover-404.webp"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "medium",
+   "description": "[DOM] broken_image: img \u2014 ...ub.io/jev-bench-pages/img/cover-404.webp",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "img: Article cover is broken.",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 7206,
+  "browser_ms": 5031,
+  "ai_ms": 2071,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000352,
+  "per_tile_usd": 0.000352,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 7206,
+ "cost_usd": 0.000352,
+ "screenshot_size_bytes": 51426,
+ "quota_remaining": 66
+}
