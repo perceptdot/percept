@@ -20,7 +20,10 @@ const domScript = m[1].replace(/\\\\/g, "\\"); // template literal: \\ -> \
     await p.goto("file://" + path.join(__dirname, "pages", t.id + ".html"), { waitUntil: "load" });
     const dom = await p.evaluate(domScript);
     const prod = JSON.parse(fs.readFileSync(path.join(__dirname, "eye", t.id + ".json"), "utf8"));
-    const ai = (prod.issues || []).filter((i) => !String(i.description).startsWith("[DOM]"));
+    // production feeds DOM findings into the AI prompt, so AI issues on a page that had DOM findings are echoes of them;
+    // only AI issues from a run with zero DOM findings are independent evidence
+    const prodDom = (prod.issues || []).some((i) => String(i.description).startsWith("[DOM]"));
+    const ai = prodDom ? [] : (prod.issues || []).filter((i) => !String(i.description).startsWith("[DOM]"));
     rows.push({ id: t.id, kind: t.kind, bug: t.bug, trick: t.trick, has_bug: t.has_bug,
                 flag: dom.length > 0 || ai.length > 0, dom, ai_issues: ai.length });
   }

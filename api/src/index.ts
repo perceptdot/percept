@@ -968,7 +968,10 @@ app.post("/v1/eye/check", async (c) => {
               var oL = parR.left - cr.left;
               var oT = parR.top - cr.top;
               var mx = Math.max(oB, oR, oL, oT);
-              if (mx > 10) {
+              // 모서리에 걸친 작은 배지·알림 점은 의도된 디자인 — 작고 부모와 여전히 겹치면 제외
+              var smallBadge = cr.width <= 96 && cr.height <= 48 &&
+                cr.left < parR.right && cr.right > parR.left && cr.top < parR.bottom && cr.bottom > parR.top;
+              if (mx > 10 && !smallBadge) {
                 var pk = 'po:' + sel(ce);
                 if (!seen[pk]) {
                   seen[pk] = true;
@@ -1178,8 +1181,10 @@ app.post("/v1/eye/check", async (c) => {
                 var cy = (L.top + L.bottom) / 2 - curY;
                 if (!L.shown || cy < 0 || cy >= vh) continue;
                 if (step > 0 && (L.top + L.bottom) / 2 < sy) continue; // 이전 스크롤 구간에서 이미 검사
-                for (var f = 1; f <= 9; f += 2) {
-                  var px = L.left + L.w * f / 10 - window.scrollX;
+                // 줄 길이에 비례해 16px 간격으로 찍는다(최소 5점·최대 40점) — 줄 끝 일부만 덮는 겹침도 잡도록
+                var nPts = Math.max(5, Math.min(40, Math.floor(L.w / 16)));
+                for (var f = 0; f < nPts; f++) {
+                  var px = L.left + L.w * (f + 0.5) / nPts - window.scrollX;
                   if (px < 0 || px >= vw) continue;
                   var hit = document.elementFromPoint(px, cy);
                   if (!hit || hit === L.host || L.host.contains(hit) || hit.contains(L.host)) continue;
