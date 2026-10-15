@@ -1,29 +1,34 @@
 # 💳 Pricing
 
+**1 credit = 1 tile**, a 1280×1600px slice of the page. A short page is about 1 credit, a long landing page about 3–5 credits.
+
 ---
 
 ## Free
 
-🆓 **100 tiles/month** — no credit card needed\
+🆓 **100 credits/month** — no credit card needed\
+🎁 One-time **+100 credits** after you submit feedback (monthly limit becomes 200)\
+🔄 Resets on the 1st of each month (UTC)\
 ✅ Instant API key via email\
-✅ All features included\
-✅ Full-page tiling, AI analysis, issue reports
+✅ Full-page tiling, DOM audit, AI analysis, issue reports
 
 ---
 
-## Pro — $19/month
+## Pro — $19/month (Coming Soon)
 
-⚡ **Unlimited tiles**\
+⚡ **10,000 credits/month**\
 ✅ Everything in Free\
-✅ Priority processing
+✅ Priority support
 
 ---
 
-## Unlimited — $49/month
+## Team — $49/month (Coming Soon)
 
-🚀 **Unlimited tiles**\
-✅ Team usage\
-✅ Dedicated support
+🚀 **30,000 credits/month** (fair use)\
+✅ Everything in Pro\
+✅ Team usage
+
+Payments are processed by Paddle.
 
 ---
 
@@ -33,5 +38,5 @@
 
 {% hint style="success" %}
 **Start with Free.**\
-100 tiles covers dozens of pages. Try it out, then upgrade when you need more.
+100 credits cover dozens of short pages. Try it out, then upgrade when paid plans open.
 {% endhint %}

@@ -16,7 +16,7 @@ Go to [perceptdot.com](https://perceptdot.com), enter your email, and your **fre
 ### Claude Code
 
 ```bash
-claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"
 ```
 
 ### Cursor
@@ -27,7 +27,8 @@ Add to your **MCP settings** (`~/.cursor/mcp.json` or Cursor → Settings → MC
 {
   "mcpServers": {
     "perceptdot": {
-      "url": "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+      "url": "https://mcp.perceptdot.com/mcp",
+      "headers": { "X-Percept-Key": "YOUR_KEY" }
     }
   }
 }
@@ -35,13 +36,14 @@ Add to your **MCP settings** (`~/.cursor/mcp.json` or Cursor → Settings → MC
 
 ### Windsurf
 
-Add to **Windsurf MCP config** (`~/.windsurf/mcp.json`):
+Add to **Windsurf MCP config** (`~/.codeium/windsurf/mcp_config.json`):
 
 ```json
 {
   "mcpServers": {
     "perceptdot": {
-      "url": "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+      "serverUrl": "https://mcp.perceptdot.com/mcp",
+      "headers": { "X-Percept-Key": "YOUR_KEY" }
     }
   }
 }
@@ -49,10 +51,11 @@ Add to **Windsurf MCP config** (`~/.windsurf/mcp.json`):
 
 ### Cline
 
-In Cline → **MCP Servers** → Add Server → HTTP:
+In Cline → **MCP Servers** → Add Server → HTTP, use the URL and add the header `X-Percept-Key`:
 
 ```
-https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY
+URL:    https://mcp.perceptdot.com/mcp
+Header: X-Percept-Key: YOUR_KEY
 ```
 
 ### Verify it's working
@@ -75,7 +78,7 @@ Add to your workflow (`.github/workflows/deploy.yml`):
 
 ```yaml
 - name: Visual QA
-  uses: perceptdot/eye-action@v1
+  uses: perceptdot/percept/eye-action@v1.0.0
   with:
     url: ${{ steps.deploy.outputs.url }}   # your deployment URL
     api_key: ${{ secrets.PERCEPT_API_KEY }}

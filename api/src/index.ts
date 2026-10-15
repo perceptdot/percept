@@ -186,7 +186,7 @@ app.post("/v1/use", async (c) => {
         needs_feedback: true,
         quota_remaining: 0,
         calls_used,
-        message: "FREE QUOTA REACHED (100 credits this month). Submit feedback to unlock 100 more → use percept_feedback tool.",
+        message: "FREE QUOTA REACHED (100 credits this month). Submit feedback to unlock 100 more: POST https://api.perceptdot.com/v1/feedback {key, rating 1-5, comment}.",
       });
     }
     // 200콜 모두 소진 → 업그레이드
@@ -785,7 +785,7 @@ app.post("/v1/eye/check", async (c) => {
     return c.json({
       ok: false,
       error: needsFeedback
-        ? "Free quota reached (100 credits this month). Submit feedback to unlock 100 more → use percept_feedback tool."
+        ? "Free quota reached (100 credits this month). Submit feedback to unlock 100 more: POST https://api.perceptdot.com/v1/feedback {key, rating 1-5, comment}."
         : `Monthly limit reached (${monthLimit} credits). Resets ${nextResetDate()}.`,
       quota_remaining: 0,
       calls_used: keyRecord.calls_used,

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terms of Service — perceptdot</title>
-  <meta name="description" content="Terms of Service for perceptdot — the MCP platform that gives AI agents external service visibility and ROI measurement." />
+  <meta name="description" content="Terms of Service for perceptdot — the AI Visual QA service for MCP clients and CI/CD." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://perceptdot.com/terms" />
   <meta property="og:url" content="https://perceptdot.com/terms" />
@@ -255,7 +255,7 @@
   <hr class="section-divider" />
 
   <h2>2. Acceptance of Terms</h2>
-  <p>By creating an account, installing a perceptdot MCP package, or otherwise accessing the Service, you confirm that:</p>
+  <p>By creating an account, using the perceptdot MCP server, API, or GitHub Action, or otherwise accessing the Service, you confirm that:</p>
   <ul>
     <li>You are at least 18 years of age or the age of majority in your jurisdiction.</li>
     <li>You have the legal authority to enter into this agreement on behalf of yourself or the organization you represent.</li>
@@ -266,32 +266,32 @@
   <hr class="section-divider" />
 
   <h2>3. Description of Service</h2>
-  <p>perceptdot is an MCP (Model Context Protocol) platform that provides AI agents with real-time visibility into external services, including but not limited to Google Analytics 4, Vercel, Sentry, and GitHub. The Service enables AI agents to:</p>
+  <p>perceptdot is an AI Visual QA service. visual_check(url) captures screenshots of a web page and uses AI to find layout bugs. It is delivered as a remote MCP (Model Context Protocol) server, a REST API, and a GitHub Action. The Service enables you and your AI agents to:</p>
   <ul>
-    <li>Access live metrics and data from integrated third-party services via API.</li>
-    <li>Measure and report the ROI (return on investment) of AI agent work sessions.</li>
-    <li>Generate structured reports on agent activity, token savings, and performance.</li>
+    <li>Check any publicly reachable URL for layout and visual problems.</li>
+    <li>Receive a structured summary and list of issues with severity levels.</li>
+    <li>Run checks automatically on pull requests through the GitHub Action.</li>
   </ul>
-  <p>perceptdot is provided as npm packages under the <code style="font-family: monospace; font-size: 13px; color: var(--accent2); background: var(--bg3); padding: 2px 6px; border-radius: 4px;">@perceptdot/*</code> namespace and as a cloud backend service. We reserve the right to modify, suspend, or discontinue any part of the Service at any time with reasonable notice.</p>
+  <p>Usage is measured in credits: 1 credit = 1 tile, a 1280×1600 px slice of the page (a short page is about 1 credit, a long landing page about 3–5 credits). Screenshots are sent to Google (Gemini API) and Cloudflare (Workers AI, fallback) for analysis and are not stored by perceptdot; analysis results (never screenshots) are cached for up to 10 minutes per URL and viewport. Google may use data sent to unpaid Gemini API tiers to improve its products, so do not check pages that contain personal data. We reserve the right to modify, suspend, or discontinue any part of the Service at any time with reasonable notice.</p>
 
   <hr class="section-divider" />
 
   <h2>4. Subscription Plans</h2>
   <p>perceptdot offers the following subscription tiers:</p>
   <ul>
-    <li><strong style="color: var(--text);">Free</strong> — $0/month. Includes 1 integration and 100 API calls per day. No credit card required.</li>
-    <li><strong style="color: var(--text);">Pro</strong> — $19/month. Includes all integrations, unlimited API calls, full ROI reports with history, and priority support.</li>
-    <li><strong style="color: var(--text);">Team</strong> — $49/month. Includes everything in Pro, up to 5 team members, a shared ROI dashboard, webhook notifications, and custom integration support.</li>
+    <li><strong style="color: var(--text);">Free</strong> — $0/month. Includes 100 credits per month, no credit card required. A one-time +100 credit bonus is available after submitting feedback. Credits reset on the 1st of each month (UTC).</li>
+    <li><strong style="color: var(--text);">Pro</strong> — $19/month. Includes 10,000 credits per month. Coming Soon.</li>
+    <li><strong style="color: var(--text);">Team</strong> — $49/month. Includes 30,000 credits per month (fair use). Coming Soon.</li>
   </ul>
   <p>Features and limits for each plan are subject to change. We will provide at least 30 days' notice before reducing features on a plan you are actively subscribed to.</p>
 
   <hr class="section-divider" />
 
   <h2>5. Payment Terms</h2>
-  <p>All paid subscriptions are processed through Stripe, a third-party payment processor. By subscribing to a paid plan, you agree to Stripe's terms of service in addition to these Terms.</p>
+  <p>All paid subscriptions are processed through Paddle, our merchant of record. By subscribing to a paid plan, you agree to Paddle's terms of service in addition to these Terms.</p>
   <p><strong style="color: var(--text);">Billing Cycle.</strong> Subscriptions are billed on a monthly basis, beginning on the date you upgrade to a paid plan. Your subscription will automatically renew each month unless cancelled before the renewal date.</p>
-  <p><strong style="color: var(--text);">Refund Policy.</strong> If you are not satisfied with the Service, you may request a full refund within 30 days of your initial payment or any renewal payment by contacting us at <a href="mailto:contact@perceptdot.com">contact@perceptdot.com</a>. Refunds beyond the 30-day window are issued at our sole discretion.</p>
-  <p><strong style="color: var(--text);">Cancellation.</strong> You may cancel your subscription at any time through your account settings. Cancellation takes effect at the end of the current billing period. No partial-month refunds are provided except as described above.</p>
+  <p><strong style="color: var(--text);">Refund Policy.</strong> If you are not satisfied with the Service, you may request a refund within 7 days of your first payment by contacting us at <a href="mailto:service@perceptdot.com">service@perceptdot.com</a>. See our Refund Policy for the eligibility conditions.</p>
+  <p><strong style="color: var(--text);">Cancellation.</strong> You may cancel your subscription at any time by emailing service@perceptdot.com. Cancellation takes effect at the end of the current billing period. No partial-month refunds are provided except as described above.</p>
   <p><strong style="color: var(--text);">Taxes.</strong> You are responsible for any applicable taxes, duties, or levies imposed by your jurisdiction in connection with your use of the Service.</p>
 
   <hr class="section-divider" />
@@ -303,7 +303,7 @@
     <li><strong style="color: var(--text);">Use the Service lawfully.</strong> Do not use perceptdot for any purpose that violates applicable laws or regulations.</li>
     <li><strong style="color: var(--text);">Avoid abuse.</strong> Do not attempt to circumvent rate limits, reverse-engineer the Service, or use the Service in a manner that could damage or impair it.</li>
     <li><strong style="color: var(--text);">Maintain accurate account information.</strong> Keep your account details up to date and notify us promptly of any unauthorized access.</li>
-    <li><strong style="color: var(--text);">Comply with third-party terms.</strong> Your use of integrated services (GA4, Vercel, Sentry, GitHub) is subject to their respective terms of service and privacy policies.</li>
+    <li><strong style="color: var(--text);">Comply with third-party terms.</strong> You must have the right to submit the URLs you check, and you must not submit pages that contain personal data.</li>
   </ul>
 
   <hr class="section-divider" />

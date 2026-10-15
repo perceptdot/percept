@@ -36,7 +36,7 @@ Supported viewports: **desktop** (1280px, default) · **tablet** (768px) · **mo
 Re-check https://mysite.com — ignore cache
 ```
 
-Cached results return in ~0.3s. Use `no_cache: true` after a fix to see the latest state.
+Cached results return in ~0.3s. Results are cached up to 10 minutes per URL and viewport. Use `no_cache: true` after a fix to see the latest state.
 
 ---
 
@@ -48,7 +48,7 @@ Cached results return in ~0.3s. Use `no_cache: true` after a fix to see the late
 No layout bugs, overflow issues, or clipped elements found.
 
 Full-page scan complete — 3 tiles analyzed (desktop) in 4.2s
-Cost: $0.000620 | Credits used: 3
+Credits used: 3
 ```
 
 ```
@@ -61,7 +61,7 @@ Issues:
   [MED]  Footer text is clipped at narrow widths
 
 Full-page scan complete — 5 tiles analyzed (desktop) in 9.8s
-Cost: $0.001033 | Credits used: 5
+Credits used: 5
 ```
 
 ---
@@ -90,7 +90,7 @@ That result was accurate — send feedback
 That was a false positive — send feedback
 ```
 
-Your AI uses the `percept_feedback` tool to submit the rating. **Accurate feedback earns bonus credits** and helps improve detection quality.
+Your AI submits the rating for you. Feedback earns a **one-time +100 credit bonus** (monthly limit becomes 200) and helps improve detection quality.
 
 ---
 

@@ -2,12 +2,12 @@
 
 > AI-powered visual QA for every deployment — catch UI bugs automatically, headless, in CI/CD.
 
-[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-perceptdot%20Visual%20Check-blue?logo=github)](https://github.com/marketplace/actions/perceptdot-visual-check)
+[![Source](https://img.shields.io/badge/source-perceptdot%2Fpercept%2Feye--action-blue?logo=github)](https://github.com/perceptdot/percept/tree/main/eye-action)
 
 ## What it does
 
 1. Takes a screenshot of your deployed URL using headless Chrome
-2. Runs AI visual analysis (detects layout breaks, overflow, missing images, z-index issues, etc.)
+2. Runs a DOM audit and AI visual analysis of each 1280×1600 px tile (layout breaks, overflow, broken images, low contrast, etc.)
 3. Posts results as a PR comment with severity breakdown
 4. Optionally fails the workflow if issues are found
 
@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: perceptdot Visual Check
-        uses: perceptdot/eye-action@v1
+        uses: perceptdot/percept/eye-action@v1.0.0
         with:
           url: 'https://your-preview-url.vercel.app'
-          api_key: ${{ secrets.PERCEPTDOT_API_KEY }}
+          api_key: ${{ secrets.PERCEPT_API_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -51,10 +51,10 @@ jobs:
           vercel_project_id: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: perceptdot Visual Check
-        uses: perceptdot/eye-action@v1
+        uses: perceptdot/percept/eye-action@v1.0.0
         with:
           url: ${{ steps.vercel.outputs.preview_url }}
-          api_key: ${{ secrets.PERCEPTDOT_API_KEY }}
+          api_key: ${{ secrets.PERCEPT_API_KEY }}
           fail_on_issue: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -83,21 +83,25 @@ jobs:
 
 URL: https://my-app.vercel.app
 
-No visual issues detected. The layout renders correctly at 1280×800.
+No visual issues detected. The layout renders correctly.
 
-> Checked in 7400ms · Cost: $0.000012
+> Checked in 7.1s · 1 credit
 
 Powered by perceptdot
 ```
 
 ## Get your API key
 
-Free at [perceptdot.com](https://perceptdot.com) — no credit card required.
+Free at [perceptdot.com](https://perceptdot.com): 100 credits per month, no credit card. Store it as the repository secret `PERCEPT_API_KEY`.
+
+1 credit = 1 tile (a 1280×1600 px slice of the page). A short page is about 1 credit, a long landing page 3–5 credits. A check takes about 7 seconds for a typical page, up to ~20 seconds for long pages.
 
 Or via Claude Code:
 ```
-claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp
+claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"
 ```
+
+Privacy: screenshots are sent to Google (Gemini API) and Cloudflare (Workers AI, fallback) for analysis and are not stored. Analysis results (never screenshots) are cached up to 10 minutes per URL. Google may use data sent to unpaid Gemini API tiers to improve its products, so do not check pages with personal data.
 
 ## License
 

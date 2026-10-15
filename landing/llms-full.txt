@@ -27,26 +27,25 @@ X-Percept-Key: YOUR_API_KEY
 
 {
   "url": "https://your-preview-url.vercel.app",
-  "viewport": "1280x720",
-  "waitFor": 2000
+  "viewport": "desktop",
+  "full_page": true
 }
 ```
 
 Response (structured JSON):
 ```json
 {
-  "status": "completed",
-  "findings": [
-    {
-      "severity": "HIGH",
-      "element": ".pricing-card:nth-child(2)",
-      "issue": "Text overflow outside card boundary",
-      "suggestion": "Add overflow: hidden or reduce font-size"
-    }
+  "ok": true,
+  "has_issues": true,
+  "summary": "Pricing card text overflows its container.",
+  "issues": [
+    { "severity": "high", "description": ".pricing-card:nth-child(2) text overflows card boundary", "tile_index": 0 }
   ],
-  "screenshot_analyzed": true,
-  "duration_ms": 7400,
-  "cost_usd": 0.000012
+  "dom_issues": [],
+  "tiles_analyzed": 1,
+  "credits_used": 1,
+  "quota_remaining": 99,
+  "duration_ms": 7100
 }
 ```
 
@@ -57,13 +56,21 @@ Endpoint: https://mcp.perceptdot.com/mcp
 
 Install in Claude Code:
 ```bash
-claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"
 ```
 
-Available MCP tools:
-- `visual_check` — screenshot + AI analysis of any URL
-- `percept_feedback` — submit product feedback
-- `percept_roi_summary` — usage and ROI metrics
+Available MCP tool:
+- `visual_check` — screenshot + AI analysis of any URL (inputs: url, prompt, viewport, no_cache)
+
+Cursor (~/.cursor/mcp.json):
+```json
+{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"YOUR_KEY"}}}}
+```
+
+Windsurf (~/.codeium/windsurf/mcp_config.json):
+```json
+{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"YOUR_KEY"}}}}
+```
 
 ## GitHub Action
 
@@ -75,34 +82,30 @@ jobs:
     if: github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
-      - uses: perceptdot/visual-check-action@v1
+      - uses: perceptdot/percept/eye-action@v1.0.0
         with:
           url: ${{ github.event.deployment_status.target_url }}
-          api-key: ${{ secrets.PERCEPTDOT_API_KEY }}
+          api_key: ${{ secrets.PERCEPT_API_KEY }}
+          # fail_on_issue: true   # optional
 ```
 
-## Additional MCP Servers
+## Legacy packages
 
-perceptdot also provides read-only MCP servers for external services:
+@perceptdot/ga4, vercel, github, sentry and core belong to an earlier product and are no longer maintained.
 
-| Package | Service | Key Metrics |
-|---------|---------|-------------|
-| @perceptdot/ga4 | Google Analytics 4 | Realtime users, top pages, events, bounce rate |
-| @perceptdot/vercel | Vercel | Deployment status, project list, latest deploy |
-| @perceptdot/github | GitHub | Open PRs, issues, CI workflow status |
-| @perceptdot/sentry | Sentry | Unresolved production errors |
-
-Each server includes built-in ROI tracking: tokens saved, time recovered, cost avoided.
+OpenAPI spec: https://perceptdot.com/openapi.json
 
 ## Pricing
 
-| Plan | Price | Checks/month | Features |
-|------|-------|-------------|----------|
-| Free | $0 | 100 | All features, no credit card |
-| Pro | $19/mo | 10,000 | Priority support |
-| Unlimited | $49/mo | Unlimited | Priority support, SLA |
+1 credit = 1 tile = a 1280×1600 px slice of the page. A short page is about 1 credit, a long landing page about 3–5 credits. About 7 seconds for a typical page, up to ~20 seconds for long pages.
 
-Unit economics: ~$0.002 cost per check (Cloudflare Browser Rendering + Gemini 2.5 Flash).
+| Plan | Price | Credits/month | Status |
+|------|-------|---------------|--------|
+| Free | $0 | 100 (+100 one-time bonus after feedback; resets on the 1st, UTC) | Available, no credit card |
+| Pro | $19/mo | 10,000 | Coming Soon |
+| Team | $49/mo | 30,000 (fair use) | Coming Soon |
+
+Payments are handled by Paddle.
 
 ## Architecture
 
@@ -114,8 +117,8 @@ Client (MCP / REST API / GitHub Action)
   → Structured JSON response
 ```
 
-- No screenshots stored — captured, analyzed, discarded
-- No preview URLs logged
+- Screenshots are not stored. Analysis results (summary and issues, never screenshots) are cached for up to 10 minutes per URL and viewport
+- Screenshots are sent to Google (Gemini API) and Cloudflare (Workers AI, fallback). Google may use data sent to unpaid Gemini API tiers to improve its products, so do not check pages containing personal data
 - Edge-deployed globally via Cloudflare Workers
 - MCP protocol: Anthropic standard, streamable HTTP transport
 
@@ -128,7 +131,7 @@ Client (MCP / REST API / GitHub Action)
 | CI/CD native | Yes | No | Yes |
 | MCP integration | Yes | No | No |
 | Structured findings | Yes | No | No |
-| Cost per check | $0.000012 | ~$0.05+ | Free (no analysis) |
+| Pricing | Free 100 credits/month | n/a | Free (no analysis) |
 
 ## Links
 
@@ -136,7 +139,7 @@ Client (MCP / REST API / GitHub Action)
 - API: https://api.perceptdot.com
 - MCP: https://mcp.perceptdot.com/mcp
 - Docs: https://perceptdot.gitbook.io/perceptdot
-- npm: https://www.npmjs.com/org/perceptdot
+- OpenAPI: https://perceptdot.com/openapi.json
 - GitHub: https://github.com/perceptdot/percept
 - Email: service@perceptdot.com
 - X/Twitter: https://x.com/perceptdot

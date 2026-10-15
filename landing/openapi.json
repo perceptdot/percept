@@ -1,0 +1,336 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "perceptdot API",
+    "version": "1.0.0",
+    "description": "AI Visual QA. Screenshots a page with Cloudflare Browser Rendering and finds layout bugs with Gemini 2.5 Flash. 1 credit = 1 tile (a 1280x1600 px slice of the page). A short page is about 1 credit, a long landing page about 3-5 credits. Typical latency is about 7 seconds, up to ~20 seconds for long pages."
+  },
+  "servers": [
+    {
+      "url": "https://api.perceptdot.com"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "PerceptKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Percept-Key"
+      }
+    },
+    "schemas": {
+      "Issue": {
+        "type": "object",
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "tile_index": {
+            "type": "integer",
+            "description": "Index of the page tile where the issue was found"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/eye/check": {
+      "post": {
+        "operationId": "visualCheck",
+        "summary": "Screenshot a URL and find visual bugs",
+        "security": [
+          {
+            "PerceptKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "url"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Publicly reachable http(s) URL"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "description": "Optional focus for the AI review. Custom prompts skip the result cache."
+                  },
+                  "viewport": {
+                    "type": "string",
+                    "enum": [
+                      "desktop",
+                      "tablet",
+                      "mobile"
+                    ],
+                    "default": "desktop"
+                  },
+                  "full_page": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Analyze the whole page as tiles instead of only the top"
+                  },
+                  "no_cache": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Bypass the 10-minute result cache"
+                  },
+                  "include_screenshot": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Return the first tile screenshot to the caller (never stored)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analysis result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "has_issues": {
+                      "type": "boolean"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "issues": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Issue"
+                      }
+                    },
+                    "dom_issues": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "description": "Deterministic DOM audit findings (viewport overflow, broken images, parent overflow, low contrast)"
+                    },
+                    "tiles_analyzed": {
+                      "type": "integer"
+                    },
+                    "credits_used": {
+                      "type": "integer"
+                    },
+                    "quota_remaining": {
+                      "type": "integer",
+                      "description": "Credits left this month"
+                    },
+                    "cost_usd": {
+                      "type": "number",
+                      "description": "Internal cost estimate, informational only"
+                    },
+                    "duration_ms": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON, missing or invalid url, or private/localhost URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Monthly credit limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Browser rendering or AI analysis temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/quota": {
+      "get": {
+        "operationId": "getQuota",
+        "summary": "Credits used and remaining this month",
+        "security": [
+          {
+            "PerceptKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quota",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plan": {
+                      "type": "string"
+                    },
+                    "quota_total": {
+                      "type": "integer"
+                    },
+                    "calls_used": {
+                      "type": "integer",
+                      "description": "Credits used this month"
+                    },
+                    "quota_remaining": {
+                      "type": "integer"
+                    },
+                    "reset_date": {
+                      "type": "string",
+                      "description": "Next monthly reset (1st of the month, UTC)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API key missing"
+          },
+          "404": {
+            "description": "Invalid API key"
+          }
+        }
+      }
+    },
+    "/v1/free-key": {
+      "post": {
+        "operationId": "createFreeKey",
+        "summary": "Get a free API key (100 credits/month, no card)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New email: key created and returned as api_key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "api_key": {
+                      "type": "string",
+                      "description": "Only returned for new emails"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "This email already has a key. The key is only re-sent by email and is not returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "plan": {
+                      "type": "string"
+                    },
+                    "email_sent": {
+                      "type": "boolean"
+                    },
+                    "note": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid email"
+          },
+          "429": {
+            "description": "Rate limited"
+          },
+          "409": {
+            "description": "Email already has a paid plan key"
+          }
+        }
+      }
+    }
+  }
+}

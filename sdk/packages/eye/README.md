@@ -7,7 +7,7 @@
 
 **Remote MCP (no install, recommended):**
 ```bash
-claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"
+claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"
 ```
 
 **Local stdio (this package):**
@@ -28,7 +28,9 @@ claude mcp add perceptdot-eye -e PERCEPT_API_KEY=YOUR_KEY -- npx -y @perceptdot/
 }
 ```
 
-Free key (200 checks, no card): https://perceptdot.com
+Free key (100 credits/month, no card; +100 one-time bonus after feedback): https://perceptdot.com
+
+1 credit = 1 tile (a 1280×1600 px slice of the page). A short page is about 1 credit, a long landing page 3–5 credits. About 7 seconds for a typical page, up to ~20 seconds for long pages.
 
 ## Tools
 
@@ -58,8 +60,8 @@ Call it at session end and include the numbers in your report to your human.
 | response | meaning | what to do |
 |----------|---------|-----------|
 | `401` | invalid key | Tell human: check key at perceptdot.com |
-| `402` | out of credits | Tell human: upgrade at perceptdot.com (Pro $19/mo) |
+| `402` | out of credits | Tell human: add credits at perceptdot.com (Pro $19/mo and Team $49/mo are Coming Soon) |
 | `429 → auto-retry` | rate limit | Already retried 4× with backoff — wait, then retry once |
 
 ---
-MIT · https://perceptdot.com · part of the `@perceptdot/*` MCP family (core, ga4, vercel, sentry, github)
+MIT · https://perceptdot.com · ga4, vercel, sentry, github and core belong to an earlier product and are no longer maintained

@@ -5,7 +5,7 @@
   <meta name="pickedby-site-verification" content="pba-ftr8if9or3291d2z" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>perceptdot — AI catches visual bugs your code can't see</title>
-  <meta name="description" content="Your AI writes code fast — but does it look right? perceptdot takes a screenshot and finds visual bugs in 7 seconds. Works in Claude Code, Cursor, GitHub Actions. Free 100 credits/month." />
+  <meta name="description" content="Your AI writes code fast — but does it look right? perceptdot takes a screenshot and finds visual bugs in about 7 seconds. Works in Claude Code, Cursor, GitHub Actions. Free 100 credits/month." />
   <meta name="robots" content="index, follow" />
   <meta property="og:title" content="perceptdot — AI Visual QA for CI/CD | Layout Bug Detection" />
   <meta property="og:description" content="visual_check() catches layout bugs before users do — headless screenshot + AI analysis on every deploy. Works in GitHub Actions and MCP servers." />
@@ -69,13 +69,13 @@
         "@type": "Offer",
         "price": "19",
         "priceCurrency": "USD",
-        "description": "Pro — 10,000 checks/month"
+        "description": "Pro — 10,000 credits/month (Coming Soon)"
       },
       {
         "@type": "Offer",
         "price": "49",
         "priceCurrency": "USD",
-        "description": "Unlimited — unlimited checks/month"
+        "description": "Team — 30,000 credits/month, fair use (Coming Soon)"
       }
     ],
     "provider": {
@@ -127,7 +127,7 @@
         "name": "What does it cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Free plan includes 100 credits per month — no credit card required. Each page uses 1 credit per viewport tile (a short page = 1 credit, a long landing page = 3-5 credits). Pro is $19/month for 10,000 credits. Unlimited is $49/month for unlimited credits plus priority support."
+          "text": "Free plan includes 100 credits per month — no credit card required. Each page uses 1 credit per viewport tile (a short page = 1 credit, a long landing page = 3-5 credits). A one-time +100 credit bonus is available after submitting feedback. Pro ($19/month, 10,000 credits) and Team ($49/month, 30,000 credits, fair use) are Coming Soon."
         }
       },
       {
@@ -135,7 +135,7 @@
         "name": "How fast is a visual check?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "A visual_check() call completes in approximately 7.4 seconds and costs $0.000012 per check. That is screenshot capture via headless browser plus AI analysis combined."
+          "text": "A visual_check() call completes in about 7 seconds for a typical page, and up to ~20 seconds for long pages. That is screenshot capture via headless browser plus AI analysis combined."
         }
       },
       {
@@ -143,7 +143,7 @@
         "name": "Do you store screenshots?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. Screenshots are captured, analyzed by AI, and discarded immediately. Nothing is stored on perceptdot servers. Your preview URLs are never logged."
+          "text": "No. Screenshots are captured, sent for AI analysis, and not stored. Only the analysis result (summary and issues, never the screenshot) is cached for up to 10 minutes per URL and viewport to speed up repeat checks."
         }
       }
     ]
@@ -1664,7 +1664,7 @@
       <div class="terminal-body">
         <div><span class="t-prompt">$</span> <span class="t-cmd">visual_check(<span class="t-str">"https://preview.vercel.app/login"</span>)</span></div>
         <span class="t-blank"></span>
-        <div><span class="t-dim">&#128247; Screenshot taken (1280&times;800) &middot; 6.8s &middot; $0.000012</span></div>
+        <div><span class="t-dim">&#128247; Screenshot taken (1280&times;800) &middot; 7.1s &middot; 1 credit</span></div>
         <span class="t-blank"></span>
         <div><span class="t-red t-bold">&#128308; 3 visual issues found</span></div>
         <span class="t-blank"></span>
@@ -1738,19 +1738,19 @@
       </div>
       <div class="hero-code" id="tab-claude">
         <span class="code-comment"># Replace YOUR_KEY with your API key</span><br>
-        <span class="code-cmd">claude mcp add</span> <span class="code-cmd">--transport http</span> perceptdot <span class="code-str">"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"</span>
+        <span class="code-cmd">claude mcp add</span> <span class="code-cmd">--transport http</span> perceptdot <span class="code-str">https://mcp.perceptdot.com/mcp</span> <span class="code-cmd">--header</span> <span class="code-str">"X-Percept-Key: <span class="code-key">YOUR_KEY</span>"</span>
       </div>
       <div class="hero-code" id="tab-cursor" style="display:none">
         <span class="code-comment"># Add to ~/.cursor/mcp.json</span><br>
-        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"}}}</span>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"<span class="code-key">YOUR_KEY</span>"}}}}</span>
       </div>
       <div class="hero-code" id="tab-windsurf" style="display:none">
         <span class="code-comment"># Add to ~/.codeium/windsurf/mcp_config.json</span><br>
-        <span class="code-str">{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>"}}}</span>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"<span class="code-key">YOUR_KEY</span>"}}}}</span>
       </div>
       <div class="hero-code" id="tab-cline" style="display:none">
         <span class="code-comment"># Cline MCP settings (VS Code extension)</span><br>
-        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=<span class="code-key">YOUR_KEY</span>","transport":"http"}}}</span>
+        <span class="code-str">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp","transport":"http","headers":{"X-Percept-Key":"<span class="code-key">YOUR_KEY</span>"}}}}</span>
       </div>
     </div>
   </section>
@@ -1788,7 +1788,7 @@
           <li><span class="li-icon">&#10003;</span> AI agent calls visual_check() &mdash; sees its own work</li>
           <li><span class="li-icon">&#10003;</span> Catches layout bugs before users do, on every deploy</li>
           <li><span class="li-icon">&#10003;</span> Works in GitHub Actions, Claude Code, Cursor, any MCP client</li>
-          <li><span class="li-icon">&#10003;</span> 7 seconds &middot; $0.000012 per check &middot; fully headless</li>
+          <li><span class="li-icon">&#10003;</span> About 7 seconds &middot; 1 credit per tile &middot; fully headless</li>
         </ul>
       </div>
     </div>
@@ -1803,7 +1803,7 @@
         <span class="section-label">GitHub Action</span>
         <h2>Works in GitHub Actions too.</h2>
         <p>Every PR gets a visual QA pass before merge. No MCP client needed &mdash; just add the action to your workflow file.</p>
-        <a href="https://github.com/perceptdot/eye-action" target="_blank" rel="noopener" class="btn btn-outline">View on GitHub &nbsp;&#8599;</a>
+        <a href="https://github.com/perceptdot/percept/tree/main/eye-action" target="_blank" rel="noopener" class="btn btn-outline">View on GitHub &nbsp;&#8599;</a>
       </div>
 
       <div class="fade-up fade-up-d1">
@@ -1822,10 +1822,10 @@
             &nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">runs-on:</span> <span class="y-val">ubuntu-latest</span><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">steps:</span><br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">- name:</span> <span class="y-val">perceptdot Visual Check</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">uses:</span> <span class="y-anchor">perceptdot/eye-action@v1</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">uses:</span> <span class="y-anchor">perceptdot/percept/eye-action@v1.0.0</span><br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">with:</span><br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">url:</span> <span class="y-str">${{ steps.vercel.outputs.preview_url }}</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">api_key:</span> <span class="y-str">${{ secrets.PERCEPTDOT_API_KEY }}</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">api_key:</span> <span class="y-str">${{ secrets.PERCEPT_API_KEY }}</span><br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">env:</span><br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y-key">GITHUB_TOKEN:</span> <span class="y-str">${{ secrets.GITHUB_TOKEN }}</span>
           </div>
@@ -1839,7 +1839,7 @@
           </div>
           <div class="pr-comment-body">
             <p>No visual issues detected. Layout renders correctly at 1280&times;800.</p>
-            <div class="pr-meta">Checked in 7.4s &middot; Cost: $0.000012 &middot; Powered by perceptdot</div>
+            <div class="pr-meta">Checked in 7.1s &middot; Cost: 1 credit &middot; Powered by perceptdot</div>
           </div>
         </div>
       </div>
@@ -1888,7 +1888,7 @@
         <p class="pricing-desc">For teams shipping fast. Full automation on every PR.</p>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li><span class="feat-icon">&#10003;</span> 10,000 checks / month</li>
+          <li><span class="feat-icon">&#10003;</span> 10,000 credits / month</li>
           <li><span class="feat-icon">&#10003;</span> Everything in Free</li>
           <li><span class="feat-icon">&#10003;</span> PR auto-comments</li>
           <li><span class="feat-icon">&#10003;</span> Custom AI prompts</li>
@@ -1897,18 +1897,18 @@
         <button class="btn btn-primary pricing-cta" disabled style="opacity:0.45;cursor:not-allowed;">Coming Soon</button>
       </div>
 
-      <!-- Unlimited -->
+      <!-- Team -->
       <div class="pricing-card fade-up fade-up-d2">
-        <div class="pricing-plan">Unlimited</div>
+        <div class="pricing-plan">Team</div>
         <div class="pricing-price">
           <span class="price-currency">$</span>
           <span class="price-amount">49</span>
           <span class="price-period">&nbsp;/ month</span>
         </div>
-        <p class="pricing-desc">For power users shipping fast. No caps, ever.</p>
+        <p class="pricing-desc">For teams with heavy CI usage. Fair use applies.</p>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li><span class="feat-icon">&#10003;</span> Unlimited checks</li>
+          <li><span class="feat-icon">&#10003;</span> 30,000 credits / month (fair use)</li>
           <li><span class="feat-icon">&#10003;</span> Everything in Pro</li>
           <li><span class="feat-icon">&#10003;</span> Webhook notifications</li>
           <li><span class="feat-icon">&#10003;</span> Custom AI prompts</li>
@@ -1924,12 +1924,11 @@
   <!-- ===================== 7. SOCIAL PROOF ===================== -->
   <section class="section" id="social-proof">
     <div class="section-header">
-      <span class="section-label">Trusted By</span>
+      <span class="section-label">Listed on</span>
       <h2>Built for the MCP ecosystem.</h2>
     </div>
     <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;align-items:center;">
       <a href="https://github.com/punkpeye/awesome-mcp-servers" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:14px;">Listed on awesome-mcp-servers</a>
-      <a href="https://www.npmjs.com/org/perceptdot" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:14px;">5 npm packages published</a>
       <a href="https://glama.ai/mcp/servers" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:14px;">Glama MCP Directory</a>
     </div>
   </section>
@@ -2006,7 +2005,7 @@
         </button>
         <div class="faq-a">
           <div class="faq-a-inner">
-            Free plan includes 100 credits per month &mdash; no credit card required. Each page uses 1 credit per viewport tile (a short page = 1 credit, a long landing page = 3&ndash;5 credits). Pro is $19/month for 10,000 credits. Unlimited is $49/month for unlimited credits plus priority support.
+            Free plan includes 100 credits per month &mdash; no credit card required. Each page uses 1 credit per viewport tile (a short page = 1 credit, a long landing page = 3&ndash;5 credits). A one-time +100 credit bonus is available after submitting feedback. Pro ($19/month, 10,000 credits) and Team ($49/month, 30,000 credits, fair use) are Coming Soon.
           </div>
         </div>
       </div>
@@ -2018,7 +2017,7 @@
         </button>
         <div class="faq-a">
           <div class="faq-a-inner">
-            A <code style="font-family:var(--mono);color:var(--accent);font-size:13px;">visual_check()</code> call completes in approximately 7.4 seconds and costs $0.000012 per check. That includes headless browser screenshot capture plus Gemini 2.5 Flash AI analysis, combined.
+            A <code style="font-family:var(--mono);color:var(--accent);font-size:13px;">visual_check()</code> call completes in about 7 seconds for a typical page, and up to ~20 seconds for long pages. That includes headless browser screenshot capture plus Gemini 2.5 Flash AI analysis, combined.
           </div>
         </div>
       </div>
@@ -2030,7 +2029,7 @@
         </button>
         <div class="faq-a">
           <div class="faq-a-inner">
-            No. Screenshots are captured, analyzed by AI, and discarded immediately. Nothing is stored on perceptdot servers. Your preview URLs are never logged or retained.
+            No. Screenshots are captured, sent to Google (Gemini API) and, as a fallback, Cloudflare (Workers AI) for analysis, and are not stored. Only the analysis result (summary and issues, never the screenshot) is cached for up to 10 minutes per URL and viewport to speed up repeat checks. Google may use data sent to unpaid Gemini API tiers to improve its products, so please do not check pages that contain personal data.
           </div>
         </div>
       </div>
@@ -2096,15 +2095,15 @@
         <code id="free-key-display"></code>
         <div class="mcp-install-cmd">
           <p>Claude Code:</p>
-          <code id="modal-cmd-claude" style="font-size:11px;word-break:break-all;">claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"</code>
+          <code id="modal-cmd-claude" style="font-size:11px;word-break:break-all;">claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"</code>
         </div>
         <div class="mcp-install-cmd" style="margin-top:10px;">
           <p>Cursor (~/.cursor/mcp.json):</p>
-          <code id="modal-cmd-cursor" style="font-size:11px;word-break:break-all;">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"}}}</code>
+          <code id="modal-cmd-cursor" style="font-size:11px;word-break:break-all;">{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"YOUR_KEY"}}}}</code>
         </div>
         <div class="mcp-install-cmd" style="margin-top:10px;">
           <p>Windsurf (~/.codeium/windsurf/mcp_config.json):</p>
-          <code id="modal-cmd-windsurf" style="font-size:11px;word-break:break-all;">{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"}}}</code>
+          <code id="modal-cmd-windsurf" style="font-size:11px;word-break:break-all;">{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"YOUR_KEY"}}}}</code>
         </div>
         <div class="mcp-install-cmd" style="margin-top:10px;">
           <p>Or call the API directly:</p>
@@ -2128,13 +2127,13 @@
     </div>
   </div>
 
-  <!-- Unlimited Modal -->
-  <div class="modal-overlay" id="modal-unlimited" onclick="handleOverlayClick(event, 'modal-unlimited')">
+  <!-- Team Modal -->
+  <div class="modal-overlay" id="modal-team" onclick="handleOverlayClick(event, 'modal-team')">
     <div class="modal">
-      <button class="modal-close" onclick="closeUnlimitedModal()" aria-label="Close">&times;</button>
-      <h3>perceptdot Unlimited &mdash; $49/month</h3>
-      <p class="modal-sub" id="unlimited-modal-sub">Redirecting to secure checkout&hellip;</p>
-      <div id="unlimited-modal-body" style="text-align:center;padding:16px 0;">
+      <button class="modal-close" onclick="closeTeamModal()" aria-label="Close">&times;</button>
+      <h3>perceptdot Team &mdash; $49/month</h3>
+      <p class="modal-sub" id="team-modal-sub">Redirecting to secure checkout&hellip;</p>
+      <div id="team-modal-body" style="text-align:center;padding:16px 0;">
         <div class="spinner" style="margin:0 auto 16px;"></div>
         <p style="font-size:13px;color:var(--muted);">Opening Paddle checkout&hellip;</p>
       </div>
@@ -2168,7 +2167,7 @@
   <script>
     // ---- Paddle config ----
     const PADDLE_PRO_PRICE_ID = 'pri_01kmg45jn3dx41vcz3hxemjwkz';
-    const PADDLE_UNLIMITED_PRICE_ID = 'pri_01kmg8vwgm41gkycqn9y5fhzem';
+    const PADDLE_TEAM_PRICE_ID = 'pri_01kmg8vwgm41gkycqn9y5fhzem';
 
     // Initialize Paddle once on load
     window.addEventListener('load', () => {
@@ -2236,24 +2235,24 @@
 
     function closeProModal() { closeModal('modal-pro'); }
 
-    function openUnlimitedModal() {
-      openModal('modal-unlimited');
-      gtag('event', 'open_unlimited_modal', { event_category: 'engagement' });
+    function openTeamModal() {
+      openModal('modal-team');
+      gtag('event', 'open_team_modal', { event_category: 'engagement' });
       setTimeout(() => {
-        if (PADDLE_UNLIMITED_PRICE_ID) {
+        if (PADDLE_TEAM_PRICE_ID) {
           try {
-            Paddle.Checkout.open({ items: [{ priceId: PADDLE_UNLIMITED_PRICE_ID, quantity: 1 }] });
-            closeModal('modal-unlimited');
+            Paddle.Checkout.open({ items: [{ priceId: PADDLE_TEAM_PRICE_ID, quantity: 1 }] });
+            closeModal('modal-team');
           } catch (e) {
-            showPaddleFallback('unlimited-modal-body', 'unlimited-modal-sub', 'Unlimited');
+            showPaddleFallback('team-modal-body', 'team-modal-sub', 'Team');
           }
         } else {
-          showPaddleFallback('unlimited-modal-body', 'unlimited-modal-sub', 'Unlimited');
+          showPaddleFallback('team-modal-body', 'team-modal-sub', 'Team');
         }
       }, 300);
     }
 
-    function closeUnlimitedModal() { closeModal('modal-unlimited'); }
+    function closeTeamModal() { closeModal('modal-team'); }
 
     function showPaddleFallback(bodyId, subId, plan) {
       document.getElementById(bodyId).innerHTML =
@@ -2314,13 +2313,18 @@
 
         if (res.ok) {
           const data = await res.json();
-          const key = data.key || data.api_key || 'pdot_' + Math.random().toString(36).slice(2, 18);
+          const key = data.key || data.api_key;
+          if (!key) {
+            errorEl.textContent = 'This email already has a key. We sent it to your inbox again.';
+            errorEl.classList.add('show');
+            return;
+          }
           document.getElementById('free-form').style.display = 'none';
           document.getElementById('free-key-display').textContent = key;
           // Update install commands with actual key
-          document.getElementById('modal-cmd-claude').textContent = 'claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=' + key + '"';
-          document.getElementById('modal-cmd-cursor').textContent = '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=' + key + '"}}}';
-          document.getElementById('modal-cmd-windsurf').textContent = '{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp?api_key=' + key + '"}}}';
+          document.getElementById('modal-cmd-claude').textContent = 'claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: ' + key + '"';
+          document.getElementById('modal-cmd-cursor').textContent = '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"' + key + '"}}}}';
+          document.getElementById('modal-cmd-windsurf').textContent = '{"mcpServers":{"perceptdot":{"serverUrl":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"' + key + '"}}}}';
           document.getElementById('modal-api-key-hint').textContent = key;
           document.getElementById('free-result').classList.add('show');
           gtag('event', 'free_key_success', { event_category: 'conversion' });
@@ -2345,8 +2349,8 @@
     let _waitlistPlan = 'pro';
     function openWaitlistModal(plan) {
       _waitlistPlan = plan;
-      const title = plan === 'pro' ? 'Join the Pro Waitlist' : 'Join the Unlimited Waitlist';
-      const sub = plan === 'pro' ? 'Pro ($19/mo) — 10,000 checks. We\'ll notify you when it\'s live.' : 'Unlimited ($49/mo) — unlimited checks. We\'ll notify you when it\'s live.';
+      const title = plan === 'pro' ? 'Join the Pro Waitlist' : 'Join the Team Waitlist';
+      const sub = plan === 'pro' ? 'Pro ($19/mo) — 10,000 credits/month. We\'ll notify you when it\'s live.' : 'Team ($49/mo) — 30,000 credits/month (fair use). We\'ll notify you when it\'s live.';
       document.getElementById('waitlist-title').textContent = title;
       document.getElementById('waitlist-sub').textContent = sub;
       document.getElementById('waitlist-form').style.display = '';
@@ -2388,7 +2392,7 @@
       if (e.key === 'Escape') {
         closeModal('modal-free');
         closeModal('modal-pro');
-        closeModal('modal-unlimited');
+        closeModal('modal-team');
         closeModal('modal-waitlist');
       }
     });
@@ -2434,7 +2438,7 @@
         <p style="margin-top:.8rem;">Please read these Terms of Service ("Terms") carefully before using perceptdot ("Service"), operated by THUNOVA ("Company," "we," "us"). By accessing or using the Service in any manner — including via API, MCP server, GitHub Action, or web interface — you ("User," "you") agree to be bound by these Terms in their entirety. If you do not agree, do not use the Service.</p>
 
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">1. Description of Service</strong><br>
-        perceptdot provides AI-powered visual quality assurance ("Visual QA") tools that capture screenshots of web pages and analyze them using artificial intelligence. The Service is provided via REST API, Model Context Protocol (MCP) server, GitHub Action, and related integrations. We offer Free (100 credits/month), Pro ($19/month, 10,000 credits), and Unlimited ($49/month, unlimited credits) plans. Plan features, limits, and pricing are subject to change at our sole discretion.</p>
+        perceptdot provides AI-powered visual quality assurance ("Visual QA") tools that capture screenshots of web pages and analyze them using artificial intelligence. The Service is provided via REST API, Model Context Protocol (MCP) server, GitHub Action, and related integrations. We offer Free (100 credits/month), Pro ($19/month, 10,000 credits), and Team ($49/month, 30,000 credits, fair use) plans. Pro and Team are Coming Soon. One credit is one tile (a 1280×1600 px slice of the page). Plan features, limits, and pricing are subject to change at our sole discretion.</p>
 
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">2. Account Registration and Eligibility</strong><br>
         You must provide a valid email address to obtain an API key. You represent that (a) you are at least 18 years old or the age of majority in your jurisdiction; (b) you have the legal authority to enter into these Terms; and (c) all information you provide is accurate and current. You are solely responsible for maintaining the confidentiality of your API key and for all activity that occurs under your account. Immediately notify us at service@perceptdot.com of any unauthorized use.</p>
@@ -2512,7 +2516,7 @@
         For users in the European Economic Area or United Kingdom, our legal bases for processing personal data are: (a) performance of a contract — to provide the Service you requested; (b) legitimate interests — fraud prevention, security, product improvement, and analytics; (c) compliance with legal obligations; and (d) consent, where separately obtained. You may withdraw consent at any time without affecting prior lawful processing.</p>
 
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">4. Screenshots and Visual Data</strong><br>
-        Screenshots captured during visual_check() calls are processed in-memory within Cloudflare's infrastructure and are <strong style="color:var(--text);">not stored persistently</strong>. They are used exclusively to generate AI analysis results and are discarded upon completion of the request, typically within seconds. We do not index, store, or use screenshots for any purpose other than the immediate analysis request.</p>
+        Screenshots captured during visual_check() calls are processed in memory, sent to Google (Gemini API) and, as a fallback, Cloudflare (Workers AI) for analysis, and are <strong style="color:var(--text);">not stored</strong> by perceptdot. The analysis result (summary and issues, never the screenshot) is cached for up to 10 minutes per URL and viewport to speed up repeat checks. Google may use data sent to unpaid Gemini API tiers to improve its products, so do not check pages that contain personal data.</p>
 
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">5. Sharing of Information</strong><br>
         We do not sell, rent, or trade your personal data to third parties for their own marketing purposes. We may share information with:<br>
@@ -2560,7 +2564,7 @@
         <p style="margin-top:.8rem;">This Refund Policy governs all purchases made through perceptdot.com. By subscribing to a paid plan, you agree to the terms of this policy. All payments are processed by Paddle, our authorized reseller and merchant of record.</p>
 
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">1. Subscription Model</strong><br>
-        perceptdot offers monthly recurring subscriptions (Pro at $19/month; Team at $99/month). Subscriptions are prepaid — you pay for the upcoming month at the start of each billing cycle. Access to the subscribed plan continues until the end of the current billing period regardless of cancellation date.</p>
+        perceptdot offers monthly recurring subscriptions (Pro at $19/month; Team at $49/month). Subscriptions are prepaid — you pay for the upcoming month at the start of each billing cycle. Access to the subscribed plan continues until the end of the current billing period regardless of cancellation date.</p>
 
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">2. First-Purchase Refund Window</strong><br>
         We offer a <strong style="color:var(--text);">7-day refund</strong> on your first payment only, subject to the conditions below. To request a refund, email service@perceptdot.com within 7 calendar days of your initial charge with the subject line <em>"Refund Request — [your email]"</em>. We will process eligible refunds within 5–10 business days via the original payment method. Paddle's own refund timelines may apply.</p>
@@ -2568,7 +2572,7 @@
         <p style="margin-top:1.2rem;"><strong style="color:var(--text);">3. Conditions for Refund Eligibility</strong><br>
         A refund request will be honored only if all of the following conditions are met:<br>
         &bull; The request is made within 7 calendar days of the first charge<br>
-        &bull; The account has consumed fewer than 500 API checks during the period<br>
+        &bull; The account has consumed fewer than 500 credits during the period<br>
         &bull; The account has not previously received a refund from THUNOVA<br>
         &bull; The account is not under investigation for or found to have violated the Terms of Service<br><br>
         We reserve the sole and absolute right to deny refund requests that do not meet all eligibility criteria or that we determine, at our discretion, to be abusive or in bad faith.</p>
@@ -2577,7 +2581,7 @@
         The following are expressly non-refundable:<br>
         &bull; Renewals after the first billing cycle<br>
         &bull; Partial months (we do not prorate for mid-cycle cancellations)<br>
-        &bull; Unused checks or unused plan features<br>
+        &bull; Unused credits or unused plan features<br>
         &bull; Accounts terminated for Terms of Service violations<br>
         &bull; Charges that occurred more than 7 days prior to the refund request<br>
         &bull; Dissatisfaction with AI analysis accuracy (AI outputs are provided as-is per Section 4 of our Terms)</p>

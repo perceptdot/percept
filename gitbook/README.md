@@ -37,8 +37,9 @@ Connect it to Claude Code or any MCP-compatible AI tool, and your agent can auto
 
 ## Performance
 
-- **5–20s** for a first scan (depends on page height)
-- **~0.3s** for cached results
+- **About 7 seconds** for a typical page, up to **~20 seconds** for long pages
+- **1 credit = 1 tile** (a 1280×1600px slice of the page)
+- **~0.3s** for cached results (analysis results are cached up to 10 minutes per URL and viewport)
 - Supports **desktop** (1280px) · **tablet** (768px) · **mobile** (375px)
 
 ---

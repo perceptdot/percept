@@ -3,7 +3,7 @@
   "name_for_human": "perceptdot — AI Visual QA",
   "name_for_model": "perceptdot",
   "description_for_human": "AI Visual QA for CI/CD. Catches layout bugs on every deploy with headless screenshots and AI analysis.",
-  "description_for_model": "perceptdot provides visual_check(url) which takes a headless screenshot of any URL using Cloudflare Browser Rendering and analyzes it with Gemini 2.5 Flash vision AI. Returns structured JSON with severity-rated findings (HIGH/MEDIUM/LOW), affected CSS selectors, and fix suggestions. Works via MCP (streamable HTTP at mcp.perceptdot.com/mcp), REST API (api.perceptdot.com/v1/eye/check), and GitHub Actions. No desktop or GUI required. ~7 seconds per check, $0.000012 per check.",
+  "description_for_model": "perceptdot provides visual_check(url): it screenshots a page with Cloudflare Browser Rendering (in 1280x1600 px tiles, 1 credit per tile) and finds layout bugs with Gemini 2.5 Flash, plus a deterministic DOM audit (viewport overflow, broken images, parent overflow, low contrast). Returns JSON with severity-rated issues (high/medium/low). Works via MCP (streamable HTTP at mcp.perceptdot.com/mcp), REST API (api.perceptdot.com/v1/eye/check) and a GitHub Action. About 7 seconds for a typical page, up to ~20 seconds for long pages. Free: 100 credits/month.",
   "auth": {
     "type": "api_key",
     "authorization_type": "custom_header",
@@ -11,7 +11,7 @@
   },
   "api": {
     "type": "openapi",
-    "url": "https://api.perceptdot.com/openapi.json"
+    "url": "https://perceptdot.com/openapi.json"
   },
   "logo_url": "https://perceptdot.com/logo-400x400.png",
   "contact_email": "service@perceptdot.com",

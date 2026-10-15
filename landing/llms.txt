@@ -6,11 +6,11 @@ perceptdot is an AI Visual QA platform for CI/CD pipelines and MCP-compatible AI
 
 ## What perceptdot Does
 
-- **visual_check(url)** → headless screenshot + AI visual analysis in ~7 seconds
+- **visual_check(url)** → headless screenshot + AI visual analysis in about 7 seconds for a typical page (up to ~20 seconds for long pages)
 - **visual_diff(url_a, url_b)** → before/after deploy comparison (coming soon)
 - Returns structured JSON: severity (HIGH/MEDIUM/LOW), affected elements, suggested fixes
 - Fully headless — no desktop, no GUI, runs anywhere including CI/CD
-- Cost: $0.000012 per check (100 checks/month free)
+- Usage: 1 credit = 1 tile (a 1280×1600 px slice of the page). A short page is about 1 credit, a long landing page 3–5 credits. Free: 100 credits/month
 
 ## Who Uses perceptdot
 
@@ -33,15 +33,15 @@ perceptdot is an AI Visual QA platform for CI/CD pipelines and MCP-compatible AI
 
 MCP (Claude Code):
 ```
-claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp
+claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"
 ```
 
 GitHub Action:
 ```yaml
-- uses: perceptdot/visual-check-action@v1
+- uses: perceptdot/percept/eye-action@v1.0.0
   with:
     url: ${{ env.PREVIEW_URL }}
-    api-key: ${{ secrets.PERCEPTDOT_API_KEY }}
+    api_key: ${{ secrets.PERCEPT_API_KEY }}
 ```
 
 REST API:
@@ -51,17 +51,9 @@ Header: X-Percept-Key: YOUR_KEY
 Body: {"url": "https://example.com"}
 ```
 
-npm:
-```
-npm install @perceptdot/eye
-```
+## Legacy packages
 
-## Also Available: MCP Service Servers
-
-- **@perceptdot/ga4** — Google Analytics 4 realtime data for AI agents
-- **@perceptdot/vercel** — Vercel deployment status monitoring
-- **@perceptdot/github** — GitHub PRs, issues, CI status
-- **@perceptdot/sentry** — Sentry error monitoring integration
+@perceptdot/ga4, vercel, github, sentry and core belong to an earlier product and are no longer maintained.
 
 ## Frequently Asked Questions
 
@@ -72,22 +64,23 @@ A: perceptdot is an AI-powered visual QA tool that takes headless screenshots of
 A: Playwright/Selenium check functionality (buttons click, forms submit). perceptdot checks visual appearance (layout breaks, overlapping elements, missing assets) using AI vision — no test scripts required.
 
 **Q: Does perceptdot work with Claude Code?**
-A: Yes. Add the MCP server with one command: `claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp`. Claude can then call visual_check() directly.
+A: Yes. Add the MCP server with one command: `claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"`. Claude can then call visual_check() directly.
 
 **Q: How much does it cost?**
-A: Free tier: 100 checks/month, no credit card. Pro: $19/month (10,000 checks). Unlimited: $49/month.
+A: Free: 100 credits/month, no credit card (+100 one-time bonus after submitting feedback). Pro: $19/month, 10,000 credits (Coming Soon). Team: $49/month, 30,000 credits, fair use (Coming Soon).
 
 **Q: What AI model does perceptdot use for analysis?**
 A: Gemini 2.5 Flash vision model for screenshot analysis. Cloudflare Browser Rendering for headless screenshots.
 
 **Q: Is perceptdot open source?**
-A: The MCP server packages are available on npm (@perceptdot/*). Core infrastructure is proprietary.
+A: The GitHub Action and SDK live in https://github.com/perceptdot/percept. Core infrastructure is proprietary.
 
 ## Pricing
 
-- Free: 100 checks/month, no credit card required
-- Pro: $19/month — 10,000 checks
-- Unlimited: $49/month — unlimited checks + priority support
+- Free: 100 credits/month, no credit card required. One-time +100 bonus after submitting feedback (monthly limit becomes 200). Resets on the 1st (UTC)
+- Pro: $19/month — 10,000 credits/month (Coming Soon)
+- Team: $49/month — 30,000 credits/month, fair use (Coming Soon)
+- 1 credit = 1 tile = a 1280×1600 px slice of the page
 
 ## Technical Details
 
@@ -95,7 +88,7 @@ A: The MCP server packages are available on npm (@perceptdot/*). Core infrastruc
 - AI Analysis: Gemini 2.5 Flash (vision model)
 - Backend: TypeScript + Hono on Cloudflare Workers
 - MCP Protocol: Anthropic MCP standard, streamable HTTP transport
-- Privacy: screenshots captured, analyzed, discarded — nothing stored permanently
+- Privacy: screenshots are sent to Google (Gemini API) and Cloudflare (Workers AI, fallback) for analysis and are not stored; analysis results (summary and issues, never screenshots) are cached up to 10 minutes per URL and viewport. Google may use data sent to unpaid Gemini API tiers to improve its products, so do not check pages with personal data
 
 ## Links
 
@@ -104,7 +97,7 @@ A: The MCP server packages are available on npm (@perceptdot/*). Core infrastruc
 - API: https://api.perceptdot.com
 - MCP Endpoint: https://mcp.perceptdot.com/mcp
 - Docs: https://perceptdot.gitbook.io/perceptdot
-- npm: https://www.npmjs.com/org/perceptdot
+- OpenAPI: https://perceptdot.com/openapi.json
 - GitHub: https://github.com/perceptdot/percept
 - Email: service@perceptdot.com
 

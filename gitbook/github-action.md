@@ -14,7 +14,7 @@ Every time you deploy, perceptdot takes a screenshot of your live URL and checks
 
 ### Step 1 — Get your API key
 
-Enter your email at [perceptdot.com](https://perceptdot.com) — key sent instantly.
+Enter your email at [perceptdot.com](https://perceptdot.com) — key sent instantly. The Free plan includes 100 credits per month (1 credit = 1 tile, a 1280×1600px slice of the page).
 
 ### Step 2 — Add the secret
 
@@ -45,7 +45,7 @@ jobs:
 
       # perceptdot visual check
       - name: Visual QA
-        uses: perceptdot/eye-action@v1
+        uses: perceptdot/percept/eye-action@v1.0.0
         with:
           url: ${{ steps.deploy.outputs.url }}
           api_key: ${{ secrets.PERCEPT_API_KEY }}
@@ -80,7 +80,7 @@ Set `fail_on_issue: 'true'` to automatically block merges when layout bugs are f
 
 ```yaml
 - name: Visual QA (blocking)
-  uses: perceptdot/eye-action@v1
+  uses: perceptdot/percept/eye-action@v1.0.0
   with:
     url: ${{ steps.deploy.outputs.url }}
     api_key: ${{ secrets.PERCEPT_API_KEY }}
@@ -101,7 +101,7 @@ Set `fail_on_issue: 'true'` to automatically block merges when layout bugs are f
     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
 
 - name: Visual QA on preview
-  uses: perceptdot/eye-action@v1
+  uses: perceptdot/percept/eye-action@v1.0.0
   with:
     url: ${{ steps.vercel.outputs.preview-url }}
     api_key: ${{ secrets.PERCEPT_API_KEY }}
@@ -118,6 +118,8 @@ After the workflow runs, click the **perceptdot Visual Check** step to see:
 - Credits used
 
 ---
+
+The action lives in the [`eye-action` folder of perceptdot/percept](https://github.com/perceptdot/percept/tree/main/eye-action).
 
 {% hint style="info" %}
 **Tip:** Use `fail_on_issue: 'false'` (default) during initial setup to observe results without blocking your pipeline. Switch to `'true'` once you're confident in the signal.
