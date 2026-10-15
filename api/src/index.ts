@@ -59,13 +59,6 @@ app.post("/v1/free-key", async (c) => {
   }
   await c.env.API_KEYS.put(rlKey, String(rlCount + 1), { expirationTtl: 3_600 });
 
-  // 전역 일일 상한: 하루 신규 무료 키 300개 (IP를 바꿔 가며 대량 발급하는 악용 차단)
-  const dayKey = `free-key-daily:${new Date().toISOString().split("T")[0]}`;
-  const dayCount = parseInt((await c.env.API_KEYS.get(dayKey)) ?? "0", 10);
-  if (dayCount >= 300) {
-    return c.json({ error: "Daily signup limit reached. Try again tomorrow." }, 429);
-  }
-
   // 이미 발급된 키 있으면 기존 키 재발송 (재입력 시 이메일 재발송)
   const existingRaw = await c.env.API_KEYS.get(`apikey:${email}`);
   if (existingRaw) {
@@ -84,6 +77,13 @@ app.post("/v1/free-key", async (c) => {
     }
     // 유료 플랜 사용자 → 이미 더 좋은 키 있음
     return c.json({ error: "You already have a paid plan key." }, 409);
+  }
+
+  // 전역 일일 상한: 하루 신규 무료 키 300개 (IP를 바꿔 가며 대량 발급하는 악용 차단). 기존 키 재발송은 막지 않는다.
+  const dayKey = `free-key-daily:${new Date().toISOString().split("T")[0]}`;
+  const dayCount = parseInt((await c.env.API_KEYS.get(dayKey)) ?? "0", 10);
+  if (dayCount >= 300) {
+    return c.json({ error: "Daily signup limit reached. Try again tomorrow." }, 429);
   }
 
   const apiKey = generateFreeKey();
@@ -1078,6 +1078,11 @@ app.post("/v1/eye/check", async (c) => {
   // 브라우저 완료 → 슬롯 즉시 반환 (AI 분석은 브라우저 불필요)
   if (doStub) await doStub.fetch("https://do-internal/release").catch(() => {});
 
+  // 남은 크레딧보다 타일이 많으면 남은 만큼만 분석한다 (한도 초과 분석 방지)
+  const creditsLeft = Math.max(0, monthLimit - keyRecord.calls_used);
+  const tilesTruncated = tiles.length > creditsLeft;
+  if (tilesTruncated) tiles = tiles.slice(0, creditsLeft);
+
   const browserMs = Date.now() - browserStart;
   _diag.browser_ms = browserMs;
   _diag.screenshot_ok = tiles.length > 0;
@@ -1435,6 +1440,7 @@ or
     tiles_analyzed: tilesAnalyzed,
     credits_used: tilesAnalyzed,
     page_height_px: capturedPageHeight,
+    ...(tilesTruncated && { truncated: true, truncated_note: "Only the top of the page was analyzed because monthly credits ran out." }),
     viewport: { width: VIEWPORT_WIDTH, height: capturedPageHeight },
     timing: {
       total_ms: totalMs,
@@ -1458,7 +1464,7 @@ or
   };
 
   // ── KV 캐시 저장 (TTL 10분, prompt 없는 성공 요청만, 스크린샷·사용자별 잔여 크레딧 제외) ──
-  if (!prompt && c.env.VISUAL_CACHE && result.ok === true) {
+  if (!prompt && !tilesTruncated && c.env.VISUAL_CACHE && result.ok === true) {
     const { quota_remaining: _q, ...cacheable } = result;
     await c.env.VISUAL_CACHE.put(cacheKey, JSON.stringify(cacheable), { expirationTtl: 600 }).catch(() => {});
   }
