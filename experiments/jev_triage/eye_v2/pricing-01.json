@@ -1,0 +1,65 @@
+{
+ "ok": true,
+ "poc_passed": false,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/pricing-01.html",
+ "has_issues": true,
+ "summary": "visual overlap issues",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"visual overlap issues\",\"issues\":[{\"severity\":\"medium\",\"description\":\"li covered by a.btn, 5 points\"},{\"severity\":\"medium\",\"description\":\"li.long covered by a.btn, 5 points\"}]}",
+ "dom_issues": [
+  {
+   "type": "element_overlap",
+   "selector": "li.long",
+   "detail": "covered by a.btn at 5 sample points"
+  },
+  {
+   "type": "element_overlap",
+   "selector": "li",
+   "detail": "covered by a.btn at 5 sample points"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "high",
+   "description": "[DOM] element_overlap: li.long \u2014 covered by a.btn at 5 sample points",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "[DOM] element_overlap: li \u2014 covered by a.btn at 5 sample points",
+   "tile_index": 0
+  },
+  {
+   "severity": "medium",
+   "description": "li covered by a.btn, 5 points",
+   "tile_index": 0
+  },
+  {
+   "severity": "medium",
+   "description": "li.long covered by a.btn, 5 points",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 13509,
+  "browser_ms": 2985,
+  "ai_ms": 9963,
+  "under_10s": false
+ },
+ "cost": {
+  "estimated_usd": 0.00068,
+  "per_tile_usd": 0.00068,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 13509,
+ "cost_usd": 0.00068,
+ "screenshot_size_bytes": 58278,
+ "quota_remaining": 29998
+}

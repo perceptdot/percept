@@ -1,0 +1,33 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/pricing-09.html",
+ "has_issues": false,
+ "summary": "No visual rendering issues detected.",
+ "analysis": "[Tile 0] {\"has_issues\":false,\"summary\":\"No visual issues detected\",\"issues\":[]}",
+ "dom_issues": [],
+ "issues": [],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 6591,
+  "browser_ms": 4828,
+  "ai_ms": 1708,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000688,
+  "per_tile_usd": 0.000688,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 6591,
+ "cost_usd": 0.000688,
+ "screenshot_size_bytes": 61518,
+ "quota_remaining": 29991
+}

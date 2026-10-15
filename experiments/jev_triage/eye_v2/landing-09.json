@@ -1,0 +1,33 @@
+{
+ "ok": true,
+ "poc_passed": false,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/landing-09.html",
+ "has_issues": false,
+ "summary": "No visual rendering issues detected.",
+ "analysis": "[Tile 0] To determine if there are any visual issues with the provided image, let's analyze it based on the given criteria: overflow, clipping, z-index overlap, broken image, low contrast, and layout break.\n\n1. **Overflow**: There is no visible content that appears to be cut off or overflowing from its container.\n2. **Clipping**: Similar to overflow, there are no elements that seem to be clipped.\n3. **Z-index overlap**: The elements appear to be properly layered without any noticeable overlaps.\n4. **Broken image**: There are no images in the provided screenshot to assess for brokenness.\n5. **Low contrast**: The text and background have sufficient contrast, making it readable.\n6. **Layout break**: The layout seems intact, with elements properly aligned.\n\nGiven these observations, the analysis concludes there are no visual issues reported based on the specified criteria.\n\n```json\n{\"has_issues\":false,\"summary\":\"No visual issues detected.\",\"issues\":[]}\n```",
+ "dom_issues": [],
+ "issues": [],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 893,
+ "viewport": {
+  "width": 1280,
+  "height": 893
+ },
+ "timing": {
+  "total_ms": 12673,
+  "browser_ms": 6145,
+  "ai_ms": 6235,
+  "under_10s": false
+ },
+ "cost": {
+  "estimated_usd": 0.000873,
+  "per_tile_usd": 0.000873,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 12673,
+ "cost_usd": 0.000873,
+ "screenshot_size_bytes": 49770,
+ "quota_remaining": 29982
+}

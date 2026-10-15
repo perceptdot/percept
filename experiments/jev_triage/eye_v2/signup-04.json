@@ -1,0 +1,95 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/signup-04.html",
+ "has_issues": true,
+ "summary": "visual evidence of DOM issues",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"visual evidence of DOM issues\",\"issues\":[\n    {\"severity\":\"high\",\"description\":\"div.side: overflow, right=2252px\"},\n    {\"severity\":\"high\",\"description\":\"div.card: overflow, right=2252px\"},\n    {\"severity\":\"high\",\"description\":\"h2: overflow, right=2227px\"},\n    {\"severity\":\"high\",\"description\":\"p: overflow, right=2227px\"}\n]}",
+ "dom_issues": [
+  {
+   "type": "viewport_leak",
+   "selector": "div.side",
+   "detail": "right=2252px, viewport=1280px (+972px)"
+  },
+  {
+   "type": "viewport_leak",
+   "selector": "div.card",
+   "detail": "right=2252px, viewport=1280px (+972px)"
+  },
+  {
+   "type": "viewport_leak",
+   "selector": "h2",
+   "detail": "right=2227px, viewport=1280px (+947px)"
+  },
+  {
+   "type": "viewport_leak",
+   "selector": "p",
+   "detail": "right=2227px, viewport=1280px (+947px)"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "high",
+   "description": "[DOM] viewport_leak: div.side \u2014 right=2252px, viewport=1280px (+972px)",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "[DOM] viewport_leak: div.card \u2014 right=2252px, viewport=1280px (+972px)",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "[DOM] viewport_leak: h2 \u2014 right=2227px, viewport=1280px (+947px)",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "[DOM] viewport_leak: p \u2014 right=2227px, viewport=1280px (+947px)",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "div.side: overflow, right=2252px",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "div.card: overflow, right=2252px",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "h2: overflow, right=2227px",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "p: overflow, right=2227px",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 7288,
+  "browser_ms": 3175,
+  "ai_ms": 4053,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000738,
+  "per_tile_usd": 0.000738,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 7288,
+ "cost_usd": 0.000738,
+ "screenshot_size_bytes": 42225,
+ "quota_remaining": 29962
+}

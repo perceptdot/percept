@@ -1,0 +1,50 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/pricing-04.html",
+ "has_issues": true,
+ "summary": "viewport leak detected",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"viewport leak detected\",\"issues\":[{\"severity\":\"high\",\"description\":\"div strip right=1764px, viewport=1280px (+484px)\"}]}",
+ "dom_issues": [
+  {
+   "type": "viewport_leak",
+   "selector": "div.strip",
+   "detail": "right=1764px, viewport=1280px (+484px)"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "high",
+   "description": "[DOM] viewport_leak: div.strip \u2014 right=1764px, viewport=1280px (+484px)",
+   "tile_index": 0
+  },
+  {
+   "severity": "high",
+   "description": "div strip right=1764px, viewport=1280px (+484px)",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 7095,
+  "browser_ms": 4396,
+  "ai_ms": 2649,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000704,
+  "per_tile_usd": 0.000704,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 7095,
+ "cost_usd": 0.000704,
+ "screenshot_size_bytes": 59934,
+ "quota_remaining": 29995
+}

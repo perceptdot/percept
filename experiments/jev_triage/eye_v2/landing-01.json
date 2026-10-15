@@ -1,0 +1,33 @@
+{
+ "ok": true,
+ "poc_passed": false,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/landing-01.html",
+ "has_issues": false,
+ "summary": "No visual rendering issues detected.",
+ "analysis": "[Tile 0] To determine if there are any visual issues with the provided screenshot, let's analyze it based on the given criteria: overflow, clipping, z-index overlap, broken image, low contrast, and layout break.\n\n1. **Overflow**: There is no visible content that appears to be cut off or overflowing from its container in a way that is immediately noticeable.\n\n2. **Clipping**: Similar to overflow, there doesn't seem to be any clipping of elements.\n\n3. **Z-index overlap**: The elements appear to be properly layered. There's no obvious overlap issue where one element is visibly covering another in an unintended way.\n\n4. **Broken image**: The screenshot shows a large gray rectangle where an image or content might be expected, but there's no clear indication of a broken image (like a broken image icon).\n\n5. **Low contrast**: The text and background have sufficient contrast, making it readable.\n\n6. **Layout break**: The layout seems intact, with elements positioned as expected.\n\nGiven these observations, the analysis is as follows:\n\n```json\n{\n  \"has_issues\": false,\n  \"summary\": \"No visual issues detected in the screenshot.\",\n  \"issues\": []\n}\n```\n\nThis conclusion is based on a visual inspection and the information provided in the task. The screenshot appears to be free of the listed visual issues.",
+ "dom_issues": [],
+ "issues": [],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 11377,
+  "browser_ms": 4099,
+  "ai_ms": 7217,
+  "under_10s": false
+ },
+ "cost": {
+  "estimated_usd": 0.000882,
+  "per_tile_usd": 0.000882,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 11377,
+ "cost_usd": 0.000882,
+ "screenshot_size_bytes": 44340,
+ "quota_remaining": 29989
+}

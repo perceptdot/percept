@@ -1,0 +1,50 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/landing-08.html",
+ "has_issues": true,
+ "summary": "The 'NEW' badge is overflowing its parent card.",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"The 'NEW' badge is overflowing its parent card.\",\"issues\":[{\"severity\":\"medium\",\"description\":\"span.badge > div.card: top +13px\"}]}",
+ "dom_issues": [
+  {
+   "type": "parent_overflow",
+   "selector": "span.badge > div.card",
+   "detail": "top +13px"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "high",
+   "description": "[DOM] parent_overflow: span.badge > div.card \u2014 top +13px",
+   "tile_index": 0
+  },
+  {
+   "severity": "medium",
+   "description": "span.badge > div.card: top +13px",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 9333,
+  "browser_ms": 6851,
+  "ai_ms": 2391,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000414,
+  "per_tile_usd": 0.000414,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 9333,
+ "cost_usd": 0.000414,
+ "screenshot_size_bytes": 45924,
+ "quota_remaining": 29983
+}

@@ -1,0 +1,50 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/pricing-03.html",
+ "has_issues": true,
+ "summary": "low contrast issue",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"low contrast issue\",\"issues\":[{\"severity\":\"low\",\"description\":\"text: 1.2:1 (min 3.0:1), p.lead\"}]}",
+ "dom_issues": [
+  {
+   "type": "low_contrast",
+   "selector": "p.lead",
+   "detail": "1.2:1 (min 3.0:1)"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "medium",
+   "description": "[DOM] low_contrast: p.lead \u2014 1.2:1 (min 3.0:1)",
+   "tile_index": 0
+  },
+  {
+   "severity": "low",
+   "description": "text: 1.2:1 (min 3.0:1), p.lead",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 8491,
+  "browser_ms": 5162,
+  "ai_ms": 2763,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000727,
+  "per_tile_usd": 0.000727,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 8491,
+ "cost_usd": 0.000727,
+ "screenshot_size_bytes": 56550,
+ "quota_remaining": 29996
+}

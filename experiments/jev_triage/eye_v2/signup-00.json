@@ -1,0 +1,50 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/signup-00.html",
+ "has_issues": true,
+ "summary": "text overflow",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"text overflow\",\"issues\":[{\"severity\":\"low\",\"description\":\"text_overflow, p.terms runs outside\"}]}",
+ "dom_issues": [
+  {
+   "type": "text_overflow",
+   "selector": "p.terms",
+   "detail": "text runs 194px outside p.terms"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "medium",
+   "description": "[DOM] text_overflow: p.terms \u2014 text runs 194px outside p.terms",
+   "tile_index": 0
+  },
+  {
+   "severity": "low",
+   "description": "text_overflow, p.terms runs outside",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 6958,
+  "browser_ms": 4908,
+  "ai_ms": 1991,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000708,
+  "per_tile_usd": 0.000708,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 6958,
+ "cost_usd": 0.000708,
+ "screenshot_size_bytes": 43476,
+ "quota_remaining": 29965
+}

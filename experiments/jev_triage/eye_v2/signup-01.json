@@ -1,0 +1,50 @@
+{
+ "ok": true,
+ "poc_passed": true,
+ "url": "https://soondoobu1111-star.github.io/jev-bench-pages/signup-01.html",
+ "has_issues": true,
+ "summary": "visual issues found",
+ "analysis": "[Tile 0] {\"has_issues\":true,\"summary\":\"visual issues found\",\"issues\":[{\"severity\":\"medium\",\"description\":\"label covered by button, overlap\"}]}",
+ "dom_issues": [
+  {
+   "type": "element_overlap",
+   "selector": "label",
+   "detail": "covered by button.btn at 3 sample points"
+  }
+ ],
+ "issues": [
+  {
+   "severity": "high",
+   "description": "[DOM] element_overlap: label \u2014 covered by button.btn at 3 sample points",
+   "tile_index": 0
+  },
+  {
+   "severity": "medium",
+   "description": "label covered by button, overlap",
+   "tile_index": 0
+  }
+ ],
+ "tiles_analyzed": 1,
+ "credits_used": 1,
+ "page_height_px": 800,
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "timing": {
+  "total_ms": 6110,
+  "browser_ms": 4688,
+  "ai_ms": 1362,
+  "under_10s": true
+ },
+ "cost": {
+  "estimated_usd": 0.000701,
+  "per_tile_usd": 0.000701,
+  "under_5cents": true,
+  "note": "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280\u00d71600px)."
+ },
+ "duration_ms": 6110,
+ "cost_usd": 0.000701,
+ "screenshot_size_bytes": 42315,
+ "quota_remaining": 29964
+}
