@@ -1,13 +1,13 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
-type Bindings = { PERCEPT_API_KEY: string }
+type Bindings = Record<string, never>
 const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('*', cors({
   origin: '*',
   allowMethods: ['GET', 'POST', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Percept-Key', 'Mcp-Session-Id', 'Mcp-Protocol-Version'],
 }))
 
 // Health check
@@ -15,8 +15,8 @@ app.get('/', (c) => c.json({ service: 'perceptdot MCP', version: '1.2.0', status
 
 // MCP Streamable HTTP endpoint
 app.post('/mcp', async (c) => {
-  // 유저 제공 키 우선, Worker secret은 fallback (외부 사용자 자기 쿼터 사용 가능)
-  const apiKey = c.req.query('api_key') ?? c.req.header('x-percept-key') ?? c.env.PERCEPT_API_KEY ?? null
+  // 사용자 키만 쓴다. 예전엔 키 없는 요청이 운영자 키(PERCEPT_API_KEY)로 넘어가 누구나 무료·무제한으로 썼다 (2026-10-15 제거)
+  const apiKey = c.req.header('x-percept-key') ?? c.req.query('api_key') ?? null
   const body = await c.req.json()
   const requests = Array.isArray(body) ? body : [body]
   const responses: any[] = []
@@ -37,8 +37,9 @@ app.get('/mcp', (c) => {
     description: 'AI Visual QA — MCP server is running. Connect via POST or add to your MCP client.',
     docs: 'https://perceptdot.gitbook.io/perceptdot',
     setup: {
-      claude_code: 'claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"',
-      cursor: '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"}}}',
+      claude_code: 'claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"',
+      cursor: '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"YOUR_KEY"}}}}',
+      note: 'Pass the key in the X-Percept-Key header. ?api_key= in the URL still works but ends up in logs.',
     },
     get_free_key: 'https://perceptdot.com',
   }, 200)
@@ -127,7 +128,7 @@ async function handleRpc(req: any, apiKey: string | null = null): Promise<any | 
               'Content-Type': 'application/json',
               ...(apiKey ? { 'X-Percept-Key': apiKey } : {})
             },
-            body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache, viewport: args?.viewport, api_key: apiKey }),
+            body: JSON.stringify({ url: args?.url, prompt: args?.prompt, no_cache: args?.no_cache, viewport: args?.viewport }),
           })
           if (resp.ok) break
           // 인증/결제 오류는 재시도 무의미

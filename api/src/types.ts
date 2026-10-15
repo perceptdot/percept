@@ -20,6 +20,8 @@ export interface Env {
   VISUAL_CACHE: KVNamespace;
   /** DO: BrowserQueue — 동시 브라우저 세션 2개 제한 */
   BROWSER_QUEUE: DurableObjectNamespace;
+  /** 운영자 전용 엔드포인트 토큰 (wrangler secret put CANARY_TOKEN) */
+  CANARY_TOKEN?: string;
 }
 
 // ─── Registry 타입 ────────────────────────────────────────────────────────────
@@ -100,8 +102,11 @@ export interface ApiKeyRecord {
   created_at: string;
   order_number?: string;
   calls_used: number;
+  /** 무료: 월 한도(100, 피드백 후 200). 유료는 PLAN_MONTHLY_LIMITS를 쓴다 */
   quota: number;
   feedback_count: number;
+  /** calls_used가 집계된 달 (YYYY-MM, UTC). 달이 바뀌면 calls_used 초기화 */
+  period?: string;
 }
 
 /** 공개 피드백 레코드 */

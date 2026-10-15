@@ -3,9 +3,9 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import puppeteer from "@cloudflare/puppeteer";
 
-import type { Env, MetricsPayload, ReportRequest, GumroadWebhookPayload, ApiKeyRecord, FeedbackRecord, CuratedServer, RecommendLogPayload } from "./types";
+import type { Env, MetricsPayload, ReportRequest, ApiKeyRecord, FeedbackRecord, CuratedServer, RecommendLogPayload } from "./types";
 import { CURATED_DB, REGISTRY_VERSION, REGISTRY_UPDATED_AT } from "./data/registry";
-import { sessionStore, getOrCreateSession, buildRoiResponse, generateApiKey, generateFreeKey, COST_PER_TOKEN_USD, PRO_MONTHLY_USD } from "./lib/utils";
+import { sessionStore, getOrCreateSession, buildRoiResponse, generateFreeKey, COST_PER_TOKEN_USD, PRO_MONTHLY_USD, monthlyLimit, rollPeriod, nextResetDate, isAdmin, isPrivateHost, estimateTileCostUsd, BROWSER_USD_PER_MS } from "./lib/utils";
 import { sendInternalAlert, sendApiKeyEmail, sendOnboardingEmail } from "./lib/email";
 
 export { BrowserQueue } from "./durable-objects/browser-queue";
@@ -59,6 +59,13 @@ app.post("/v1/free-key", async (c) => {
   }
   await c.env.API_KEYS.put(rlKey, String(rlCount + 1), { expirationTtl: 3_600 });
 
+  // 전역 일일 상한: 하루 신규 무료 키 300개 (IP를 바꿔 가며 대량 발급하는 악용 차단)
+  const dayKey = `free-key-daily:${new Date().toISOString().split("T")[0]}`;
+  const dayCount = parseInt((await c.env.API_KEYS.get(dayKey)) ?? "0", 10);
+  if (dayCount >= 300) {
+    return c.json({ error: "Daily signup limit reached. Try again tomorrow." }, 429);
+  }
+
   // 이미 발급된 키 있으면 기존 키 재발송 (재입력 시 이메일 재발송)
   const existingRaw = await c.env.API_KEYS.get(`apikey:${email}`);
   if (existingRaw) {
@@ -66,20 +73,17 @@ app.post("/v1/free-key", async (c) => {
     try { existing = JSON.parse(existingRaw) as ApiKeyRecord; }
     catch { return c.json({ error: "Key record corrupted. Contact support." }, 500); }
     if (existing.plan === "free") {
-      // 기존 키를 이메일로 다시 발송
-      await sendApiKeyEmail(c.env.RESEND_API_KEY, email, existing.key, "free");
+      // 기존 키는 이메일로만 다시 보낸다. 응답에 키를 실으면 이메일만 아는 제3자가 남의 키를 가져간다.
+      const resent = await sendApiKeyEmail(c.env.RESEND_API_KEY, email, existing.key, "free");
       return c.json({
         ok: true,
-        api_key: existing.key,
         plan: "free",
-        quota: existing.quota,
-        calls_used: existing.calls_used,
-        email_sent: true,
-        note: "existing key resent",
+        email_sent: resent.ok,
+        note: "This email already has a key. We sent it to the inbox again.",
       });
     }
     // 유료 플랜 사용자 → 이미 더 좋은 키 있음
-    return c.json({ error: "You already have a paid plan key.", plan: existing.plan }, 409);
+    return c.json({ error: "You already have a paid plan key." }, 409);
   }
 
   const apiKey = generateFreeKey();
@@ -91,9 +95,11 @@ app.post("/v1/free-key", async (c) => {
     calls_used: 0,
     quota: 100,
     feedback_count: 0,
+    period: new Date().toISOString().slice(0, 7),
   };
 
   await c.env.API_KEYS.put(`apikey:${email}`, JSON.stringify(record));
+  await c.env.API_KEYS.put(dayKey, String(dayCount + 1), { expirationTtl: 172_800 });
   await c.env.API_KEYS.put(`key:${apiKey}`, JSON.stringify(record));
 
   // 카운터 증가
@@ -155,9 +161,18 @@ app.post("/v1/use", async (c) => {
   try { record = JSON.parse(raw) as ApiKeyRecord; }
   catch { return c.json({ allowed: false, needs_feedback: false, message: "Key record corrupted." }, 500); }
 
-  // 유료 플랜은 이 엔드포인트 불필요 (무제한)
+  rollPeriod(record);
+  const limit = monthlyLimit(record);
+
   if (record.plan !== "free") {
-    return c.json({ allowed: true, quota_remaining: -1, calls_used: record.calls_used });
+    if (record.calls_used >= limit) {
+      return c.json({ allowed: false, needs_feedback: false, quota_remaining: 0, calls_used: record.calls_used,
+        message: `Monthly fair-use limit reached (${limit} credits). Resets ${nextResetDate()}.` });
+    }
+    record.calls_used += 1;
+    await c.env.API_KEYS.put(`key:${key}`, JSON.stringify(record));
+    await c.env.API_KEYS.put(`apikey:${record.email}`, JSON.stringify(record));
+    return c.json({ allowed: true, quota_remaining: limit - record.calls_used, calls_used: record.calls_used });
   }
 
   const { calls_used, quota, feedback_count } = record;
@@ -171,7 +186,7 @@ app.post("/v1/use", async (c) => {
         needs_feedback: true,
         quota_remaining: 0,
         calls_used,
-        message: "FREE QUOTA REACHED (100 calls). Submit feedback to unlock 100 more → use percept_feedback tool.",
+        message: "FREE QUOTA REACHED (100 credits this month). Submit feedback to unlock 100 more → use percept_feedback tool.",
       });
     }
     // 200콜 모두 소진 → 업그레이드
@@ -180,7 +195,7 @@ app.post("/v1/use", async (c) => {
       needs_feedback: false,
       quota_remaining: 0,
       calls_used,
-      message: "FREE PLAN EXHAUSTED (200 calls). Upgrade to Pro ($19/mo) → https://perceptdot.com",
+      message: `FREE PLAN EXHAUSTED for this month. Resets ${nextResetDate()}.`,
     });
   }
 
@@ -225,7 +240,7 @@ app.post("/v1/feedback", async (c) => {
 
   // 이미 피드백 제출 완료 (무료 플랜 1회 제한)
   if (record.feedback_count >= 1) {
-    return c.json({ error: "Already submitted feedback. Upgrade to Pro for unlimited calls → https://perceptdot.com" }, 409);
+    return c.json({ error: "Already submitted feedback. The bonus is one-time per key." }, 409);
   }
 
   // 쿼터 +100, 피드백 카운트 +1
@@ -253,7 +268,7 @@ app.post("/v1/feedback", async (c) => {
     ok: true,
     new_quota: record.quota,
     calls_remaining: record.quota - record.calls_used,
-    message: `Thank you! 100 more calls unlocked (total ${record.quota}). Upgrade to Pro for unlimited → https://perceptdot.com`,
+    message: `Thank you! 100 more credits unlocked (monthly limit is now ${record.quota}).`,
   });
 });
 
@@ -341,72 +356,14 @@ app.post("/v1/report", async (c) => {
   });
 });
 
-app.post("/v1/checkout", async (c) => {
-  let body: { seats: number; amount_usd: number };
-  try { body = await c.req.json(); } catch { return c.json({ error: "Invalid JSON." }, 400); }
-  const { seats, amount_usd } = body;
-  if (!seats || seats < 2 || seats > 50) return c.json({ error: "seats는 2~50 사이여야 합니다." }, 400);
-  const expected = seats * 15;
-  if (amount_usd !== expected) return c.json({ error: `금액 불일치: expected $${expected}, received $${amount_usd}` }, 400);
-  return c.json({ ok: true, checkout_id: `co_${Date.now()}_${seats}seats`, seats, amount_usd, price_per_seat: 15, status: "pending_payment_provider" }, 201);
-});
-
-app.post("/v1/webhook/gumroad", async (c) => {
-  let body: GumroadWebhookPayload;
-  try {
-    const formData = await c.req.formData();
-    body = Object.fromEntries(formData.entries()) as GumroadWebhookPayload;
-  } catch {
-    return c.json({ error: "Payload parsing failed." }, 400);
-  }
-
-  const { email, product_name, order_number, test } = body;
-  if (!email) return c.json({ error: "email 누락" }, 400);
-
-  const permalink = body.permalink ?? "";
-  const isTeam = permalink.includes("wkwgbw") || (product_name ?? "").toLowerCase().includes("team");
-  const plan: "pro" | "team" = isTeam ? "team" : "pro";
-  const isTest = test === "true";
-
-  const apiKey = generateApiKey();
-  const record: ApiKeyRecord = {
-    key: apiKey,
-    email,
-    plan,
-    created_at: new Date().toISOString(),
-    order_number: order_number ?? undefined,
-    calls_used: 0,
-    quota: -1, // unlimited
-    feedback_count: 0,
-  };
-
-  try {
-    await c.env.API_KEYS.put(`apikey:${email}`, JSON.stringify(record));
-    await c.env.API_KEYS.put(`key:${apiKey}`, JSON.stringify(record));
-  } catch (e) {
-    console.error("KV write failed:", e);
-    return c.json({ error: "KV storage failed." }, 500);
-  }
-
-  // 카운터 증가
-  const today = new Date().toISOString().split("T")[0];
-  const statKey = plan === "team" ? "stats:total_team" : "stats:total_pro";
-  const [prevPlan, prevToday] = await Promise.all([
-    c.env.API_KEYS.get(statKey),
-    c.env.API_KEYS.get(`stats:today:${today}`),
-  ]);
-  await Promise.all([
-    c.env.API_KEYS.put(statKey, String((parseInt(prevPlan ?? "0")) + 1)),
-    c.env.API_KEYS.put(`stats:today:${today}`, String((parseInt(prevToday ?? "0")) + 1)),
-  ]);
-
-  const emailResult = await sendApiKeyEmail(c.env.RESEND_API_KEY, email, apiKey, plan);
-  if (!emailResult.ok) console.error("Email send failed:", emailResult.error);
-
-  return c.json({ ok: true, plan, email, is_test: isTest, email_sent: emailResult.ok, ...(emailResult.error && { email_error: emailResult.error }) });
-});
+// ─── 결제 (2026-10-15 정리) ──────────────────────────────────────────────────
+// 구 /v1/checkout(좌석당 $15 가짜 응답)과 /v1/webhook/gumroad(서명 검증 없이 유료 키 발급)는
+// 삭제했다. 결제사는 Paddle 하나이며, 유료 키 발급은 Paddle 서명 검증 웹훅을 붙인 뒤 연다.
+app.post("/v1/checkout", (c) => c.json({ error: "Gone. Paid plans are not open yet." }, 410));
+app.post("/v1/webhook/gumroad", (c) => c.json({ error: "Gone." }, 410));
 
 app.get("/v1/apikey/:email", async (c) => {
+  if (!isAdmin(c.req.header("x-canary-token"), c.env.CANARY_TOKEN)) return c.json({ error: "Unauthorized" }, 401);
   const email = decodeURIComponent(c.req.param("email"));
   const raw = await c.env.API_KEYS.get(`apikey:${email}`);
   if (!raw) return c.json({ error: "API key not found", email }, 404);
@@ -431,7 +388,6 @@ app.get("/v1/validate", async (c) => {
     return c.json({
       valid: true,
       plan: "free",
-      email: record.email,
       calls_used: record.calls_used,
       quota: record.quota,
       quota_remaining: record.quota - record.calls_used,
@@ -439,7 +395,7 @@ app.get("/v1/validate", async (c) => {
     });
   }
 
-  return c.json({ valid: true, plan: record.plan, email: record.email });
+  return c.json({ valid: true, plan: record.plan });
 });
 
 /**
@@ -453,28 +409,16 @@ app.get("/v1/quota", async (c) => {
   if (!raw) return c.json({ error: "Invalid API key." }, 404);
   const record = JSON.parse(raw) as ApiKeyRecord;
 
-  const now = new Date();
-  const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString().split("T")[0];
-
-  if (record.plan === "free") {
-    return c.json({
-      ok: true,
-      plan: "free",
-      quota_total: record.quota,
-      calls_used: record.calls_used,
-      quota_remaining: Math.max(0, record.quota - record.calls_used),
-      reset_date: resetDate,
-    });
-  }
-
+  rollPeriod(record);
+  const limit = monthlyLimit(record);
   return c.json({
     ok: true,
     plan: record.plan,
-    quota_total: -1,
-    calls_used: record.calls_used ?? 0,
-    quota_remaining: -1,
-    reset_date: resetDate,
-    note: "Unlimited plan — no quota limit",
+    quota_total: limit,
+    calls_used: record.calls_used,
+    quota_remaining: Math.max(0, limit - record.calls_used),
+    reset_date: nextResetDate(),
+    ...(record.plan !== "free" && { note: "Monthly fair-use limit" }),
   });
 });
 
@@ -486,12 +430,7 @@ app.get("/v1/quota", async (c) => {
  * 유료 키(pd_live_) 인증 필요
  */
 app.get("/v1/stats", async (c) => {
-  const key = c.req.query("key");
-  if (!key) return c.json({ error: "key parameter is required." }, 401);
-  const keyRaw = await c.env.API_KEYS.get(`key:${key}`);
-  if (!keyRaw) return c.json({ error: "Invalid key." }, 401);
-  const keyRecord = JSON.parse(keyRaw) as ApiKeyRecord;
-  if (keyRecord.plan === "free") return c.json({ error: "Pro/Team 키가 필요합니다." }, 403);
+  if (!isAdmin(c.req.header("x-canary-token"), c.env.CANARY_TOKEN)) return c.json({ error: "Unauthorized" }, 401);
 
   const today = new Date().toISOString().split("T")[0];
   const [freeRaw, proRaw, teamRaw, todayRaw, feedRaw] = await Promise.all([
@@ -535,7 +474,7 @@ app.get("/rss/feedback", async (c) => {
     return `
     <item>
       <title>${stars} (${f.rating}/5) — ${f.key_prefix}***</title>
-      <description><![CDATA[${f.comment}]]></description>
+      <description><![CDATA[${f.comment.replace(/]]>/g, "]]&gt;")}]]></description>
       <pubDate>${new Date(f.timestamp).toUTCString()}</pubDate>
       <guid>${f.key_prefix}-${f.timestamp}</guid>
     </item>`;
@@ -565,18 +504,42 @@ app.get("/rss/changelog", (c) => {
     <link>https://perceptdot.com</link>
     <description>New integrations, updates, and releases from perceptdot.</description>
     <language>en</language>
-    <lastBuildDate>Fri, 21 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 15 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Monthly credits, real cost estimates, header auth</title>
+      <description><![CDATA[Credits now reset monthly (Free: 100 credits/month, +100 one-time after feedback). Paid plans get a monthly fair-use limit. cost_usd is now estimated from actual AI tokens and browser time instead of a fixed number. Pass your key in the X-Percept-Key header; ?api_key= still works. Cached results are keyed per viewport and never include screenshots.]]></description>
+      <pubDate>Thu, 15 Oct 2026 00:00:00 +0000</pubDate>
+      <guid>eye-2026-10-15</guid>
+    </item>
+    <item>
+      <title>Security: Gemini key endpoint removed, GEO check moved server-side</title>
+      <description><![CDATA[The GEO check now runs on the server with a Workers AI fallback. The old endpoint that returned an AI provider key to the browser was removed.]]></description>
+      <pubDate>Sun, 07 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>security-2026-06-07</guid>
+    </item>
+    <item>
+      <title>visual_check: faster and more accurate</title>
+      <description><![CDATA[Third-party scripts (analytics, chat widgets) are blocked during capture, the page waits for framework hydration, and a deterministic DOM audit (viewport overflow, broken images, low contrast) runs before the AI review.]]></description>
+      <pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate>
+      <guid>eye-2026-05-27</guid>
+    </item>
+    <item>
+      <title>Full-page tiling + desktop/tablet/mobile viewports</title>
+      <description><![CDATA[visual_check scans the whole page in 1280x1600 tiles (1 credit per tile) and accepts viewport: desktop (1280px), tablet (768px) or mobile (375px).]]></description>
+      <pubDate>Wed, 25 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>eye-tiling-viewport</guid>
+    </item>
+    <item>
+      <title>perceptdot eye — Visual QA for AI coding agents</title>
+      <description><![CDATA[Remote MCP server with one tool, visual_check(url): screenshot a page and get layout bugs back as JSON. Also available as a GitHub Action.]]></description>
+      <pubDate>Tue, 24 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>eye-launch</guid>
+    </item>
     <item>
       <title>@perceptdot/ga4 v0.2.1 — Plan Validation + Named Profiles</title>
       <description><![CDATA[Free plan: 10 calls/session limit with graceful upgrade message. Named Profiles: GA4_PROFILES={"project":"propertyId"} supports multiple GA4 properties in one server. Backward compatible with GA4_PROPERTY_ID.]]></description>
       <pubDate>Fri, 21 Mar 2026 06:00:00 +0000</pubDate>
       <guid>ga4-v0.2.1</guid>
-    </item>
-    <item>
-      <title>Pricing Update — Free 2 integrations / 200 calls, Team $99/10 seats</title>
-      <description><![CDATA[Free plan now includes 2 integrations (GA4 + Vercel) and 200 API calls/day. Team plan updated to $99/month for 10 seats ($9.9/seat).]]></description>
-      <pubDate>Fri, 21 Mar 2026 05:00:00 +0000</pubDate>
-      <guid>pricing-2026-03-21</guid>
     </item>
     <item>
       <title>@perceptdot/sentry v0.1.1 + @perceptdot/github v0.1.1</title>
@@ -788,16 +751,8 @@ app.post("/v1/eye/check", async (c) => {
     if (!["http:", "https:"].includes(parsedUrl.protocol)) {
       return c.json({ error: "URL must use http or https protocol" }, 400);
     }
-    // Private IP 차단
-    const host = parsedUrl.hostname;
-    if (
-      host === "localhost" ||
-      host.startsWith("127.") ||
-      host.startsWith("192.168.") ||
-      host.startsWith("10.") ||
-      host === "0.0.0.0" ||
-      host.endsWith(".local")
-    ) {
+    // Private IP 차단 (10/8·172.16/12·192.168/16·169.254/16·100.64/10·IPv6 사설·IPv4 매핑 포함)
+    if (isPrivateHost(parsedUrl.hostname)) {
       return c.json({ error: "Private/localhost URLs are not allowed" }, 400);
     }
   } catch {
@@ -822,25 +777,26 @@ app.post("/v1/eye/check", async (c) => {
     return c.json({ ok: false, error: "Key record corrupted. Contact support." }, 500);
   }
 
-  // 무료 플랜: 쿼터 사전 확인 (브라우저 슬롯 낭비 방지)
-  if (keyRecord.plan === "free") {
-    if (keyRecord.calls_used >= keyRecord.quota) {
-      const needsFeedback = keyRecord.feedback_count < 1 && keyRecord.quota === 100;
-      return c.json({
-        ok: false,
-        error: needsFeedback
-          ? "Free quota reached (100 tiles). Submit feedback to unlock 100 more → use percept_feedback tool."
-          : "Free plan exhausted (200 tiles). Upgrade to Pro ($19/mo) → https://perceptdot.com",
-        quota_remaining: 0,
-        calls_used: keyRecord.calls_used,
-        needs_feedback: needsFeedback,
-      }, 402);
-    }
+  // 월 한도 사전 확인 (브라우저 슬롯 낭비 방지) — 무료·유료 모두
+  rollPeriod(keyRecord);
+  const monthLimit = monthlyLimit(keyRecord);
+  if (keyRecord.calls_used >= monthLimit) {
+    const needsFeedback = keyRecord.plan === "free" && keyRecord.feedback_count < 1 && keyRecord.quota === 100;
+    return c.json({
+      ok: false,
+      error: needsFeedback
+        ? "Free quota reached (100 credits this month). Submit feedback to unlock 100 more → use percept_feedback tool."
+        : `Monthly limit reached (${monthLimit} credits). Resets ${nextResetDate()}.`,
+      quota_remaining: 0,
+      calls_used: keyRecord.calls_used,
+      needs_feedback: needsFeedback,
+    }, 402);
   }
 
-  // ── KV 캐시 조회 (no_cache=true 또는 prompt 있으면 스킵) ──
-  const cacheKey = `eye:${url}`;
-  if (!prompt && !no_cache && c.env.VISUAL_CACHE) {
+  // ── KV 캐시 조회 (no_cache·prompt·include_screenshot이면 스킵) ──
+  // 캐시는 공개 URL의 판정 결과만 담는다. 스크린샷은 캐시에 넣지 않아 다른 사용자에게 넘어가지 않는다.
+  const cacheKey = `eye:v2:${VIEWPORT_WIDTH}:${full_page ? "full" : "top"}:${url}`;
+  if (!prompt && !no_cache && !include_screenshot && c.env.VISUAL_CACHE) {
     try {
       const cached = await c.env.VISUAL_CACHE.get(cacheKey, "json");
       if (cached) {
@@ -1204,8 +1160,10 @@ or
     summary: string;
     issues: Array<{ severity: "high" | "medium" | "low"; description: string }>;
     raw: string;
+    usage: { provider: "gemini" | "cf_ai" | "none"; in_tokens: number; out_tokens: number };
     _tileDiag: { provider: "gemini" | "cf_ai" | "none"; gemini_status?: number; gemini_error?: string; gemini_ms: number; cf_ai_ms: number; parse_method: "json" | "text" | "failed" };
   }> {
+    const usage: { provider: "gemini" | "cf_ai" | "none"; in_tokens: number; out_tokens: number } = { provider: "none", in_tokens: 0, out_tokens: 0 };
     let hasIssues = false;
     let tileSummary = "";
     let issues: Array<{ severity: "high" | "medium" | "low"; description: string }> = [];
@@ -1217,10 +1175,10 @@ or
     try {
       const _gStart = Date.now();
       const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-goog-api-key": c.env.GEMINI_API_KEY },
           body: JSON.stringify({
             contents: [{ parts: [
               { inline_data: { mime_type: "image/jpeg", data: b64 } },
@@ -1230,6 +1188,8 @@ or
               maxOutputTokens: 512,
               temperature: 0,
               response_mime_type: "application/json",
+              // 생각 토큰이 512 상한을 먹어 JSON이 잘리는 문제 + 출력 단가 절감
+              thinkingConfig: { thinkingBudget: 0 },
             },
           }),
         }
@@ -1244,7 +1204,11 @@ or
       tileDiag.provider = "gemini";
       const gd = (await geminiRes.json()) as {
         candidates?: Array<{ content: { parts: Array<{ text: string }> } }>;
+        usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; thoughtsTokenCount?: number };
       };
+      usage.provider = "gemini";
+      usage.in_tokens = gd.usageMetadata?.promptTokenCount ?? 0;
+      usage.out_tokens = (gd.usageMetadata?.candidatesTokenCount ?? 0) + (gd.usageMetadata?.thoughtsTokenCount ?? 0);
       // Gemini 2.5 Flash: thinking part가 parts[0]에 올 수 있음 → 모든 text parts 결합
       const allParts = gd.candidates?.[0]?.content?.parts ?? [];
       raw = allParts.map((p: any) => p.text ?? "").filter(Boolean).join("\n");
@@ -1294,6 +1258,9 @@ or
         tileDiag.provider = "cf_ai";
         // messages 포맷 → choices[0].message.content, 구형 포맷 → response
         const cfAiAny = cfAiRes as any;
+        usage.provider = "cf_ai";
+        usage.in_tokens = cfAiAny?.usage?.prompt_tokens ?? 0;
+        usage.out_tokens = cfAiAny?.usage?.completion_tokens ?? 0;
         raw = (cfAiAny?.choices?.[0]?.message?.content ?? cfAiAny?.response ?? "");
         if (typeof raw !== "string") raw = JSON.stringify(raw);
         const jsonMatch = raw.match(/\{[\s\S]*\}/);
@@ -1327,7 +1294,7 @@ or
       }
     }
 
-    return { hasIssues, summary: tileSummary, issues, raw, _tileDiag: tileDiag };
+    return { hasIssues, summary: tileSummary, issues, raw, usage, _tileDiag: tileDiag };
   }
 
   // 타일 병렬 분석 (최대 3개 동시 — Gemini rate limit 안전 범위)
@@ -1337,6 +1304,7 @@ or
     summary: string;
     issues: Array<{ severity: "high" | "medium" | "low"; description: string; tile_index: number }>;
     raw: string;
+    cost_usd: number;
     _tileDiag: { provider: "gemini" | "cf_ai" | "none"; gemini_status?: number; gemini_error?: string; gemini_ms: number; cf_ai_ms: number; parse_method: "json" | "text" | "failed" };
   };
 
@@ -1354,6 +1322,7 @@ or
         summary: res.summary,
         issues: res.issues.map(issue => ({ ...issue, tile_index: idx })),
         raw: res.raw,
+        cost_usd: estimateTileCostUsd(res.usage),
         _tileDiag: res._tileDiag,
       };
     });
@@ -1367,7 +1336,7 @@ or
         const failIdx = batch + i;
         tileResults[failIdx] = {
           tile_index: failIdx, has_issues: false,
-          summary: "Analysis failed", issues: [], raw: String(r.reason),
+          summary: "Analysis failed", issues: [], raw: String(r.reason), cost_usd: 0,
           _tileDiag: { provider: "none" as const, gemini_ms: 0, cf_ai_ms: 0, parse_method: "failed" as const },
         };
       }
@@ -1415,26 +1384,21 @@ or
   const totalMs = Date.now() - startTime;
 
   const tilesAnalyzed = tiles.length;
-  const cfAiCost = 0.000011 * tilesAnalyzed;
-  const cfBrCost = 0.000001;
-  const totalCost = cfAiCost + cfBrCost;
+  const aiCost = tileResults.reduce((a, t) => a + (t?.cost_usd ?? 0), 0);
+  const browserCost = browserMs * BROWSER_USD_PER_MS;
+  const totalCost = aiCost + browserCost;
 
   const pocPassed = totalMs < 10_000 + (tilesAnalyzed - 1) * 5_000 && totalCost < 0.05 * tilesAnalyzed;
 
   // ── 크레딧 차감 (성공 시 타일 수만큼) ──
   let quotaRemaining: number | null = null;
   if (keyRecord && apiKeyVal) {
-    if (keyRecord.plan === "free") {
-      keyRecord.calls_used = Math.min(keyRecord.calls_used + tilesAnalyzed, keyRecord.quota);
-      await Promise.all([
-        c.env.API_KEYS.put(`key:${apiKeyVal}`, JSON.stringify(keyRecord)),
-        c.env.API_KEYS.put(`apikey:${keyRecord.email}`, JSON.stringify(keyRecord)),
-      ]);
-      quotaRemaining = Math.max(0, keyRecord.quota - keyRecord.calls_used);
-    } else {
-      // pro/team: 무제한 (-1)
-      quotaRemaining = -1;
-    }
+    keyRecord.calls_used = Math.min(keyRecord.calls_used + tilesAnalyzed, monthLimit);
+    await Promise.all([
+      c.env.API_KEYS.put(`key:${apiKeyVal}`, JSON.stringify(keyRecord)),
+      c.env.API_KEYS.put(`apikey:${keyRecord.email}`, JSON.stringify(keyRecord)),
+    ]);
+    quotaRemaining = Math.max(0, monthLimit - keyRecord.calls_used);
   }
 
   // DOM 이슈 → issues 형식으로 변환
@@ -1480,27 +1444,28 @@ or
     },
     cost: {
       estimated_usd: Math.round(totalCost * 1_000_000) / 1_000_000,
-      per_tile_usd: Math.round((cfAiCost / tilesAnalyzed) * 1_000_000) / 1_000_000,
+      per_tile_usd: Math.round((totalCost / Math.max(1, tilesAnalyzed)) * 1_000_000) / 1_000_000,
       under_5cents: totalCost < 0.05 * tilesAnalyzed,
-      note: "1 credit = 1 tile (1280×1600px analysis)",
+      note: "Estimate from actual AI tokens and browser time. 1 credit = 1 tile (1280×1600px).",
     },
     duration_ms: totalMs,
     cost_usd: Math.round(totalCost * 1_000_000) / 1_000_000,
     screenshot_size_bytes: screenshotBytes,
     // 크레딧 잔여 (API 키 있을 때만)
     ...(quotaRemaining !== null && {
-      quota_remaining: quotaRemaining,  // -1 = unlimited (pro/team), ≥0 = remaining tiles
+      quota_remaining: quotaRemaining,  // 이번 달 남은 크레딧(타일)
     }),
   };
 
-  // 스크린샷은 요청 시에만 포함 (첫 번째 타일)
-  if (include_screenshot && tiles.length > 0) {
-    result.screenshot_b64 = tiles[0].b64;
+  // ── KV 캐시 저장 (TTL 10분, prompt 없는 성공 요청만, 스크린샷·사용자별 잔여 크레딧 제외) ──
+  if (!prompt && c.env.VISUAL_CACHE && result.ok === true) {
+    const { quota_remaining: _q, ...cacheable } = result;
+    await c.env.VISUAL_CACHE.put(cacheKey, JSON.stringify(cacheable), { expirationTtl: 600 }).catch(() => {});
   }
 
-  // ── KV 캐시 저장 (TTL 5분 = 300s, prompt 없는 성공 요청만) ──
-  if (!prompt && c.env.VISUAL_CACHE && result.ok === true) {
-    await c.env.VISUAL_CACHE.put(cacheKey, JSON.stringify(result), { expirationTtl: 600 }).catch(() => {});
+  // 스크린샷은 요청자 본인 응답에만 포함 (첫 번째 타일)
+  if (include_screenshot && tiles.length > 0) {
+    result.screenshot_b64 = tiles[0].b64;
   }
 
   return c.json(result, 200, { "Cache-Control": "no-store, no-cache, must-revalidate" });
@@ -1516,7 +1481,7 @@ or
  */
 app.get("/v1/eye/canary", async (c) => {
   const token = c.req.header("x-canary-token");
-  if (!token || token !== (c.env as any).CANARY_TOKEN) {
+  if (!token || token !== c.env.CANARY_TOKEN) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -1528,10 +1493,10 @@ app.get("/v1/eye/canary", async (c) => {
   let geminiPingOk = false;
   try {
     const gRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-goog-api-key": c.env.GEMINI_API_KEY },
         body: JSON.stringify({
           contents: [{ parts: [{ text: "Reply with: ok" }] }],
           generationConfig: { maxOutputTokens: 8, temperature: 0 },
@@ -1641,10 +1606,10 @@ app.post("/v1/geo-check", async (c) => {
     const prompt = `List 5-10 specific ${category} products/tools for: "${query}". Only product names, one per line.`;
     try {
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`,
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-goog-api-key": c.env.GEMINI_API_KEY },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: { maxOutputTokens: 1024 },
@@ -1828,8 +1793,9 @@ app.get("/mcp", (c) => c.json({
   description: "AI Visual QA — MCP server is running. Connect via POST or add to your MCP client.",
   docs: "https://perceptdot.gitbook.io/perceptdot",
   setup: {
-    claude_code: 'claude mcp add --transport http perceptdot "https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"',
-    cursor: '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp?api_key=YOUR_KEY"}}}',
+    claude_code: 'claude mcp add --transport http perceptdot https://mcp.perceptdot.com/mcp --header "X-Percept-Key: YOUR_KEY"',
+    cursor: '{"mcpServers":{"perceptdot":{"url":"https://mcp.perceptdot.com/mcp","headers":{"X-Percept-Key":"YOUR_KEY"}}}}',
+    note: "Pass the key in the X-Percept-Key header. ?api_key= in the URL still works but ends up in logs.",
   },
   get_free_key: "https://perceptdot.com",
 }, 200));
@@ -1837,7 +1803,7 @@ app.get("/mcp", (c) => c.json({
 // ─── 관리자: 온보딩 이메일 발송 ────────────────────────────────────────────────
 app.post("/v1/admin/send-onboard", async (c) => {
   const token = c.req.header("x-canary-token");
-  if (!token || token !== (c.env as any).CANARY_TOKEN) return c.json({ error: "Unauthorized" }, 401);
+  if (!token || token !== c.env.CANARY_TOKEN) return c.json({ error: "Unauthorized" }, 401);
   const { emails } = await c.req.json<{ emails: string[] }>();
   const results: Array<{ email: string; ok: boolean; error?: string }> = [];
   for (const email of emails) {
@@ -1852,7 +1818,7 @@ app.post("/v1/admin/send-onboard", async (c) => {
 // ─── Browser Rendering 바인딩 진단 ─────────────────────────────────────────────
 app.get("/v1/eye/browser-diag", async (c) => {
   const token = c.req.header("x-canary-token");
-  if (!token || token !== (c.env as any).CANARY_TOKEN) {
+  if (!token || token !== c.env.CANARY_TOKEN) {
     return c.json({ error: "Unauthorized" }, 401);
   }
   const result: Record<string, unknown> = {
